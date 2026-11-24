@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy 19th Birthday, Lowfy!</title>
-    <!-- Font Kertas Tulis & Tulisan Tangan -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dancing+Script:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -20,7 +19,7 @@
     <div class="ambient-orb orb-2"></div>
 
     <!-- Pemutar Audio Latar -->
-    <audio id="bg-music" preload="metadata"></audio>
+    <audio id="bg-music" preload="auto"></audio>
 
     <!-- MINI PLAYER BERGAYA RETRO GLASS -->
     <div id="mini-player" class="mini-player">
@@ -40,7 +39,7 @@
             <button type="button" id="volume-btn" class="btn-volume-icon" onclick="toggleMute(event)" title="Mute / Unmute">
                 🔊
             </button>
-            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.6" oninput="changeVolume(this.value)">
+            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.7" oninput="changeVolume(this.value)">
         </div>
 
         <button type="button" id="speed-btn" class="btn-speed" onclick="cycleSpeed(event)" title="Ubah Kecepatan Lagu">
@@ -61,7 +60,6 @@
             </button>
         </div>
 
-        <!-- Garis Durasi Lagu -->
         <div class="player-progress-wrap" onclick="seekTrack(event)" title="Klik untuk menggeser durasi lagu">
             <div id="player-progress-bar" class="player-progress-bar"></div>
         </div>
@@ -98,12 +96,12 @@
     <!-- 2. KONTEN UTAMA -->
     <main id="main-content" class="main-content">
         
-        <!-- Bagian 1: Hero & Surat Kertas Lipat Realistis -->
+        <!-- Bagian 1: Hero & Kertas Tulis Lipat Realistis -->
         <section class="night-section">
             <div class="header-area reveal">
                 <div class="illustration-badge glass-pill">
                     <span class="balloon b1">✨</span>
-                    <span class="avatar">🥳</span>
+                    <span class="avatar">🎂</span>
                     <span class="balloon b2">🌙</span>
                 </div>
                 <div class="title-stack">
@@ -112,20 +110,16 @@
                 </div>
             </div>
 
-<!-- KERTAS TULIS REALISTIS DENGAN LIPATAN INTERAKTIF -->
             <div id="letter-paper" class="real-paper-wrapper">
                 <div class="real-paper-sheet">
-                    <!-- Selotip Kertas & Header Tanggal -->
                     <div class="paper-washi-tape"></div>
                     <div class="paper-top-meta">
                         <span>Bandar Lampung, 12 Desember 2026</span>
                         <span id="fold-counter-badge" class="fold-counter-badge">Lipatan 1 / 9</span>
                     </div>
 
-                    <!-- Area Tumpukan Lipatan Kertas -->
                     <div id="accordion-letter" class="accordion-letter">
 
-                        <!-- Lipatan 1 -->
                         <div class="paper-fold is-open" data-fold="1">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 01</span>
@@ -136,7 +130,6 @@
                             </div>
                         </div>
 
-                        <!-- Lipatan 2 -->
                         <div class="paper-fold is-next-folded" data-fold="2" onclick="handleFoldClick(2, event)">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 02</span>
@@ -149,7 +142,6 @@
                             </div>
                         </div>
 
-                        <!-- Lipatan 3 -->
                         <div class="paper-fold is-stacked-folded" data-fold="3" onclick="handleFoldClick(3, event)">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 03</span>
@@ -162,7 +154,6 @@
                             </div>
                         </div>
 
-                        <!-- Lipatan 4 -->
                         <div class="paper-fold is-stacked-folded" data-fold="4" onclick="handleFoldClick(4, event)">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 04</span>
@@ -175,7 +166,6 @@
                             </div>
                         </div>
 
-                        <!-- Lipatan 5 -->
                         <div class="paper-fold is-stacked-folded" data-fold="5" onclick="handleFoldClick(5, event)">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 05</span>
@@ -188,7 +178,6 @@
                             </div>
                         </div>
 
-                        <!-- Lipatan 6 -->
                         <div class="paper-fold is-stacked-folded" data-fold="6" onclick="handleFoldClick(6, event)">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 06</span>
@@ -201,7 +190,6 @@
                             </div>
                         </div>
 
-                        <!-- Lipatan 7 -->
                         <div class="paper-fold is-stacked-folded" data-fold="7" onclick="handleFoldClick(7, event)">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 07</span>
@@ -214,7 +202,6 @@
                             </div>
                         </div>
 
-                        <!-- Lipatan 8 -->
                         <div class="paper-fold is-stacked-folded" data-fold="8" onclick="handleFoldClick(8, event)">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 08</span>
@@ -227,7 +214,6 @@
                             </div>
                         </div>
 
-                        <!-- Lipatan 9 (Kertas Terakhir dengan Font Tulisan Tangan) -->
                         <div class="paper-fold is-stacked-folded final-fold" data-fold="9" onclick="handleFoldClick(9, event)">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 09 • Penutup</span>
@@ -246,7 +232,6 @@
 
                     </div>
 
-                    <!-- Kontrol Navigasi Lipatan di Bagian Bawah Kertas -->
                     <div class="paper-fold-controls">
                         <button type="button" id="btn-prev-fold" class="btn-paper-nav" onclick="foldPrev()" disabled>
                             ↑ Lipat Sebelumnya
@@ -311,13 +296,12 @@
 
                 <div class="option-display glass-card interactive-glass" data-tilt="true">
                     
-                    <!-- Opsi 1: Buket Bunga Animasi (Basket + Mixed Bouquet) -->
+                    <!-- Opsi 1: Buket Bunga dalam Keranjang -->
                     <div id="opt-content-1" class="opt-panel show">
                         <h3>A Special Bouquet For You 💐</h3>
                         <p class="opt-desc">Tap the bouquet to burst flowers & sparkle!</p>
                         
                         <div id="bouquet-box" class="bouquet-box" onclick="bloomBouquet(event)">
-                            <!-- Lapisan Partikel Bunga yang Bertebaran dari Tengah ke Luar -->
                             <div id="flower-burst-layer" class="flower-burst-layer"></div>
 
                             <svg class="bouquet-svg" viewBox="0 0 280 265" width="245" height="232">
@@ -327,42 +311,32 @@
                                     </filter>
                                 </defs>
 
-                                <!-- 1. KERANJANG KAWAT PINK PASTEL (BELAKANG) -->
                                 <g class="wire-basket-back" stroke="#ff9ec9" fill="none">
-                                    <!-- Rangka Utama Keranjang -->
                                     <rect x="64" y="82" width="166" height="154" rx="16" stroke-width="3" fill="rgba(255, 182, 214, 0.06)"/>
-                                    <!-- Garis Kisi Vertikal -->
                                     <line x1="92" y1="82" x2="92" y2="236" stroke-width="1.6" opacity="0.75"/>
                                     <line x1="120" y1="82" x2="120" y2="236" stroke-width="1.6" opacity="0.75"/>
                                     <line x1="148" y1="82" x2="148" y2="236" stroke-width="1.6" opacity="0.75"/>
                                     <line x1="176" y1="82" x2="176" y2="236" stroke-width="1.6" opacity="0.75"/>
                                     <line x1="204" y1="82" x2="204" y2="236" stroke-width="1.6" opacity="0.75"/>
-                                    <!-- Garis Kisi Horizontal -->
                                     <line x1="64" y1="112" x2="230" y2="112" stroke-width="1.6" opacity="0.75"/>
                                     <line x1="64" y1="142" x2="230" y2="142" stroke-width="1.6" opacity="0.75"/>
                                     <line x1="64" y1="172" x2="230" y2="172" stroke-width="1.6" opacity="0.75"/>
                                     <line x1="64" y1="202" x2="230" y2="202" stroke-width="1.6" opacity="0.75"/>
-                                    <!-- Gagang Samping Kanan -->
                                     <path d="M230,118 C242,118 242,152 230,152" stroke-width="2.6" stroke-linecap="round"/>
                                 </g>
 
-                                <!-- 2. BUKET BUNGA (POSISI AGAK KE KIRI DI DALAM KERANJANG) -->
                                 <g class="bouquet-bundle" filter="url(#sticker-glow)">
-                                    <!-- Kertas Pembungkus Belakang (Krem & Pink Berlapis) -->
                                     <polygon points="124,205 46,96 92,48 162,48 202,98" fill="#fff4e6" stroke="#f3d8be" stroke-width="1.5"/>
                                     <polygon points="124,205 38,112 76,62 124,78" fill="#ff85b3" stroke="#ffb3d1" stroke-width="1.5"/>
                                     <polygon points="124,205 206,112 172,60 124,78" fill="#f472a8" stroke="#ffb3d1" stroke-width="1.5"/>
 
-                                    <!-- Daun Hijau Sage & Kuncup Bunga -->
                                     <ellipse cx="64" cy="96" rx="18" ry="9" transform="rotate(-38 64 96)" fill="#4d8066"/>
                                     <ellipse cx="184" cy="94" rx="18" ry="9" transform="rotate(35 184 94)" fill="#4d8066"/>
                                     <ellipse cx="94" cy="60" rx="15" ry="8" transform="rotate(-65 94 60)" fill="#639c7e"/>
                                     <ellipse cx="152" cy="58" rx="15" ry="8" transform="rotate(60 152 58)" fill="#639c7e"/>
-                                    <!-- Kuncup Kecil -->
                                     <ellipse cx="78" cy="74" rx="5" ry="9" transform="rotate(-25 78 74)" fill="#a3d9a5" stroke="#5c946e" stroke-width="1"/>
                                     <ellipse cx="168" cy="70" rx="5" ry="9" transform="rotate(25 168 70)" fill="#a3d9a5" stroke="#5c946e" stroke-width="1"/>
 
-                                    <!-- Mawar Ungu (Atas Kiri & Atas Tengah) -->
                                     <g class="flower f-purple-1">
                                         <circle cx="94" cy="82" r="16" fill="#7b2cbf"/>
                                         <circle cx="88" cy="77" r="9" fill="#9d4edd"/>
@@ -377,7 +351,6 @@
                                         <circle cx="132" cy="72" r="4.5" fill="#5a189a"/>
                                     </g>
 
-                                    <!-- Mawar Krem Putih (Atas Kanan & Tengah Kiri) -->
                                     <g class="flower f-cream-1">
                                         <circle cx="158" cy="84" r="15" fill="#f5e6cc"/>
                                         <circle cx="153" cy="80" r="8" fill="#fffaf0"/>
@@ -390,7 +363,6 @@
                                         <circle cx="74" cy="112" r="3.5" fill="#e6ccb2"/>
                                     </g>
 
-<!-- BUNGA MATAHARI 1 (Kiri Tengah) -->
                                     <g transform="translate(96, 112)">
                                         <g class="flower f-sun-1">
                                             <g fill="#ffb703" stroke="#fb8500" stroke-width="0.8">
@@ -408,7 +380,6 @@
                                         </g>
                                     </g>
 
-                                    <!-- BUNGA MATAHARI 2 (Kanan Tengah) -->
                                     <g transform="translate(154, 114)">
                                         <g class="flower f-sun-2">
                                             <g fill="#ffb703" stroke="#fb8500" stroke-width="0.8">
@@ -426,7 +397,6 @@
                                         </g>
                                     </g>
 
-                                    <!-- Mawar Pink Lembut (Selipan) -->
                                     <g class="flower f-pink-1">
                                         <circle cx="124" cy="96" r="13" fill="#ff758f"/>
                                         <circle cx="120" cy="93" r="7" fill="#ffadc9"/>
@@ -439,7 +409,6 @@
                                         <circle cx="172" cy="134" r="3.5" fill="#e03a68"/>
                                     </g>
 
-                                    <!-- Mawar Ungu Bawah Kiri -->
                                     <g class="flower f-purple-3">
                                         <circle cx="92" cy="140" r="13" fill="#7b2cbf"/>
                                         <circle cx="88" cy="137" r="7" fill="#9d4edd"/>
@@ -447,7 +416,6 @@
                                         <circle cx="92" cy="140" r="4" fill="#5a189a"/>
                                     </g>
 
-                                    <!-- BUNGA LILI PINK STARGAZER (Fokus Utama Tengah Bawah) -->
                                     <g transform="translate(125, 130)">
                                         <g class="flower f-lily">
                                             <g fill="#e63980" stroke="#ffd6e8" stroke-width="1.2">
@@ -458,7 +426,6 @@
                                                 <ellipse cx="-14" cy="8" rx="5.5" ry="14" transform="rotate(60 -14 8)"/>
                                                 <ellipse cx="-14" cy="-8" rx="5.5" ry="14" transform="rotate(120 -14 -8)"/>
                                             </g>
-                                            <!-- Benang Sari Lili -->
                                             <line x1="0" y1="0" x2="-4" y2="-7" stroke="#fff3b0" stroke-width="1.2"/>
                                             <line x1="0" y1="0" x2="4" y2="-7" stroke="#fff3b0" stroke-width="1.2"/>
                                             <line x1="0" y1="0" x2="0" y2="7" stroke="#fff3b0" stroke-width="1.2"/>
@@ -468,37 +435,30 @@
                                         </g>
                                     </g>
 
-                                    <!-- Batang Bunga di Bagian Bawah -->
                                     <g stroke="#4d8066" stroke-width="2.6" stroke-linecap="round">
                                         <line x1="118" y1="196" x2="112" y2="224"/>
                                         <line x1="124" y1="196" x2="124" y2="227"/>
                                         <line x1="130" y1="196" x2="136" y2="223"/>
                                     </g>
 
-                                    <!-- Kertas Pembungkus Depan (Kerucut & Lipatan Ruffle Pink-Krem) -->
                                     <polygon points="124,206 54,132 104,154 124,144 144,154 194,132" fill="#ffe8f0" stroke="#ffb3d1" stroke-width="1.5"/>
                                     <polygon points="124,208 66,144 124,162 182,144" fill="#f783b5" stroke="#ffbcd8" stroke-width="1.4"/>
 
-                                    <!-- Pita Satin Pink Menjuntai -->
                                     <path d="M124,168 C105,158 94,166 102,175 C110,181 120,174 124,168 Z" fill="#ff4d94"/>
                                     <path d="M124,168 C143,158 154,166 146,175 C138,181 128,174 124,168 Z" fill="#ff4d94"/>
-                                    <!-- Ekor Pita Melambai -->
                                     <path d="M122,171 C106,188 86,198 70,194" fill="none" stroke="#ff70a6" stroke-width="4.5" stroke-linecap="round"/>
                                     <path d="M125,171 C132,192 128,214 118,228" fill="none" stroke="#ff4d94" stroke-width="4.5" stroke-linecap="round"/>
                                     <path d="M127,171 C140,186 150,198 158,208" fill="none" stroke="#ff85b3" stroke-width="4" stroke-linecap="round"/>
                                     <circle cx="124" cy="169" r="5" fill="#ff9ec9"/>
                                 </g>
 
-                                <!-- 3. KISI DEPAN KERANJANG & KARTU UCAPAN MINI (POJOK KANAN BAWAH) -->
                                 <g class="wire-basket-front" stroke="#ffb3d4" fill="none">
                                     <path d="M64,174 L230,174 L230,222 Q230,236 214,236 L80,236 Q64,236 64,222 Z" stroke-width="2.8" fill="rgba(255, 194, 222, 0.08)"/>
                                     <line x1="64" y1="205" x2="230" y2="205" stroke-width="1.6"/>
                                 </g>
 
-                                <!-- Kartu Ucapan Mini dengan Selotip Pink -->
                                 <g transform="translate(182, 174) rotate(7)">
                                     <rect x="0" y="0" width="56" height="62" rx="4" fill="#fffaf2" stroke="#e6d3bc" stroke-width="1.2"/>
-                                    <!-- Selotip Pink di Atas Kartu -->
                                     <rect x="14" y="-5" width="28" height="9" rx="1.5" fill="rgba(255, 133, 179, 0.85)"/>
                                     <text x="28" y="24" text-anchor="middle" fill="#d94686" font-size="13" font-weight="bold">♥</text>
                                     <text x="28" y="39" text-anchor="middle" fill="#6e4e3a" font-family="Courier New, monospace" font-size="7.5" font-weight="bold">FOR LOWFY</text>
@@ -529,7 +489,7 @@
                         </div>
                     </div>
 
-                    <!-- Opsi 3: Kue Tingkat Putih, Cupcake Pita Pink & Kirim Pesan -->
+                    <!-- Opsi 3: Kue Tingkat Putih & Cupcake Pita Pink -->
                     <div id="opt-content-3" class="opt-panel">
                         <h3>Close your eyes & make a wish 🎂</h3>
                         <p class="opt-desc">Tiup lilinnya dengan klik kue di bawah, lalu tulis harapanmu!</p>
@@ -553,11 +513,9 @@
                                     </linearGradient>
                                 </defs>
 
-                                <!-- Piring Saji Kue -->
                                 <ellipse cx="160" cy="212" rx="142" ry="22" fill="#2a1936" stroke="rgba(255, 182, 214, 0.45)" stroke-width="1.5"/>
                                 <ellipse cx="160" cy="209" rx="132" ry="17" fill="rgba(255, 248, 240, 0.1)" stroke="rgba(255, 214, 232, 0.3)" stroke-width="1"/>
 
-                                <!-- CUPCAKE BELAKANG KIRI -->
                                 <g transform="translate(56, 166) scale(0.84)">
                                     <polygon points="-18,8 18,8 13,30 -13,30" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1"/>
                                     <line x1="-9" y1="8" x2="-6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
@@ -567,13 +525,11 @@
                                     <ellipse cx="0" cy="3" rx="18" ry="7" fill="#ffb8d4"/>
                                     <ellipse cx="0" cy="-3" rx="13" ry="6" fill="#ff9ec9"/>
                                     <ellipse cx="0" cy="-8" rx="8" ry="4.5" fill="#ffcce0"/>
-                                    <!-- Pita Pink Atas Cupcake -->
                                     <path d="M0,-12 C-10,-20 -16,-12 -8,-8 C-4,-6 -1,-9 0,-12 Z" fill="#ff6ea6"/>
                                     <path d="M0,-12 C10,-20 16,-12 8,-8 C4,-6 1,-9 0,-12 Z" fill="#ff6ea6"/>
                                     <circle cx="0" cy="-11" r="2.5" fill="#ff9ec9"/>
                                 </g>
 
-                                <!-- CUPCAKE BELAKANG KANAN -->
                                 <g transform="translate(264, 166) scale(0.84)">
                                     <polygon points="-18,8 18,8 13,30 -13,30" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1"/>
                                     <line x1="-9" y1="8" x2="-6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
@@ -583,58 +539,44 @@
                                     <ellipse cx="0" cy="3" rx="18" ry="7" fill="#ffb8d4"/>
                                     <ellipse cx="0" cy="-3" rx="13" ry="6" fill="#ff9ec9"/>
                                     <ellipse cx="0" cy="-8" rx="8" ry="4.5" fill="#ffcce0"/>
-                                    <!-- Pita Pink Atas Cupcake -->
                                     <path d="M0,-12 C-10,-20 -16,-12 -8,-8 C-4,-6 -1,-9 0,-12 Z" fill="#ff6ea6"/>
                                     <path d="M0,-12 C10,-20 16,-12 8,-8 C4,-6 1,-9 0,-12 Z" fill="#ff6ea6"/>
                                     <circle cx="0" cy="-11" r="2.5" fill="#ff9ec9"/>
                                 </g>
 
-                                <!-- KUE UTAMA 2 TINGKAT PUTIH VINTAGE COQUETTE -->
                                 <g filter="url(#cake-shadow)">
-                                    <!-- TINGKAT BAWAH -->
                                     <path d="M84,132 L84,192 A76,15 0 0,0 236,192 L236,132 Z" fill="url(#cake-ivory)" stroke="#d9c3a5" stroke-width="1.2"/>
                                     <ellipse cx="160" cy="132" rx="76" ry="15" fill="#fffaf2" stroke="#dcc7aa" stroke-width="1.2"/>
-                                    <!-- Garis Krim Berombak (Swags) Tingkat Bawah -->
                                     <path d="M86,154 Q110,170 135,156 Q160,172 185,156 Q210,170 234,154" fill="none" stroke="#c9a982" stroke-width="1.5"/>
                                     <path d="M86,158 Q110,174 135,160 Q160,176 185,160 Q210,174 234,158" fill="none" stroke="#dfC5a3" stroke-width="1"/>
-                                    <!-- Piping Krim Tepian Bawah & Atas -->
                                     <path d="M85,192 Q160,210 235,192" fill="none" stroke="#d4b58e" stroke-width="3" stroke-dasharray="5 3" stroke-linecap="round"/>
                                     <path d="M85,133 Q160,150 235,133" fill="none" stroke="#d4b58e" stroke-width="2.6" stroke-dasharray="4 3" stroke-linecap="round"/>
 
-                                    <!-- 4 Pita Merah Vintage di Tingkat Bawah -->
-                                    <!-- Pita Bawah Kiri Ujung -->
                                     <g transform="translate(89, 138)">
                                         <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
                                         <path d="M-1,2 Q-4,18 -5,32 M1,2 Q2,18 1,34" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
                                     </g>
-                                    <!-- Pita Bawah Tengah Kiri -->
                                     <g transform="translate(135, 145)">
                                         <path d="M0,0 C-8,-6 -11,1 -3,3 Z M0,0 C8,-6 11,1 3,3 Z" fill="#b82542"/>
                                         <path d="M-1,2 Q-3,20 -4,36 M1,2 Q3,20 3,38" stroke="#b82542" stroke-width="2.1" fill="none" stroke-linecap="round"/>
                                     </g>
-                                    <!-- Pita Bawah Tengah Kanan -->
                                     <g transform="translate(185, 145)">
                                         <path d="M0,0 C-8,-6 -11,1 -3,3 Z M0,0 C8,-6 11,1 3,3 Z" fill="#b82542"/>
                                         <path d="M-1,2 Q-3,20 -3,38 M1,2 Q3,20 4,36" stroke="#b82542" stroke-width="2.1" fill="none" stroke-linecap="round"/>
                                     </g>
-                                    <!-- Pita Bawah Kanan Ujung -->
                                     <g transform="translate(231, 138)">
                                         <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
                                         <path d="M-1,2 Q-2,18 -1,34 M1,2 Q4,18 5,32" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
                                     </g>
 
-                                    <!-- TINGKAT ATAS -->
                                     <path d="M106,80 L106,130 A54,11 0 0,0 214,130 L214,80 Z" fill="url(#cake-ivory)" stroke="#d9c3a5" stroke-width="1.2"/>
                                     <ellipse cx="160" cy="80" rx="54" ry="11" fill="#fffcf7" stroke="#dcc7aa" stroke-width="1.2"/>
-                                    <!-- Garis Krim Berombak (Swags) Tingkat Atas -->
                                     <path d="M107,102 Q133,115 160,104 Q187,115 213,102" fill="none" stroke="#c9a982" stroke-width="1.4"/>
                                     <path d="M107,81 Q160,94 213,81" fill="none" stroke="#d4b58e" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/>
 
-                                    <!-- Aksen Hati Merah Kecil di Atas Kue -->
                                     <path d="M120,76 C118,73 114,75 120,79 C126,75 122,73 120,76 Z" fill="#b82542"/>
                                     <path d="M200,76 C198,73 194,75 200,79 C206,75 202,73 200,76 Z" fill="#b82542"/>
 
-                                    <!-- 3 Pita Merah Vintage di Tingkat Atas -->
                                     <g transform="translate(122, 87)">
                                         <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
                                         <path d="M-1,2 Q-3,18 -3,32 M1,2 Q2,18 2,33" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
@@ -648,38 +590,30 @@
                                         <path d="M-1,2 Q-2,18 -2,33 M1,2 Q3,18 3,32" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
                                     </g>
 
-                                    <!-- 3 LILIN MERAH RAMPING DI PUNCAK KUE -->
-                                    <!-- Lilin Kiri -->
                                     <rect x="135" y="55" width="4" height="22" rx="1.5" transform="rotate(-5 137 77)" fill="#b82542"/>
                                     <line x1="135" y1="62" x2="139" y2="60" stroke="#fff5f7" stroke-width="1.2"/>
                                     <line x1="135" y1="69" x2="139" y2="67" stroke="#fff5f7" stroke-width="1.2"/>
 
-                                    <!-- Lilin Tengah (Lebih Tinggi + Pita Kecil di Pangkal) -->
                                     <rect x="158" y="48" width="4.5" height="29" rx="1.5" fill="#b82542"/>
                                     <line x1="158" y1="56" x2="162.5" y2="54" stroke="#fff5f7" stroke-width="1.3"/>
                                     <line x1="158" y1="64" x2="162.5" y2="62" stroke="#fff5f7" stroke-width="1.3"/>
                                     <path d="M160,74 C154,70 152,75 158,76 Z M160,74 C166,70 168,75 162,76 Z" fill="#9e1c36"/>
 
-                                    <!-- Lilin Kanan -->
                                     <rect x="181" y="55" width="4" height="22" rx="1.5" transform="rotate(5 183 77)" fill="#b82542"/>
                                     <line x1="181" y1="62" x2="185" y2="60" stroke="#fff5f7" stroke-width="1.2"/>
                                     <line x1="181" y1="69" x2="185" y2="67" stroke="#fff5f7" stroke-width="1.2"/>
 
-                                    <!-- API LILIN (BISA DITIUP) -->
                                     <g id="flame" class="candle-flames">
-                                        <!-- Api Tengah -->
                                         <g transform="translate(160.2, 41)">
                                             <ellipse class="flame-glow" cx="0" cy="0" rx="8" ry="11" fill="rgba(255, 209, 102, 0.35)"/>
                                             <path class="flame-core" d="M0,-8 C4,-2 4,4 0,6 C-4,4 -4,-2 0,-8 Z" fill="#ffbe0b"/>
                                             <path d="M0,-4 C2,-1 2,2 0,4 C-2,2 -2,-1 0,-4 Z" fill="#fff8d6"/>
                                         </g>
-                                        <!-- Api Kiri -->
                                         <g transform="translate(136, 48)">
                                             <ellipse class="flame-glow" cx="0" cy="0" rx="6.5" ry="9" fill="rgba(255, 209, 102, 0.3)"/>
                                             <path class="flame-core" d="M0,-6.5 C3,-1.5 3,3.5 0,5 C-3,3.5 -3,-1.5 0,-6.5 Z" fill="#ffbe0b"/>
                                             <path d="M0,-3 C1.5,-0.5 1.5,2 0,3.5 C-1.5,2 -1.5,-0.5 0,-3 Z" fill="#fff8d6"/>
                                         </g>
-                                        <!-- Api Kanan -->
                                         <g transform="translate(184, 48)">
                                             <ellipse class="flame-glow" cx="0" cy="0" rx="6.5" ry="9" fill="rgba(255, 209, 102, 0.3)"/>
                                             <path class="flame-core" d="M0,-6.5 C3,-1.5 3,3.5 0,5 C-3,3.5 -3,-1.5 0,-6.5 Z" fill="#ffbe0b"/>
@@ -688,7 +622,6 @@
                                     </g>
                                 </g>
 
-                                <!-- CUPCAKE DEPAN KIRI -->
                                 <g transform="translate(74, 194)" filter="url(#cake-shadow)">
                                     <polygon points="-19,8 19,8 14,32 -14,32" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1.1"/>
                                     <line x1="-10" y1="8" x2="-7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
@@ -698,18 +631,15 @@
                                     <ellipse cx="0" cy="3" rx="19" ry="7.5" fill="#ffc2da"/>
                                     <ellipse cx="0" cy="-3" rx="14" ry="6.5" fill="#ffa3c8"/>
                                     <ellipse cx="0" cy="-9" rx="8.5" ry="4.5" fill="#ffd6e7"/>
-                                    <!-- Taburan Mutiara Pink -->
                                     <circle cx="-8" cy="2" r="1.2" fill="#ffffff"/>
                                     <circle cx="7" cy="3" r="1.2" fill="#ffffff"/>
                                     <circle cx="2" cy="-3" r="1.1" fill="#ffffff"/>
-                                    <!-- Pita Satin Pink Atas -->
                                     <path d="M0,-13 C-11,-22 -18,-13 -9,-8 C-4,-6 -1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
                                     <path d="M0,-13 C11,-22 18,-13 9,-8 C4,-6 1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
                                     <path d="M-2,-10 L-8,-3 M2,-10 L8,-3" stroke="#ff66a1" stroke-width="2" stroke-linecap="round"/>
                                     <circle cx="0" cy="-12" r="2.8" fill="#ffb3d4"/>
                                 </g>
 
-                                <!-- CUPCAKE DEPAN KANAN -->
                                 <g transform="translate(246, 194)" filter="url(#cake-shadow)">
                                     <polygon points="-19,8 19,8 14,32 -14,32" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1.1"/>
                                     <line x1="-10" y1="8" x2="-7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
@@ -719,11 +649,9 @@
                                     <ellipse cx="0" cy="3" rx="19" ry="7.5" fill="#ffc2da"/>
                                     <ellipse cx="0" cy="-3" rx="14" ry="6.5" fill="#ffa3c8"/>
                                     <ellipse cx="0" cy="-9" rx="8.5" ry="4.5" fill="#ffd6e7"/>
-                                    <!-- Taburan Mutiara Pink -->
                                     <circle cx="-7" cy="3" r="1.2" fill="#ffffff"/>
                                     <circle cx="8" cy="2" r="1.2" fill="#ffffff"/>
                                     <circle cx="-2" cy="-3" r="1.1" fill="#ffffff"/>
-                                    <!-- Pita Satin Pink Atas -->
                                     <path d="M0,-13 C-11,-22 -18,-13 -9,-8 C-4,-6 -1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
                                     <path d="M0,-13 C11,-22 18,-13 9,-8 C4,-6 1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
                                     <path d="M-2,-10 L-8,-3 M2,-10 L8,-3" stroke="#ff66a1" stroke-width="2" stroke-linecap="round"/>
@@ -741,6 +669,7 @@
                             <p id="send-feedback" class="send-feedback"></p>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -759,13 +688,10 @@
     </div>
 
     <script>
-        /* ==========================================
-           0. LINK FORMSPREE UNTUK TERIMA WISH DI GMAIL
-           ========================================== */
         const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
 
         /* ==========================================
-           1. KUNANG-KUNANG SUPER RINGAN (SPRITE CACHE)
+           1. KUNANG-KUNANG SUPER RINGAN
            ========================================== */
         const canvas = document.getElementById("fireflies-canvas");
         const ctx = canvas.getContext("2d", { alpha: true });
@@ -886,7 +812,7 @@
         });
 
         /* ==========================================
-           3. AUDIO CROSSFADE, VOLUME, SPEED & PLAYLIST
+           3. AUDIO PLAYER, VOLUME, SPEED & PLAYLIST
            ========================================== */
         let isEnvelopeOpened = false;
         const bgMusic = document.getElementById("bg-music");
@@ -903,9 +829,8 @@
         const speedRates = [1, 1.25, 1.5, 0.75];
         let currentSpeedIndex = 0;
 
-        let userVolume = 0.6;
-        let previousVolume = 0.6;
-        let fadeInterval = null;
+        let userVolume = 0.7;
+        let previousVolume = 0.7;
         let isAutoFadingOut = false;
 
         function updatePlayButtonUI(isPlaying) {
@@ -914,7 +839,6 @@
 
         bgMusic.addEventListener("play", () => updatePlayButtonUI(true));
         bgMusic.addEventListener("pause", () => updatePlayButtonUI(false));
-        bgMusic.addEventListener("ended", () => updatePlayButtonUI(false));
 
         function applyPlaybackRate(rate) {
             bgMusic.defaultPlaybackRate = rate;
@@ -925,9 +849,7 @@
             if (event) event.stopPropagation();
             currentSpeedIndex = (currentSpeedIndex + 1) % speedRates.length;
             const newRate = speedRates[currentSpeedIndex];
-
             applyPlaybackRate(newRate);
-            setTimeout(() => applyPlaybackRate(newRate), 60);
 
             const speedBtn = document.getElementById("speed-btn");
             if (speedBtn) speedBtn.innerText = newRate + "x";
@@ -935,7 +857,7 @@
 
         function seekTrack(event) {
             if (event) event.stopPropagation();
-            if (!bgMusic.duration) return;
+            if (!bgMusic.duration || Number.isNaN(bgMusic.duration)) return;
             const rect = event.currentTarget.getBoundingClientRect();
             const clickX = event.clientX - rect.left;
             const ratio = Math.max(0, Math.min(1, clickX / rect.width));
@@ -943,7 +865,6 @@
         }
 
         function changeVolume(val) {
-            clearInterval(fadeInterval);
             userVolume = parseFloat(val);
             bgMusic.volume = userVolume;
 
@@ -961,7 +882,7 @@
                 volumeSlider.value = 0;
                 changeVolume(0);
             } else {
-                const restoreVol = previousVolume > 0 ? previousVolume : 0.6;
+                const restoreVol = previousVolume > 0 ? previousVolume : 0.7;
                 volumeSlider.value = restoreVol;
                 changeVolume(restoreVol);
             }
@@ -973,147 +894,85 @@
                 artist: "Romaria",
                 filename: "romaria.mp3",
                 cover: "🌸",
-                bg: "rgba(255, 126, 179, 0.35)"
+                bg: "rgba(255, 126, 179, 0.25)"
             },
             {
                 title: "Remaja",
                 artist: "HIVI!",
                 filename: "remaja.mp3",
                 cover: "🌷",
-                bg: "rgba(232, 93, 149, 0.35)"
+                bg: "rgba(232, 93, 149, 0.25)"
             },
             {
-                title: "Speed dial",
+                title: "SPEED DIAL #1",
                 artist: "Paul Partohap",
                 filename: "speed dial.mp3",
-                cover: "💌",
-                bg: "rgba(181, 131, 255, 0.35)"
+                cover: "✨",
+                bg: "rgba(181, 131, 255, 0.25)"
             },
             {
-                title: "The space between us",
+                title: "the space between us",
                 artist: "siopaolo",
                 filename: "the space between us.mp3",
-                cover: "✨",
-                bg: "rgba(120, 179, 255, 0.35)"
+                cover: "🌙",
+                bg: "rgba(120, 179, 255, 0.25)"
             },
             {
-                title: "Recipe of us",
+                title: "RECIPE OF US",
                 artist: "Paul Partohap",
                 filename: "recipe of us.mp3",
-                cover: "🎂",
-                bg: "rgba(255, 209, 102, 0.35)"
+                cover: "🕯️",
+                bg: "rgba(255, 209, 102, 0.25)"
             }
         ];
 
-let playRequestToken = 0;
+        let currentTrackIndex = 0;
 
-        function loadTrack(index, autoPlay = false) {
+        function setTrackSource(index) {
             const track = playlist[index];
-            const token = ++playRequestToken;
-
-            clearInterval(fadeInterval);
-            bgMusic.pause();
-            bgMusic.currentTime = 0;
-
-            // encodeURI menjaga '/' pada 'static/' tetap valid sambil mengkodekan spasi pada nama file
-            bgMusic.src = encodeURI("static/" + track.filename);
+            bgMusic.src = "static/" + encodeURIComponent(track.filename);
             bgMusic.load();
+            bgMusic.volume = userVolume;
+            applyPlaybackRate(speedRates[currentSpeedIndex]);
 
             playerTitle.innerText = track.title;
             playerArtist.innerText = track.artist;
             playerCover.innerText = track.cover;
             playerCover.style.backgroundColor = track.bg;
             isAutoFadingOut = false;
-            updatePlayButtonUI(false);
 
             const progressBar = document.getElementById("player-progress-bar");
             if (progressBar) progressBar.style.width = "0%";
-
-            if (!autoPlay) return;
-
-            const startPlayback = () => {
-                if (token !== playRequestToken) return;
-                bgMusic.removeEventListener("canplay", startPlayback);
-                bgMusic.removeEventListener("error", handleTrackError);
-                fadeInAudio(900);
-            };
-
-            const handleTrackError = () => {
-                if (token !== playRequestToken) return;
-                bgMusic.removeEventListener("canplay", startPlayback);
-                bgMusic.removeEventListener("error", handleTrackError);
-                updatePlayButtonUI(false);
-                console.warn("Gagal memuat file audio:", bgMusic.src);
-            };
-
-            bgMusic.addEventListener("canplay", startPlayback, { once: true });
-            bgMusic.addEventListener("error", handleTrackError, { once: true });
-
-            // Cadangan jika event canplay sudah siap sebelum listener terpasang
-            if (bgMusic.readyState >= 3) {
-                startPlayback();
-            }
         }
 
-        loadTrack(currentTrackIndex, false);
+        setTrackSource(currentTrackIndex);
 
-        function fadeInAudio(duration = 1200) {
-            clearInterval(fadeInterval);
-            bgMusic.volume = 0;
+        function playCurrentTrackDirect() {
+            bgMusic.volume = userVolume;
             applyPlaybackRate(speedRates[currentSpeedIndex]);
-            const playPromise = bgMusic.play();
-
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
+            const p = bgMusic.play();
+            if (p && typeof p.then === "function") {
+                p.then(() => {
                     applyPlaybackRate(speedRates[currentSpeedIndex]);
                     updatePlayButtonUI(true);
-                    if (userVolume === 0) {
-                        bgMusic.volume = 0;
-                        return;
-                    }
-
-                    const steps = 25;
-                    const stepTime = duration / steps;
-                    const volumeStep = userVolume / steps;
-
-                    fadeInterval = setInterval(() => {
-                        if (bgMusic.volume + volumeStep < userVolume) {
-                            bgMusic.volume = Math.min(userVolume, bgMusic.volume + volumeStep);
-                        } else {
-                            bgMusic.volume = userVolume;
-                            clearInterval(fadeInterval);
-                        }
-                    }, stepTime);
-                }).catch((err) => {
+                }).catch(() => {
                     updatePlayButtonUI(false);
-                    if (err.name !== "AbortError") {
-                        console.log("Info audio:", err.message);
-                    }
                 });
             }
         }
 
-        function fadeOutAudio(duration = 600, onComplete = null) {
-            clearInterval(fadeInterval);
-            if (bgMusic.paused || bgMusic.volume === 0) {
-                if (onComplete) onComplete();
-                return;
-            }
-
-            const steps = 15;
-            const stepTime = duration / steps;
-            const volumeStep = bgMusic.volume / steps;
-
-            fadeInterval = setInterval(() => {
-                if (bgMusic.volume - volumeStep > 0.01) {
-                    bgMusic.volume = Math.max(0, bgMusic.volume - volumeStep);
-                } else {
-                    bgMusic.volume = 0;
-                    clearInterval(fadeInterval);
-                    if (onComplete) onComplete();
-                }
-            }, stepTime);
+        function nextTrack(event) {
+            if (event) event.stopPropagation();
+            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+            setTrackSource(currentTrackIndex);
+            playCurrentTrackDirect();
         }
+
+        bgMusic.addEventListener("ended", function () {
+            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+            setTrackSource(currentTrackIndex);
+            playCurrentTrackDirect();
+        });
 
         bgMusic.addEventListener("timeupdate", function () {
             const targetRate = speedRates[currentSpeedIndex];
@@ -1121,34 +980,16 @@ let playRequestToken = 0;
                 applyPlaybackRate(targetRate);
             }
 
-            if (bgMusic.duration) {
+            if (bgMusic.duration && !Number.isNaN(bgMusic.duration)) {
                 const percent = (bgMusic.currentTime / bgMusic.duration) * 100;
                 const progressBar = document.getElementById("player-progress-bar");
                 if (progressBar) progressBar.style.width = percent + "%";
-            }
 
-            if (
-                bgMusic.duration &&
-                !bgMusic.paused &&
-                !isAutoFadingOut &&
-                bgMusic.duration - bgMusic.currentTime <= 3.0
-            ) {
-                isAutoFadingOut = true;
-                fadeOutAudio(2400);
+                if (!bgMusic.paused && !isAutoFadingOut && bgMusic.duration - bgMusic.currentTime <= 2.5) {
+                    isAutoFadingOut = true;
+                }
             }
         });
-
-        bgMusic.addEventListener("ended", function () {
-            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-            loadTrack(currentTrackIndex);
-            fadeInAudio(1200);
-        });
-
-        function nextTrack(event) {
-            if (event) event.stopPropagation();
-            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-            loadTrack(currentTrackIndex, true);
-        }
 
         function toggleMinimizePlayer() {
             const player = document.getElementById("mini-player");
@@ -1156,7 +997,7 @@ let playRequestToken = 0;
         }
 
         /* ==========================================
-           4. ANIMASI BUKA AMPLOP & LIPATAN KERTAS 3D
+           4. ANIMASI BUKA AMPLOP & LIPATAN KERTAS
            ========================================== */
         const TOTAL_FOLDS = 9;
         let openFoldCount = 1;
@@ -1222,7 +1063,6 @@ let playRequestToken = 0;
                 openFoldCount++;
                 updateFoldsUI(true);
             } else {
-                // Jika sudah di lipatan terakhir dan ditekan lagi, lipat kembali ke awal
                 openFoldCount = 1;
                 updateFoldsUI(true);
             }
@@ -1238,7 +1078,6 @@ let playRequestToken = 0;
         function handleFoldClick(foldNum, event) {
             if (event) event.stopPropagation();
 
-            // Jika lipatan masih tertutup, klik di mana saja pada area lipatan akan membukanya
             if (foldNum > openFoldCount) {
                 if (openFoldCount < TOTAL_FOLDS) {
                     openFoldCount++;
@@ -1247,7 +1086,6 @@ let playRequestToken = 0;
                 return;
             }
 
-            // Jika lipatan sudah terbuka, klik pada baris header lipatan akan melipatnya kembali
             if (foldNum > 1 && event && event.target.closest(".fold-crease-bar")) {
                 openFoldCount = foldNum - 1;
                 updateFoldsUI(true);
@@ -1268,7 +1106,7 @@ let playRequestToken = 0;
             const miniPlayer = document.getElementById("mini-player");
 
             waxEnvelope.classList.add("unsealed");
-            fadeInAudio(1600);
+            playCurrentTrackDirect();
 
             setTimeout(() => {
                 overlay.classList.add("opened");
@@ -1285,17 +1123,11 @@ let playRequestToken = 0;
         function toggleMusic(event) {
             if (event) event.stopPropagation();
 
-            if (!bgMusic.paused && !bgMusic.ended) {
+            if (!bgMusic.paused) {
+                bgMusic.pause();
                 updatePlayButtonUI(false);
-                fadeOutAudio(550, () => {
-                    bgMusic.pause();
-                });
             } else {
-                if (bgMusic.ended || (bgMusic.duration && bgMusic.currentTime >= bgMusic.duration - 0.5)) {
-                    bgMusic.currentTime = 0;
-                }
-                isAutoFadingOut = false;
-                fadeInAudio(800);
+                playCurrentTrackDirect();
             }
         }
 
@@ -1317,30 +1149,12 @@ let playRequestToken = 0;
            5. JAR NOTES
            ========================================== */
         const NOTES_LIST = [
-            {
-                title: "Laughter",
-                text: "Our best memories always start with a random laugh that lasts way too long."
-            },
-            {
-                title: "Dreams",
-                text: "Keep chasing every goal you have—I'm cheering for you from here."
-            },
-            {
-                title: "New Chapter",
-                text: "A brand new year of your life is starting. Wishing you peace, joy, and growth."
-            },
-            {
-                title: "Stay Soft",
-                text: "You don't have to rush everything. Take it one step at a time."
-            },
-            {
-                title: "Proud of You",
-                text: "Look how far you've come. Even on quiet days, you are doing amazing."
-            },
-            {
-                title: "Little Things",
-                text: "May your coffee be warm, your playlists hit right, and your heart feel light."
-            }
+            { title: "Laughter", text: "Our best memories always start with a random laugh that lasts way too long." },
+            { title: "Dreams", text: "Keep chasing every goal you have—I'm cheering for you from here." },
+            { title: "New Chapter", text: "A brand new year of your life is starting. Wishing you peace, joy, and growth." },
+            { title: "Stay Soft", text: "You don't have to rush everything. Take it one step at a time." },
+            { title: "Proud of You", text: "Look how far you've come. Even on quiet days, you are doing amazing." },
+            { title: "Little Things", text: "May your coffee be warm, your playlists hit right, and your heart feel light." }
         ];
 
         let remainingNotes = [];
@@ -1404,7 +1218,7 @@ let playRequestToken = 0;
             document.getElementById("opt-content-" + optionNumber).classList.add("show");
         }
 
-const BURST_FLOWERS = ["🌻", "🌸", "🌺", "💜", "🌷", "🌼", "✨", "💖"];
+        const BURST_FLOWERS = ["🌻", "🌸", "🌺", "💜", "🌷", "🌼", "✨", "💖"];
 
         function bloomBouquet(event) {
             if (event) event.stopPropagation();
@@ -1413,14 +1227,12 @@ const BURST_FLOWERS = ["🌻", "🌸", "🌺", "💜", "🌷", "🌼", "✨", "�
             const msg = document.getElementById("bouquet-msg");
             const burstLayer = document.getElementById("flower-burst-layer");
 
-            // Animasi membal pada keranjang buket
             box.classList.remove("blooming");
             void box.offsetWidth;
             box.classList.add("blooming");
 
             msg.innerText = "Sending you endless happiness & warm hugs! 💐✨";
 
-            // Munculkan 18 bunga bertebaran radial 360° dari tengah ke luar
             if (!burstLayer) return;
             const totalParticles = 18;
 
@@ -1429,10 +1241,9 @@ const BURST_FLOWERS = ["🌻", "🌸", "🌺", "💜", "🌷", "🌼", "✨", "�
                 particle.className = "burst-flower";
                 particle.innerText = BURST_FLOWERS[Math.floor(Math.random() * BURST_FLOWERS.length)];
 
-                // Sebar sudut merata 360 derajat + sedikit variasi acak
                 const baseAngle = (i / totalParticles) * Math.PI * 2;
                 const angle = baseAngle + (Math.random() - 0.5) * 0.35;
-                const distance = 95 + Math.random() * 75; // Jarak sebaran dari tengah ke luar (px)
+                const distance = 95 + Math.random() * 75;
 
                 const tx = Math.cos(angle) * distance;
                 const ty = Math.sin(angle) * distance;
@@ -1447,12 +1258,10 @@ const BURST_FLOWERS = ["🌻", "🌸", "🌺", "💜", "🌷", "🌼", "✨", "�
 
                 burstLayer.appendChild(particle);
 
-                // Picu transisi menyebar keluar pada frame berikutnya
                 requestAnimationFrame(() => {
                     particle.classList.add("scatter");
                 });
 
-                // Hapus elemen setelah animasi selesai agar ringan
                 setTimeout(() => {
                     particle.remove();
                 }, 1350);

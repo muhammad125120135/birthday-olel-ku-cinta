@@ -60,7 +60,7 @@ body {
     100% { transform: translate3d(35px, 25px, 0); }
 }
 
-/* KELAS DASAR KACA (UNTUK JAR & INTERACTIVE SURPRISES) */
+/* KELAS DASAR KACA */
 .glass-card {
     background: rgba(24, 15, 36, 0.62);
     backdrop-filter: blur(14px);
@@ -85,7 +85,7 @@ body {
 }
 
 /* =========================================
-   1. AMPLOP PEMBUKA (MIDNIGHT GLASS WAX SEAL)
+   1. AMPLOP PEMBUKA
    ========================================= */
 .envelope-overlay {
     position: fixed;
@@ -350,26 +350,31 @@ body {
 
 .glass-pill {
     position: relative;
-    font-size: 3.3rem;
     background: rgba(255, 126, 179, 0.12);
     border: 1px solid rgba(255, 158, 203, 0.35);
     box-shadow: 0 0 28px rgba(255, 110, 175, 0.25);
-    padding: 16px 22px;
-    border-radius: 50%;
+    padding: 14px 20px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.avatar {
+    font-size: 2.5rem;
 }
 
 .balloon {
-    position: absolute;
-    font-size: 1.35rem;
+    font-size: 1.15rem;
     animation: floatBalloon 3s ease-in-out infinite;
 }
 
-.b1 { top: -8px; left: -10px; }
-.b2 { top: -12px; right: -10px; animation-delay: 1s; }
+.b1 { transform: translateY(-6px); }
+.b2 { transform: translateY(-10px); animation-delay: 1s; }
 
 @keyframes floatBalloon {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-7px); }
 }
 
 .title-stack {
@@ -400,7 +405,6 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
-/* WADAH KERTAS TULIS REALISTIS */
 .real-paper-wrapper {
     max-width: 660px;
     width: 100%;
@@ -414,16 +418,12 @@ body {
     transform: translateY(0) scale(1);
 }
 
-/* LEMBARAN KERTAS KREM/GADING SELARAS GARIS BUKU (GRID 32PX) */
 .real-paper-sheet {
     position: relative;
     background-color: #fbf5e8;
     background-image:
-        /* Garis vertikal margin merah tipis khas kertas surat */
         linear-gradient(90deg, transparent 42px, rgba(214, 108, 122, 0.32) 42px, rgba(214, 108, 122, 0.32) 43px, transparent 43px),
-        /* Garis horizontal tipis setiap 32px selaras dengan line-height teks */
         repeating-linear-gradient(180deg, transparent 0px, transparent 31px, rgba(132, 156, 184, 0.24) 32px),
-        /* Gradasi pencahayaan kertas alami */
         radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.65), rgba(235, 219, 192, 0.45));
     background-position: 0 0, 0 5px, 0 0;
     color: #2b211b;
@@ -439,7 +439,6 @@ body {
         0 12px 18px -4px rgba(0, 0, 0, 0.45);
 }
 
-/* Selotip Washi Pink Lembut di Atas Kertas */
 .paper-washi-tape {
     position: absolute;
     top: -11px;
@@ -480,7 +479,6 @@ body {
     font-weight: bold;
 }
 
-/* KONTAINER LIPATAN KERTAS */
 .accordion-letter {
     position: relative;
     display: flex;
@@ -497,7 +495,6 @@ body {
         box-shadow 0.3s ease;
 }
 
-/* Garis Lipatan (Crease) Antar Paragraf — Tinggi 32px agar selaras garis kertas */
 .fold-crease-bar {
     display: flex;
     justify-content: space-between;
@@ -530,7 +527,6 @@ body {
     text-align: right;
 }
 
-/* KEADAAN 1: LIPATAN TERBUKA */
 .paper-fold.is-open {
     transform: perspective(900px) rotateX(0deg);
     background: linear-gradient(180deg, rgba(161, 132, 98, 0.11) 0%, rgba(255, 255, 255, 0.14) 10px, transparent 26px);
@@ -554,7 +550,6 @@ body {
     transition: max-height 0.7s ease, opacity 0.5s ease 0.1s;
 }
 
-/* KEADAAN 2: LIPATAN BERIKUTNYA YANG SIAP DIBUKA */
 .paper-fold.is-next-folded {
     z-index: 10;
     transform: perspective(900px) rotateX(-12deg);
@@ -586,7 +581,6 @@ body {
     padding: 0 4px;
 }
 
-/* KEADAAN 3: LIPATAN LANJUTAN YANG MASIH TERTUMPUK DI BAWAH */
 .paper-fold.is-stacked-folded {
     z-index: 8;
     transform: perspective(900px) rotateX(-28deg);
@@ -608,7 +602,6 @@ body {
     pointer-events: none;
 }
 
-/* TIPOGRAFI TINTA DI ATAS KERTAS (LINE-HEIGHT 32PX SELARAS GARIS) */
 .paper-text {
     font-family: 'Lora', 'Georgia', serif;
     font-size: 0.96rem;
@@ -626,7 +619,6 @@ body {
     letter-spacing: 0.3px;
 }
 
-/* KERTAS PALING AKHIR: FONT TULISAN TANGAN */
 .closing-handwriting-box {
     padding: 0 8px;
     text-align: right;
@@ -649,7 +641,6 @@ body {
     color: #6e4e3a;
 }
 
-/* TOMBOL NAVIGASI LIPATAN DI BAGIAN BAWAH KERTAS */
 .paper-fold-controls {
     display: flex;
     justify-content: space-between;
@@ -968,7 +959,6 @@ body {
     100% { transform: scale(1); }
 }
 
-/* Lapisan Animasi Bunga Bertebaran dari Tengah ke Luar */
 .flower-burst-layer {
     position: absolute;
     top: 46%;
@@ -1249,14 +1239,14 @@ body {
 }
 
 .player-cover {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: 10px;
     border: 1px solid rgba(255, 182, 214, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     flex-shrink: 0;
 }
 
@@ -1285,7 +1275,6 @@ body {
     text-overflow: ellipsis;
 }
 
-/* KONTROL VOLUME */
 .player-volume {
     display: flex;
     align-items: center;
@@ -1339,7 +1328,6 @@ body {
     cursor: pointer;
 }
 
-/* TOMBOL KECEPATAN LAGU (1x, 1.25x, 1.5x, 0.75x) */
 .btn-speed {
     background: rgba(255, 126, 179, 0.18);
     color: #ffb8d8;
@@ -1405,7 +1393,6 @@ body {
     transform: scale(1.1);
 }
 
-/* GARIS DURASI LAGU DI BAGIAN BAWAH PLAYER */
 .player-progress-wrap {
     position: absolute;
     bottom: 0;
