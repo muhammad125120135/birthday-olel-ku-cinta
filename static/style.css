@@ -60,7 +60,7 @@ body {
     100% { transform: translate3d(35px, 25px, 0); }
 }
 
-/* KELAS DASAR KACA */
+/* KELAS DASAR KACA (UNTUK JAR & INTERACTIVE SURPRISES) */
 .glass-card {
     background: rgba(24, 15, 36, 0.62);
     backdrop-filter: blur(14px);
@@ -154,8 +154,8 @@ body {
     right: 16px;
     bottom: 12px;
     height: 152px;
-    background: linear-gradient(145deg, #2d1a3e, #180e24);
-    border: 1px solid rgba(255, 158, 203, 0.45);
+    background: linear-gradient(145deg, #fcf7ed, #efe3cc);
+    border: 1px solid rgba(206, 178, 138, 0.7);
     border-radius: 10px;
     padding: 14px 16px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
@@ -169,17 +169,17 @@ body {
     display: inline-block;
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.68rem;
-    color: #ffb3d4;
+    color: #9e6b43;
     letter-spacing: 1.5px;
     margin-bottom: 3px;
 }
 
 .peek-title {
-    font-size: 1.05rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1.35rem;
     font-weight: bold;
-    color: #ffffff;
-    text-shadow: 0 0 10px rgba(255, 126, 179, 0.6);
-    margin-bottom: 10px;
+    color: #3d251e;
+    margin-bottom: 8px;
 }
 
 .peek-lines {
@@ -187,7 +187,7 @@ body {
     background-image: repeating-linear-gradient(
         transparent,
         transparent 11px,
-        rgba(255, 166, 206, 0.2) 12px
+        rgba(143, 165, 194, 0.35) 12px
     );
 }
 
@@ -337,7 +337,7 @@ body {
 }
 
 /* =========================================
-   3. BAGIAN 1: HERO & KARTU SURAT KACA
+   3. BAGIAN 1: HERO & KERTAS TULIS LIPAT 3D
    ========================================= */
 .header-area {
     display: flex;
@@ -400,87 +400,299 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
-.letter-paper {
-    max-width: 620px;
+/* WADAH KERTAS TULIS REALISTIS */
+.real-paper-wrapper {
+    max-width: 650px;
     width: 100%;
-    border-radius: 22px;
-    padding: 40px 30px 34px;
-    will-change: transform, opacity;
-    transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.3s ease;
-
+    perspective: 1500px;
     opacity: 0;
-    transform: scaleY(0.88) translateY(18px);
-    transform-origin: top center;
+    transform: translateY(28px) scale(0.95);
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease;
 }
 
-.letter-paper.unfolded {
+.real-paper-wrapper.unfolded {
     opacity: 1;
-    transform: scaleY(1) translateY(0);
+    transform: translateY(0) scale(1);
 }
 
-.paper-tape {
-    position: absolute;
-    top: -1px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, #ff7eb3, transparent);
-    box-shadow: 0 0 15px #ff7eb3;
-}
-
-.letter-body {
+/* LEMBARAN KERTAS KREM/GADING DENGAN TEKSTUR & GARIS BUKU */
+.real-paper-sheet {
     position: relative;
-    z-index: 2;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.93rem;
-    line-height: 1.85;
-    color: #f3e8ee;
+    background-color: #fbf5e8;
+    background-image:
+        /* Garis vertikal margin merah tipis khas kertas surat */
+        linear-gradient(90deg, transparent 42px, rgba(214, 108, 122, 0.28) 42px, rgba(214, 108, 122, 0.28) 43px, transparent 43px),
+        /* Garis horizontal tipis khas kertas tulis */
+        repeating-linear-gradient(180deg, transparent 0px, transparent 31px, rgba(132, 156, 184, 0.2) 32px),
+        /* Gradasi pencahayaan kertas alami */
+        radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.65), rgba(235, 219, 192, 0.45));
+    color: #2b211b;
+    border-radius: 6px;
+    border: 1px solid #dfd0b6;
+    padding: 34px 28px 26px 56px;
+    /* Efek bayangan tumpukan beberapa lembar kertas di bawahnya */
+    box-shadow:
+        0 24px 55px rgba(0, 0, 0, 0.65),
+        inset 0 0 38px rgba(173, 140, 99, 0.18),
+        0 5px 0 -2px #efe4cf,
+        0 6px 12px -2px rgba(0, 0, 0, 0.35),
+        0 10px 0 -4px #e4d5b9,
+        0 12px 18px -4px rgba(0, 0, 0, 0.45);
 }
 
-.letter-body p {
-    margin-bottom: 20px;
+/* Selotip Washi Pink Lembut di Atas Kertas */
+.paper-washi-tape {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1.5deg);
+    width: 124px;
+    height: 22px;
+    background: rgba(244, 152, 185, 0.68);
+    border-left: 1px dashed rgba(255, 255, 255, 0.55);
+    border-right: 1px dashed rgba(255, 255, 255, 0.55);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+    z-index: 5;
+}
+
+.paper-top-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.76rem;
+    color: #7d6652;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px dashed rgba(145, 118, 90, 0.35);
+}
+
+.fold-counter-badge {
+    background: rgba(196, 86, 128, 0.12);
+    color: #a63a66;
+    border: 1px solid rgba(196, 86, 128, 0.28);
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+/* KONTAINER LIPATAN KERTAS 3D */
+.accordion-letter {
+    display: flex;
+    flex-direction: column;
+    transform-style: preserve-3d;
+}
+
+.paper-fold {
+    position: relative;
+    transform-origin: top center;
+    transform-style: preserve-3d;
+    transition:
+        transform 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.35s ease,
+        box-shadow 0.35s ease,
+        margin 0.35s ease;
+}
+
+/* Garis Lipatan (Crease) Antar Paragraf */
+.fold-crease-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.crease-label {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.7rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #9a7e63;
+}
+
+.crease-action {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.72rem;
+    color: #b0436f;
+    font-weight: 600;
+}
+
+/* KEADAAN 1: LIPATAN TERBUKA */
+.paper-fold.is-open {
+    transform: rotateX(0deg);
+    margin-bottom: 10px;
+    padding-top: 4px;
+    /* Bayangan lipatan kertas realistis di bagian sambungan */
+    background: linear-gradient(180deg, rgba(161, 132, 98, 0.14) 0%, rgba(255, 255, 255, 0.18) 12px, transparent 28px);
+    border-top: 1px solid rgba(163, 135, 102, 0.32);
+}
+
+.paper-fold[data-fold="1"].is-open {
+    background: transparent;
+    border-top: none;
+}
+
+.paper-fold.is-open .fold-crease-bar:hover {
+    background: rgba(176, 67, 111, 0.08);
+}
+
+.paper-fold.is-open .fold-content {
+    max-height: 1200px;
+    opacity: 1;
+    transform: translateY(0);
+    padding: 6px 4px 12px;
+    overflow: visible;
+    transition: max-height 0.75s ease, opacity 0.55s ease 0.12s, transform 0.55s ease 0.12s;
+}
+
+/* KEADAAN 2: LIPATAN BERIKUTNYA YANG SIAP DIBUKA (TERLIPAT 3D) */
+.paper-fold.is-next-folded {
+    transform: rotateX(-24deg);
+    margin-top: 4px;
+    margin-bottom: 4px;
+    background: linear-gradient(180deg, #eadbc1 0%, #f5ebd8 55%, #e5d3b5 100%);
+    border: 1px solid #cbb796;
+    border-radius: 5px;
+    box-shadow:
+        0 8px 16px rgba(84, 62, 38, 0.22),
+        inset 0 2px 4px rgba(255, 255, 255, 0.65);
+    cursor: pointer;
+}
+
+.paper-fold.is-next-folded:hover {
+    transform: rotateX(-10deg) translateY(-2px);
+    background: linear-gradient(180deg, #efe2ca 0%, #fbf3e4 55%, #ebd9bc 100%);
+    box-shadow: 0 12px 22px rgba(84, 62, 38, 0.28);
+}
+
+.paper-fold.is-next-folded .fold-crease-bar {
+    padding: 12px 14px;
+}
+
+.paper-fold.is-next-folded .fold-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 4px;
+}
+
+/* KEADAAN 3: LIPATAN LANJUTAN YANG MASIH TERTUMPUK DI BAWAH */
+.paper-fold.is-stacked-folded {
+    transform: rotateX(-55deg);
+    height: 10px;
+    margin-top: -2px;
+    background: linear-gradient(180deg, #dfd0b4, #cbb896);
+    border-bottom: 1px solid #b59f7b;
+    border-radius: 0 0 4px 4px;
+    opacity: 0.72;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.paper-fold.is-stacked-folded .fold-crease-bar,
+.paper-fold.is-stacked-folded .fold-content {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+}
+
+/* TIPOGRAFI TINTA DI ATAS KERTAS */
+.paper-text {
+    font-family: 'Lora', 'Georgia', serif;
+    font-size: 0.96rem;
+    line-height: 1.92;
+    color: #2b211b;
+    text-align: left;
 }
 
 .greeting-highlight {
-    font-weight: bold;
-    font-size: 1rem;
-    color: #ff9ec9;
-    text-shadow: 0 0 14px rgba(255, 126, 179, 0.35);
-    letter-spacing: 0.4px;
+    font-family: 'Lora', 'Georgia', serif;
+    font-weight: 600;
+    font-size: 1.03rem;
+    color: #9e2d59;
+    letter-spacing: 0.3px;
 }
 
-.closing {
+/* KERTAS PALING AKHIR: FONT TULISAN TANGAN */
+.closing-handwriting-box {
+    margin-top: 8px;
+    padding: 14px 12px 8px;
     text-align: right;
-    margin-top: 28px;
-    margin-bottom: 0 !important;
-    font-style: italic;
+    border-top: 1px dashed rgba(158, 45, 89, 0.25);
+}
+
+.closing-handwriting {
+    font-family: 'Caveat', 'Dancing Script', 'Segoe Script', 'Brush Script MT', cursive;
+    font-size: 1.78rem;
+    font-weight: 700;
+    line-height: 1.38;
+    color: #8f224d;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.signature-flourish {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'Dancing Script', 'Caveat', cursive;
+    font-size: 1.25rem;
+    color: #6e4e3a;
+}
+
+/* TOMBOL NAVIGASI LIPATAN DI BAGIAN BAWAH KERTAS */
+.paper-fold-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(156, 128, 96, 0.3);
+}
+
+.btn-paper-nav {
+    background: rgba(145, 118, 90, 0.14);
+    color: #4f3c2c;
+    border: 1px solid rgba(145, 118, 90, 0.35);
+    padding: 9px 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.78rem;
     font-weight: bold;
-    color: #ffb8d8;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.sweep-text {
-    opacity: 0;
-    transform: translateX(-20px);
-    -webkit-mask-image: linear-gradient(90deg, #000 50%, transparent 100%);
-    -webkit-mask-size: 220% 100%;
-    -webkit-mask-position: 100% 0;
-    mask-image: linear-gradient(90deg, #000 50%, transparent 100%);
-    mask-size: 220% 100%;
-    mask-position: 100% 0;
-    transition: opacity 1.8s ease, transform 1.8s cubic-bezier(0.22, 1, 0.36, 1),
-                -webkit-mask-position 2.2s ease-out, mask-position 2.2s ease-out;
+.btn-paper-nav:hover:not(:disabled) {
+    background: rgba(145, 118, 90, 0.25);
+    transform: translateY(-1px);
 }
 
-.sweep-text.swept {
-    opacity: 1;
-    transform: translateX(0);
-    -webkit-mask-position: 0% 0;
-    mask-position: 0% 0;
+.btn-paper-nav:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+}
+
+.btn-paper-nav.primary {
+    background: linear-gradient(135deg, #c94b7c, #9e2d59);
+    color: #ffffff;
+    border-color: #9e2d59;
+    box-shadow: 0 4px 12px rgba(158, 45, 89, 0.28);
+}
+
+.btn-paper-nav.primary:hover {
+    background: linear-gradient(135deg, #d9578a, #b03565);
+    box-shadow: 0 6px 16px rgba(158, 45, 89, 0.38);
 }
 
 .scroll-indicator {
-    margin-top: 34px;
+    margin-top: 38px;
     font-size: 0.85rem;
     color: #ffb8d8;
     opacity: 0.8;
@@ -1202,8 +1414,25 @@ body {
         font-size: 1.95rem;
     }
 
-    .letter-paper {
-        padding: 28px 20px 26px;
+    .real-paper-sheet {
+        background-image:
+            linear-gradient(90deg, transparent 24px, rgba(214, 108, 122, 0.28) 24px, rgba(214, 108, 122, 0.28) 25px, transparent 25px),
+            repeating-linear-gradient(180deg, transparent 0px, transparent 31px, rgba(132, 156, 184, 0.2) 32px),
+            radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.65), rgba(235, 219, 192, 0.45));
+        padding: 28px 16px 22px 34px;
+    }
+
+    .paper-text {
+        font-size: 0.91rem;
+    }
+
+    .closing-handwriting {
+        font-size: 1.48rem;
+    }
+
+    .paper-fold-controls {
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .mini-player {

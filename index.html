@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy 19th Birthday, Lowfy!</title>
+    <!-- Font Kertas Tulis & Tulisan Tangan -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dancing+Script:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
@@ -57,7 +61,7 @@
             </button>
         </div>
 
-        <!-- Garis Durasi Lagu (Klik untuk Geser / Percepat Bagian Lagu) -->
+        <!-- Garis Durasi Lagu -->
         <div class="player-progress-wrap" onclick="seekTrack(event)" title="Klik untuk menggeser durasi lagu">
             <div id="player-progress-bar" class="player-progress-bar"></div>
         </div>
@@ -94,7 +98,7 @@
     <!-- 2. KONTEN UTAMA -->
     <main id="main-content" class="main-content">
         
-        <!-- Bagian 1: Hero & Surat Utama -->
+        <!-- Bagian 1: Hero & Surat Kertas Lipat Realistis -->
         <section class="night-section">
             <div class="header-area reveal">
                 <div class="illustration-badge glass-pill">
@@ -108,44 +112,149 @@
                 </div>
             </div>
 
-            <div id="letter-paper" class="letter-paper glass-card interactive-glass" data-tilt="false">
-                <div class="paper-tape"></div>
+            <!-- KERTAS TULIS REALISTIS DENGAN LIPATAN INTERAKTIF -->
+            <div id="letter-paper" class="real-paper-wrapper">
+                <div class="real-paper-sheet">
+                    <!-- Selotip Kertas & Header Tanggal -->
+                    <div class="paper-washi-tape"></div>
+                    <div class="paper-top-meta">
+                        <span>Bandar Lampung, 12 Desember 2026</span>
+                        <span id="fold-counter-badge" class="fold-counter-badge">Lipatan 1 / 9</span>
+                    </div>
 
-                <div class="letter-body">
-                    <p class="sweep-text greeting-highlight">HAIII SAYANG QU YANG SANGAT SANGAT CANTIK DAN LUCU.</p>
+                    <!-- Area Tumpukan Lipatan 3D -->
+                    <div id="accordion-letter" class="accordion-letter">
 
-                    <p class="sweep-text">
-                        HAPPY BIRTHDAY LOWFY! Hari ini, tepatnya di tanggal 12 Desember 2026, kamu uda menyentuh umur 19 tahun looo.. waktu beneran jalan kaya mobil racing aja. Nggak ada rasanya yaa.. sekarang kamu uda nyentuh umur 19, dan itu hampir 20 yaa.. WOW.. beneran uda masuk dalam fase baru di mana kamu uda pelan-pelan mulai menghadapi dunia yang bener-bener jauh lebih luas dari yang kemarin-kemarin.
-                    </p>
+                        <!-- Lipatan 1 -->
+                        <div class="paper-fold is-open" data-fold="1">
+                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(1)">
+                                <span class="crease-label">Lipatan 01</span>
+                                <span class="crease-action">Bagian Pembuka</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text greeting-highlight">HAIII SAYANG QU YANG SANGAT SANGAT CANTIK DAN LUCU.</p>
+                            </div>
+                        </div>
 
-                    <p class="sweep-text">
-                        Kalo boleh jujur, akhir-akhir ini aku sering banget kepikiran sama kamu. Kaya berat banget nggak sih jalanin hari-hari kamu sekarang? terutama kamu sekarang uda masuk dan mulai adaptasi di kehidupan perkuliahan ini? Aku tau kok kalo dunia kuliah itu nggak semudah yang di bayangin. Yang pasti banyak banget hal-hal baru yang mungkin bikin kamu kaget, dari tugas-tugas yang selalu datang tanpa lampu merah, jadwal yang lumayan padat, atau ada beberapa momen di mana kamu kaya ngerasa capek banget mulai dari fisik atau pikiran kamu. Juga kadang mungkin ada hari di mana kamu ngerasa riwueh banget, pengen ngeluh, bahkan kaya kamu mungkin ngerasa meragukan diri kamu sendiri.
-                    </p>
+                        <!-- Lipatan 2 -->
+                        <div class="paper-fold is-next-folded" data-fold="2" onclick="handleClosedFoldClick(2)">
+                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(2, event)">
+                                <span class="crease-label">Lipatan 02</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    HAPPY BIRTHDAY LOWFY! Hari ini, tepatnya di tanggal 12 Desember 2026, kamu uda menyentuh umur 19 tahun looo.. waktu beneran jalan kaya mobil racing aja. Nggak ada rasanya yaa.. sekarang kamu uda nyentuh umur 19, dan itu hampir 20 yaa.. WOW.. beneran uda masuk dalam fase baru di mana kamu uda pelan-pelan mulai menghadapi dunia yang bener-bener jauh lebih luas dari yang kemarin-kemarin.
+                                </p>
+                            </div>
+                        </div>
 
-                    <p class="sweep-text">
-                        Setiap kali kamu ngerasain hari kamu berat, iki cuma mau kamu ingat satu hal sayang.. kamu nggak sendirian. Iki selalu berharap supaya kamu selalu punya kesabaran dan kesehatan buat jalanin semuanya badai yang datang, yang pastinya bareng sama iki. Iki pasti bakal selalu temani hari-hari kamu.. enggak cuman di hari-hari di mana kamu lagi senang atau bahagia, tapi juga di hari-hari kamu dimana lagi capek-capeknya, sedih, atau kamu butuh tempat buat bersandar. Iki bakal selalu terus ada di sisi kamu, dengerin semua cerita kamu tentang apapun itu, dan jalanin semuanya sama-sama sampai tahun-tahun selanjutnya.
-                    </p>
+                        <!-- Lipatan 3 -->
+                        <div class="paper-fold is-stacked-folded" data-fold="3" onclick="handleClosedFoldClick(3)">
+                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(3, event)">
+                                <span class="crease-label">Lipatan 03</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Kalo boleh jujur, akhir-akhir ini aku sering banget kepikiran sama kamu. Kaya berat banget nggak sih jalanin hari-hari kamu sekarang? terutama kamu sekarang uda masuk dan mulai adaptasi di kehidupan perkuliahan ini? Aku tau kok kalo dunia kuliah itu nggak semudah yang di bayangin. Yang pasti banyak banget hal-hal baru yang mungkin bikin kamu kaget, dari tugas-tugas yang selalu datang tanpa lampu merah, jadwal yang lumayan padat, atau ada beberapa momen di mana kamu kaya ngerasa capek banget mulai dari fisik atau pikiran kamu. Juga kadang mungkin ada hari di mana kamu ngerasa riwueh banget, pengen ngeluh, bahkan kaya kamu mungkin ngerasa meragukan diri kamu sendiri.
+                                </p>
+                            </div>
+                        </div>
 
-                    <p class="sweep-text">
-                        Intinya, iki beneran bangga banget sama kamu, olel. Bangga karena kamu sendiri uda mau berusaha sejauh ini, bangga karena kamu tetap bertahan meskipun kadang rasanya pasti cape dan lelah banget di kamu nya, dan bangga bisa punya pasangan sehebat, sekuat, dan secantik kamu di kondisi apapun.
-                    </p>
+                        <!-- Lipatan 4 -->
+                        <div class="paper-fold is-stacked-folded" data-fold="4" onclick="handleClosedFoldClick(4)">
+                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(4, event)">
+                                <span class="crease-label">Lipatan 04</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Setiap kali kamu ngerasain hari kamu berat, iki cuma mau kamu ingat satu hal sayang.. kamu nggak sendirian. Iki selalu berharap supaya kamu selalu punya kesabaran dan kesehatan buat jalanin semuanya badai yang datang, yang pastinya bareng sama iki. Iki pasti bakal selalu temani hari-hari kamu.. enggak cuman di hari-hari di mana kamu lagi senang atau bahagia, tapi juga di hari-hari kamu dimana lagi capek-capeknya, sedih, atau kamu butuh tempat buat bersandar. Iki bakal selalu terus ada di sisi kamu, dengerin semua cerita kamu tentang apapun itu, dan jalanin semuanya sama-sama sampai tahun-tahun selanjutnya.
+                                </p>
+                            </div>
+                        </div>
 
-                    <p class="sweep-text">
-                        Di umur kamu yang uda menyentuh 19 tahun ini, aku selalu doain yang terbaik buat kamu. Semoga apa pun yang kamu mau, semua impian yang diam-diam kamu simpan di dalam hati dan pikiran kamu, dan segala rencana baik yang sedang kamu susun bisa satu per satu tercapai dengan bertahap. Semoga semesta selalu berpihak sama kamu, dan segala hal baik dari orang-orang yang ada di sekitar kamu selalu membawakan hal-hal baik, energi yang positif, dan menyenangkan buat kamu.
-                    </p>
+                        <!-- Lipatan 5 -->
+                        <div class="paper-fold is-stacked-folded" data-fold="5" onclick="handleClosedFoldClick(5)">
+                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(5, event)">
+                                <span class="crease-label">Lipatan 05</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Intinya, iki beneran bangga banget sama kamu, olel. Bangga karena kamu sendiri uda mau berusaha sejauh ini, bangga karena kamu tetap bertahan meskipun kadang rasanya pasti cape dan lelah banget di kamu nya, dan bangga bisa punya pasangan sehebat, sekuat, dan secantik kamu di kondisi apapun.
+                                </p>
+                            </div>
+                        </div>
 
-                    <p class="sweep-text">
-                        Dan... kalo nanti kamu ketemu sama hari yang rasanya bener-bener buruk atau apes banget, hari di mana semuanya bakal terasa berat banget dan kamu nggak menemukan satu pun hal baik yang ada, jangan pernah kepikiran buat pendam itu sendirian okeyy? Kamu punya tempat pulang yang banyak termasuk aku (harus aku). Walau kamu nggak menemukan hal baiknya, aku bakal kasih kamu seluruh dunia buat peluk kamu se erat-eratnya sampai semua rasa cape dan sedih kamu hilang.. sampai kamu balik merasa aman dan nyaman lagi..
-                    </p>
+                        <!-- Lipatan 6 -->
+                        <div class="paper-fold is-stacked-folded" data-fold="6" onclick="handleClosedFoldClick(6)">
+                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(6, event)">
+                                <span class="crease-label">Lipatan 06</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Di umur kamu yang uda menyentuh 19 tahun ini, aku selalu doain yang terbaik buat kamu. Semoga apa pun yang kamu mau, semua impian yang diam-diam kamu simpan di dalam hati dan pikiran kamu, dan segala rencana baik yang sedang kamu susun bisa satu per satu tercapai dengan bertahap. Semoga semesta selalu berpihak sama kamu, dan segala hal baik dari orang-orang yang ada di sekitar kamu selalu membawakan hal-hal baik, energi yang positif, dan menyenangkan buat kamu.
+                                </p>
+                            </div>
+                        </div>
 
-                    <p class="sweep-text">
-                        Selamat ulang tahun yang ke-19 ya andiyashafa ku cinta. Aku bener-bener terima kasih uda lahir di dunia ini, terima kasih uda bertahan sampai hari ini sampai detik ini, juga terima kasih sudah kasih kesempatan buat iki jadi bagian dari perjalanan hidup kamu.
-                    </p>
+                        <!-- Lipatan 7 -->
+                        <div class="paper-fold is-stacked-folded" data-fold="7" onclick="handleClosedFoldClick(7)">
+                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(7, event)">
+                                <span class="crease-label">Lipatan 07</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Dan... kalo nanti kamu ketemu sama hari yang rasanya bener-bener buruk atau apes banget, hari di mana semuanya bakal terasa berat banget dan kamu nggak menemukan satu pun hal baik yang ada, jangan pernah kepikiran buat pendam itu sendirian okeyy? Kamu punya tempat pulang yang banyak termasuk aku (harus aku). Walau kamu nggak menemukan hal baiknya, aku bakal kasih kamu seluruh dunia buat peluk kamu se erat-eratnya sampai semua rasa cape dan sedih kamu hilang.. sampai kamu balik merasa aman dan nyaman lagi..
+                                </p>
+                            </div>
+                        </div>
 
-                    <p class="sweep-text closing">
-                        Once again, happy 19th birthday, lowfy.<br>
-                        I love you so much, today, tomorrow, and always. ♥
-                    </p>
+                        <!-- Lipatan 8 -->
+                        <div class="paper-fold is-stacked-folded" data-fold="8" onclick="handleClosedFoldClick(8)">
+                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(8, event)">
+                                <span class="crease-label">Lipatan 08</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Selamat ulang tahun yang ke-19 ya andiyashafa ku cinta. Aku bener-bener terima kasih uda lahir di dunia ini, terima kasih uda bertahan sampai hari ini sampai detik ini, juga terima kasih sudah kasih kesempatan buat iki jadi bagian dari perjalanan hidup kamu.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Lipatan 9 (Kertas Terakhir dengan Font Tulisan Tangan) -->
+                        <div class="paper-fold is-stacked-folded final-fold" data-fold="9" onclick="handleClosedFoldClick(9)">
+                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(9, event)">
+                                <span class="crease-label">Lipatan 09 • Penutup</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan terakhir ↓">Ketuk untuk membuka lipatan terakhir ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <div class="closing-handwriting-box">
+                                    <p class="closing-handwriting">
+                                        Once again, happy 19th birthday, lowfy.<br>
+                                        I love you so much, today, tomorrow, and always. ♥
+                                    </p>
+                                    <span class="signature-flourish">— Yours, Iki</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Kontrol Navigasi Lipatan di Bagian Bawah Kertas -->
+                    <div class="paper-fold-controls">
+                        <button type="button" id="btn-prev-fold" class="btn-paper-nav" onclick="foldPrev()" disabled>
+                            ↑ Lipat Sebelumnya
+                        </button>
+                        <button type="button" id="btn-next-fold" class="btn-paper-nav primary" onclick="unfoldNext()">
+                            Buka Lipatan Selanjutnya ↓
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -453,7 +562,7 @@
             }
         });
 
-/* ==========================================
+        /* ==========================================
            3. AUDIO CROSSFADE, VOLUME, SPEED & PLAYLIST
            ========================================== */
         let isEnvelopeOpened = false;
@@ -484,7 +593,7 @@
         bgMusic.addEventListener("pause", () => updatePlayButtonUI(false));
         bgMusic.addEventListener("ended", () => updatePlayButtonUI(false));
 
-       function applyPlaybackRate(rate) {
+        function applyPlaybackRate(rate) {
             bgMusic.defaultPlaybackRate = rate;
             bgMusic.playbackRate = rate;
         }
@@ -551,21 +660,21 @@
                 bg: "rgba(232, 93, 149, 0.35)"
             },
             {
-                title: "SPEED DIAL #1",
+                title: "Speed dial",
                 artist: "Paul Partohap",
                 filename: "speed dial.mp3",
                 cover: "💌",
                 bg: "rgba(181, 131, 255, 0.35)"
             },
             {
-                title: "the space between us",
+                title: "The space between us",
                 artist: "siopaolo",
                 filename: "the space between us.mp3",
                 cover: "✨",
                 bg: "rgba(120, 179, 255, 0.35)"
             },
             {
-                title: "RECIPE OF US",
+                title: "Recipe of us",
                 artist: "Paul Partohap",
                 filename: "recipe of us.mp3",
                 cover: "🎂",
@@ -579,7 +688,7 @@
             const track = playlist[index];
             bgMusic.src = "static/" + encodeURIComponent(track.filename);
             bgMusic.load();
-            bgMusic.playbackRate = speedRates[currentSpeedIndex];
+            applyPlaybackRate(speedRates[currentSpeedIndex]);
 
             playerTitle.innerText = track.title;
             playerArtist.innerText = track.artist;
@@ -597,12 +706,12 @@
         function fadeInAudio(duration = 1200) {
             clearInterval(fadeInterval);
             bgMusic.volume = 0;
-            bgMusic.playbackRate = speedRates[currentSpeedIndex];
+            applyPlaybackRate(speedRates[currentSpeedIndex]);
             const playPromise = bgMusic.play();
 
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    bgMusic.playbackRate = speedRates[currentSpeedIndex];
+                    applyPlaybackRate(speedRates[currentSpeedIndex]);
                     updatePlayButtonUI(true);
                     if (userVolume === 0) {
                         bgMusic.volume = 0;
@@ -697,8 +806,110 @@
         }
 
         /* ==========================================
-           4. ANIMASI BUKA AMPLOP & SURAT
+           4. ANIMASI BUKA AMPLOP & LIPATAN KERTAS 3D
            ========================================== */
+        const TOTAL_FOLDS = 9;
+        let openFoldCount = 1;
+
+        function updateFoldsUI(scrollToNewFold = false) {
+            const folds = document.querySelectorAll(".paper-fold");
+            folds.forEach((foldEl) => {
+                const foldNum = parseInt(foldEl.dataset.fold, 10);
+                const actionSpan = foldEl.querySelector(".crease-action");
+
+                foldEl.classList.remove("is-open", "is-next-folded", "is-stacked-folded");
+
+                if (foldNum <= openFoldCount) {
+                    foldEl.classList.add("is-open");
+                    if (actionSpan && actionSpan.dataset.openText) {
+                        actionSpan.innerText = actionSpan.dataset.openText;
+                    }
+                } else if (foldNum === openFoldCount + 1) {
+                    foldEl.classList.add("is-next-folded");
+                    if (actionSpan && actionSpan.dataset.closedText) {
+                        actionSpan.innerText = actionSpan.dataset.closedText;
+                    }
+                } else {
+                    foldEl.classList.add("is-stacked-folded");
+                    if (actionSpan && actionSpan.dataset.closedText) {
+                        actionSpan.innerText = actionSpan.dataset.closedText;
+                    }
+                }
+            });
+
+            const badge = document.getElementById("fold-counter-badge");
+            if (badge) {
+                badge.innerText = `Lipatan ${openFoldCount} / ${TOTAL_FOLDS}`;
+            }
+
+            const prevBtn = document.getElementById("btn-prev-fold");
+            const nextBtn = document.getElementById("btn-next-fold");
+
+            if (prevBtn) {
+                prevBtn.disabled = openFoldCount <= 1;
+            }
+
+            if (nextBtn) {
+                if (openFoldCount < TOTAL_FOLDS) {
+                    nextBtn.innerText = `Buka Lipatan ${openFoldCount + 1} ↓`;
+                } else {
+                    nextBtn.innerText = "Lipat Kembali dari Awal ↺";
+                }
+            }
+
+            if (scrollToNewFold) {
+                const activeFold = document.querySelector(`.paper-fold[data-fold="${openFoldCount}"]`);
+                if (activeFold) {
+                    setTimeout(() => {
+                        activeFold.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }, 180);
+                }
+            }
+        }
+
+        function unfoldNext() {
+            if (openFoldCount < TOTAL_FOLDS) {
+                openFoldCount++;
+                updateFoldsUI(true);
+            } else {
+                // Jika sudah di lipatan terakhir dan ditekan lagi, lipat kembali ke awal
+                openFoldCount = 1;
+                updateFoldsUI(true);
+            }
+        }
+
+        function foldPrev() {
+            if (openFoldCount > 1) {
+                openFoldCount--;
+                updateFoldsUI(true);
+            }
+        }
+
+        function handleClosedFoldClick(foldNum) {
+            if (foldNum === openFoldCount + 1) {
+                openFoldCount = foldNum;
+                updateFoldsUI(true);
+            }
+        }
+
+        function handleFoldHeaderClick(foldNum, event) {
+            if (event) event.stopPropagation();
+
+            if (foldNum > openFoldCount) {
+                // Membuka lipatan berikutnya
+                if (foldNum === openFoldCount + 1) {
+                    openFoldCount = foldNum;
+                    updateFoldsUI(true);
+                }
+            } else if (foldNum > 1) {
+                // Menutup/melipat kembali mulai dari lipatan ini ke lipatan sebelumnya
+                openFoldCount = foldNum - 1;
+                updateFoldsUI(true);
+            }
+        }
+
+        updateFoldsUI(false);
+
         function openGift(event) {
             if (event) event.stopPropagation();
             if (isEnvelopeOpened) return;
@@ -723,19 +934,6 @@
                 checkReveal();
                 letterPaper.classList.add("unfolded");
             }, 1750);
-
-            setTimeout(() => {
-                triggerSweepText();
-            }, 2600);
-        }
-
-        function triggerSweepText() {
-            const items = document.querySelectorAll(".sweep-text");
-            items.forEach((el, index) => {
-                setTimeout(() => {
-                    el.classList.add("swept");
-                }, index * 350);
-            });
         }
 
         function toggleMusic(event) {
