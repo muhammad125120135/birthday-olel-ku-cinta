@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- Kanvas Kunang-Kunang Malam (Offscreen Sprite Optimized) -->
+    <!-- Kanvas Kunang-Kunang Malam -->
     <canvas id="fireflies-canvas"></canvas>
 
     <!-- Cahaya Ambient Malam -->
@@ -16,7 +16,7 @@
     <div class="ambient-orb orb-2"></div>
 
     <!-- Pemutar Audio Latar -->
-    <audio id="bg-music" preload="none"></audio>
+    <audio id="bg-music" preload="metadata"></audio>
 
     <!-- MINI PLAYER BERGAYA RETRO GLASS -->
     <div id="mini-player" class="mini-player">
@@ -32,17 +32,29 @@
             <div id="player-artist" class="player-artist">Romaria</div>
         </div>
 
-        <div class="player-actions">
-            <button id="play-pause-btn" class="btn-circle-play" onclick="toggleMusic(event)" title="Play / Pause">
-                ▶
+        <div class="player-volume" title="Atur Volume Musik">
+            <button type="button" id="volume-btn" class="btn-volume-icon" onclick="toggleMute(event)" title="Mute / Unmute">
+                🔊
             </button>
-            <button class="btn-next-track" onclick="nextTrack(event)" title="Ganti Lagu Berikutnya">
-                ⏭
+            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.6" oninput="changeVolume(this.value)">
+        </div>
+
+        <div class="player-actions">
+            <button type="button" id="play-pause-btn" class="btn-circle-play" onclick="toggleMusic(event)" title="Play / Pause">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="6,4 20,12 6,20"></polygon>
+                </svg>
+            </button>
+            <button type="button" class="btn-next-track" onclick="nextTrack(event)" title="Ganti Lagu Berikutnya">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="4,5 15,12 4,19"></polygon>
+                    <rect x="17" y="5" width="3" height="14" rx="1"></rect>
+                </svg>
             </button>
         </div>
     </div>
     
-    <!-- 1. LAYAR AMPLOP PEMBUKA (Midnight Glass Wax Seal) -->
+    <!-- 1. LAYAR AMPLOP PEMBUKA -->
     <div id="envelope-overlay" class="envelope-overlay">
         <div class="envelope-card" onclick="openGift(event)">
             <p class="sub-label">i have something<br><span>for you.</span></p>
@@ -50,7 +62,6 @@
             <div id="wax-envelope" class="wax-envelope">
                 <div class="env-back"></div>
 
-                <!-- Kartu Surat Kaca Menyembul -->
                 <div class="env-letter-peek">
                     <span class="peek-tag">12 . 12 . 2026</span>
                     <p class="peek-title">For Lowfy ♥</p>
@@ -62,7 +73,6 @@
                 <div class="env-front-bottom"></div>
                 <div class="env-flap-top"></div>
 
-                <!-- Segel Lilin Pink Neon 3D -->
                 <div class="wax-seal">
                     <div class="wax-seal-inner">♥</div>
                 </div>
@@ -89,7 +99,6 @@
                 </div>
             </div>
 
-            <!-- Kartu Kaca Surat Utama -->
             <div id="letter-paper" class="letter-paper glass-card interactive-glass" data-tilt="false">
                 <div class="paper-tape"></div>
 
@@ -136,7 +145,6 @@
             </div>
         </section>
 
-        <!-- Garis Pemisah Cahaya Pink -->
         <div class="neon-divider"></div>
 
         <!-- Bagian 2: Glass Jar Little Notes -->
@@ -162,7 +170,6 @@
             </div>
         </section>
 
-        <!-- Garis Pemisah Cahaya Pink -->
         <div class="neon-divider"></div>
 
         <!-- Bagian 3: AREA 3 OPSI INTERAKTIF -->
@@ -184,7 +191,6 @@
                     </button>
                 </div>
 
-                <!-- Kotak Kaca Hasil Interaktif -->
                 <div class="option-display glass-card interactive-glass" data-tilt="true">
                     
                     <!-- Opsi 1: Buket Bunga Animasi -->
@@ -300,7 +306,7 @@
 
     </main>
 
-    <!-- POPUP MODAL NOTE (Glassmorphism) -->
+    <!-- POPUP MODAL NOTE -->
     <div id="modal" class="modal" onclick="closeModal(event)">
         <div class="modal-card glass-card">
             <button class="modal-x" onclick="forceCloseModal()">✕</button>
@@ -314,7 +320,6 @@
     <script>
         /* ==========================================
            0. LINK FORMSPREE UNTUK TERIMA WISH DI GMAIL
-           Ganti link di bawah dengan link dari formspree.io Anda
            ========================================== */
         const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
 
@@ -404,7 +409,7 @@
         requestAnimationFrame(animateFireflies);
 
         /* ==========================================
-           2. EFEK INTERAKTIF KACA (THROTTLED RAF)
+           2. EFEK INTERAKTIF KACA
            ========================================== */
         document.querySelectorAll(".interactive-glass").forEach((card) => {
             let ticking = false;
@@ -440,7 +445,7 @@
         });
 
         /* ==========================================
-           3. AUDIO CROSSFADE & MINI PLAYER PLAYLIST
+           3. AUDIO CROSSFADE, VOLUME & MINI PLAYER PLAYLIST
            ========================================== */
         let isEnvelopeOpened = false;
         const bgMusic = document.getElementById("bg-music");
@@ -448,44 +453,83 @@
         const playerTitle = document.getElementById("player-title");
         const playerArtist = document.getElementById("player-artist");
         const playerCover = document.getElementById("player-cover");
+        const volumeSlider = document.getElementById("volume-slider");
+        const volumeBtn = document.getElementById("volume-btn");
 
-        const TARGET_VOLUME = 0.6;
+        const PLAY_ICON_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"></polygon></svg>';
+        const PAUSE_ICON_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
+
+        let userVolume = 0.6;
+        let previousVolume = 0.6;
         let fadeInterval = null;
         let isAutoFadingOut = false;
+
+        function updatePlayButtonUI(isPlaying) {
+            playPauseBtn.innerHTML = isPlaying ? PAUSE_ICON_SVG : PLAY_ICON_SVG;
+        }
+
+        bgMusic.addEventListener("play", () => updatePlayButtonUI(true));
+        bgMusic.addEventListener("pause", () => updatePlayButtonUI(false));
+        bgMusic.addEventListener("ended", () => updatePlayButtonUI(false));
+
+        function changeVolume(val) {
+            clearInterval(fadeInterval);
+            userVolume = parseFloat(val);
+            bgMusic.volume = userVolume;
+
+            if (userVolume > 0) {
+                previousVolume = userVolume;
+                volumeBtn.innerText = userVolume < 0.4 ? "🔉" : "🔊";
+            } else {
+                volumeBtn.innerText = "🔇";
+            }
+        }
+
+        function toggleMute(event) {
+            if (event) event.stopPropagation();
+            if (userVolume > 0) {
+                volumeSlider.value = 0;
+                changeVolume(0);
+            } else {
+                const restoreVol = previousVolume > 0 ? previousVolume : 0.6;
+                volumeSlider.value = restoreVol;
+                changeVolume(restoreVol);
+            }
+        }
 
         const playlist = [
             {
                 title: "24/7",
                 artist: "Romaria",
-                file: "static/24_7 - ROMARIA _ Lirik Lagu.mp3",
+                filename: "romaria.mp3",
                 cover: "🌸",
                 bg: "rgba(255, 126, 179, 0.35)"
             },
             {
                 title: "Remaja",
                 artist: "HIVI!",
-                file: "static/HIVI! - Remaja (lirik) - (64 Kbps).mp3",
+                filename: "remaja.mp3",
                 cover: "🌷",
                 bg: "rgba(232, 93, 149, 0.35)"
             },
             {
                 title: "SPEED DIAL #1",
                 artist: "Paul Partohap",
-                file: "static/Paul Partohap - SPEED DIAL #1 (Lyric Video) - (64 Kbps).mp3",
+                filename: "speed dial.mp3",
                 cover: "💌",
                 bg: "rgba(181, 131, 255, 0.35)"
             },
             {
                 title: "the space between us",
                 artist: "siopaolo",
-                file: "static/siopaolo - the space between us [audio] - (64 Kbps).mp3",
+                filename: "the space between us.mp3",
                 cover: "✨",
                 bg: "rgba(120, 179, 255, 0.35)"
             },
             {
                 title: "RECIPE OF US",
                 artist: "Paul Partohap",
-                file: "static/Paul Partohap - RECIPE OF US (Lyric Video) - (64 Kbps).mp3",
+                filename: "recipe of us.mp3",
                 cover: "🎂",
                 bg: "rgba(255, 209, 102, 0.35)"
             }
@@ -495,12 +539,15 @@
 
         function loadTrack(index) {
             const track = playlist[index];
-            bgMusic.src = track.file;
+            bgMusic.src = "static/" + encodeURIComponent(track.filename);
+            bgMusic.load();
+
             playerTitle.innerText = track.title;
             playerArtist.innerText = track.artist;
             playerCover.innerText = track.cover;
             playerCover.style.backgroundColor = track.bg;
             isAutoFadingOut = false;
+            updatePlayButtonUI(false);
         }
 
         loadTrack(currentTrackIndex);
@@ -512,20 +559,26 @@
 
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    playPauseBtn.innerText = "⏸";
+                    updatePlayButtonUI(true);
+                    if (userVolume === 0) {
+                        bgMusic.volume = 0;
+                        return;
+                    }
+
                     const steps = 25;
                     const stepTime = duration / steps;
-                    const volumeStep = TARGET_VOLUME / steps;
+                    const volumeStep = userVolume / steps;
 
                     fadeInterval = setInterval(() => {
-                        if (bgMusic.volume + volumeStep < TARGET_VOLUME) {
-                            bgMusic.volume = Math.min(TARGET_VOLUME, bgMusic.volume + volumeStep);
+                        if (bgMusic.volume + volumeStep < userVolume) {
+                            bgMusic.volume = Math.min(userVolume, bgMusic.volume + volumeStep);
                         } else {
-                            bgMusic.volume = TARGET_VOLUME;
+                            bgMusic.volume = userVolume;
                             clearInterval(fadeInterval);
                         }
                     }, stepTime);
                 }).catch((err) => {
+                    updatePlayButtonUI(false);
                     if (err.name !== "AbortError") {
                         console.log("Info audio:", err.message);
                     }
@@ -533,14 +586,14 @@
             }
         }
 
-        function fadeOutAudio(duration = 800, onComplete = null) {
+        function fadeOutAudio(duration = 600, onComplete = null) {
             clearInterval(fadeInterval);
             if (bgMusic.paused || bgMusic.volume === 0) {
                 if (onComplete) onComplete();
                 return;
             }
 
-            const steps = 20;
+            const steps = 15;
             const stepTime = duration / steps;
             const volumeStep = bgMusic.volume / steps;
 
@@ -563,25 +616,24 @@
                 bgMusic.duration - bgMusic.currentTime <= 3.0
             ) {
                 isAutoFadingOut = true;
-                fadeOutAudio(2600);
+                fadeOutAudio(2400);
             }
         });
 
         bgMusic.addEventListener("ended", function () {
             currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
             loadTrack(currentTrackIndex);
-            fadeInAudio(1400);
+            fadeInAudio(1200);
         });
 
         function nextTrack(event) {
             if (event) event.stopPropagation();
 
-            fadeOutAudio(650, () => {
-                bgMusic.pause();
-                currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-                loadTrack(currentTrackIndex);
-                fadeInAudio(1200);
-            });
+            clearInterval(fadeInterval);
+            bgMusic.pause();
+            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+            loadTrack(currentTrackIndex);
+            fadeInAudio(900);
         }
 
         function toggleMinimizePlayer() {
@@ -635,8 +687,8 @@
             if (event) event.stopPropagation();
 
             if (!bgMusic.paused && !bgMusic.ended) {
-                playPauseBtn.innerText = "▶";
-                fadeOutAudio(750, () => {
+                updatePlayButtonUI(false);
+                fadeOutAudio(550, () => {
                     bgMusic.pause();
                 });
             } else {
@@ -644,7 +696,7 @@
                     bgMusic.currentTime = 0;
                 }
                 isAutoFadingOut = false;
-                fadeInAudio(1000);
+                fadeInAudio(800);
             }
         }
 
@@ -663,7 +715,7 @@
         window.addEventListener("scroll", checkReveal, { passive: true });
 
         /* ==========================================
-           5. JAR NOTES (LANGSUNG DI BROWSER TANPA PYTHON)
+           5. JAR NOTES
            ========================================== */
         const NOTES_LIST = [
             {
