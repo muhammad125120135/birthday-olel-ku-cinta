@@ -811,7 +811,7 @@
             }
         });
 
-        /* ==========================================
+/* ==========================================
            3. AUDIO PLAYER, VOLUME, SPEED & PLAYLIST
            ========================================== */
         let isEnvelopeOpened = false;
@@ -832,6 +832,14 @@
         let userVolume = 0.7;
         let previousVolume = 0.7;
         let isAutoFadingOut = false;
+        let volumeFadeTimer = null;
+
+        function stopVolumeFade() {
+            if (volumeFadeTimer !== null) {
+                clearInterval(volumeFadeTimer);
+                volumeFadeTimer = null;
+            }
+        }
 
         function updatePlayButtonUI(isPlaying) {
             playPauseBtn.innerHTML = isPlaying ? PAUSE_ICON_SVG : PLAY_ICON_SVG;
@@ -865,6 +873,7 @@
         }
 
         function changeVolume(val) {
+            stopVolumeFade();
             userVolume = parseFloat(val);
             bgMusic.volume = userVolume;
 
@@ -886,6 +895,34 @@
                 volumeSlider.value = restoreVol;
                 changeVolume(restoreVol);
             }
+        }
+
+        function fadeVolumeTo(targetVol, durationMs = 450, onDone = null) {
+            stopVolumeFade();
+            const clampedTarget = Math.max(0, Math.min(1, targetVol));
+            const startVol = bgMusic.volume;
+            const diff = clampedTarget - startVol;
+
+            if (Math.abs(diff) < 0.01 || durationMs <= 0) {
+                bgMusic.volume = clampedTarget;
+                if (typeof onDone === "function") onDone();
+                return;
+            }
+
+            const steps = Math.max(4, Math.round(durationMs / 35));
+            let currentStep = 0;
+
+            volumeFadeTimer = setInterval(() => {
+                currentStep++;
+                const progress = currentStep / steps;
+                bgMusic.volume = Math.max(0, Math.min(1, startVol + diff * progress));
+
+                if (currentStep >= steps) {
+                    stopVolumeFade();
+                    bgMusic.volume = clampedTarget;
+                    if (typeof onDone === "function") onDone();
+                }
+            }, 35);
         }
 
         const playlist = [
@@ -947,31 +984,72 @@
 
         setTrackSource(currentTrackIndex);
 
-        function playCurrentTrackDirect() {
-            bgMusic.volume = userVolume;
+        function playCurrentTrackDirect(withFadeIn = true) {
+            stopVolumeFade();
             applyPlaybackRate(speedRates[currentSpeedIndex]);
+            bgMusic.volume = withFadeIn ? 0 : userVolume;
+
             const p = bgMusic.play();
             if (p && typeof p.then === "function") {
                 p.then(() => {
                     applyPlaybackRate(speedRates[currentSpeedIndex]);
                     updatePlayButtonUI(true);
+                    if (withFadeIn) {
+                        fadeVolumeTo(userVolume, 550);
+                    }
                 }).catch(() => {
+                    bgMusic.volume = userVolume;
                     updatePlayButtonUI(false);
                 });
+            } else if (withFadeIn) {
+                fadeVolumeTo(userVolume, 550);
             }
+        }
+
+        function pauseCurrentTrackSmooth(onPaused = null) {
+            if (bgMusic.paused) {
+                stopVolumeFade();
+                bgMusic.volume = userVolume;
+                updatePlayButtonUI(false);
+                if (typeof onPaused === "function") onPaused();
+                return;
+            }
+
+            fadeVolumeTo(0, 350, () => {
+                bgMusic.pause();
+                bgMusic.volume = userVolume;
+                updatePlayButtonUI(false);
+                if (typeof onPaused === "function") onPaused();
+            });
         }
 
         function nextTrack(event) {
             if (event) event.stopPropagation();
-            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-            setTrackSource(currentTrackIndex);
-            playCurrentTrackDirect();
+            const nextIdx = (currentTrackIndex + 1) % playlist.length;
+            const wasPlaying = !bgMusic.paused;
+
+            const switchAndPlay = () => {
+                currentTrackIndex = nextIdx;
+                setTrackSource(currentTrackIndex);
+                if (wasPlaying) {
+                    playCurrentTrackDirect(true);
+                } else {
+                    bgMusic.volume = userVolume;
+                    updatePlayButtonUI(false);
+                }
+            };
+
+            if (wasPlaying) {
+                fadeVolumeTo(0, 300, switchAndPlay);
+            } else {
+                switchAndPlay();
+            }
         }
 
         bgMusic.addEventListener("ended", function () {
             currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
             setTrackSource(currentTrackIndex);
-            playCurrentTrackDirect();
+            playCurrentTrackDirect(true);
         });
 
         bgMusic.addEventListener("timeupdate", function () {
@@ -987,6 +1065,7 @@
 
                 if (!bgMusic.paused && !isAutoFadingOut && bgMusic.duration - bgMusic.currentTime <= 2.5) {
                     isAutoFadingOut = true;
+                    fadeVolumeTo(0, 2200);
                 }
             }
         });
@@ -1124,10 +1203,9 @@
             if (event) event.stopPropagation();
 
             if (!bgMusic.paused) {
-                bgMusic.pause();
-                updatePlayButtonUI(false);
+                pauseCurrentTrackSmooth();
             } else {
-                playCurrentTrackDirect();
+                playCurrentTrackDirect(true);
             }
         }
 
