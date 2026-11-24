@@ -1005,13 +1005,19 @@
             }
         ];
 
-        let currentTrackIndex = 0;
+let playRequestToken = 0;
 
-        function loadTrack(index) {
+        function loadTrack(index, autoPlay = false) {
             const track = playlist[index];
-            bgMusic.src = "static/" + encodeURIComponent(track.filename);
+            const token = ++playRequestToken;
+
+            clearInterval(fadeInterval);
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+
+            // encodeURI menjaga '/' pada 'static/' tetap valid sambil mengkodekan spasi pada nama file
+            bgMusic.src = encodeURI("static/" + track.filename);
             bgMusic.load();
-            applyPlaybackRate(speedRates[currentSpeedIndex]);
 
             playerTitle.innerText = track.title;
             playerArtist.innerText = track.artist;
@@ -1022,9 +1028,34 @@
 
             const progressBar = document.getElementById("player-progress-bar");
             if (progressBar) progressBar.style.width = "0%";
+
+            if (!autoPlay) return;
+
+            const startPlayback = () => {
+                if (token !== playRequestToken) return;
+                bgMusic.removeEventListener("canplay", startPlayback);
+                bgMusic.removeEventListener("error", handleTrackError);
+                fadeInAudio(900);
+            };
+
+            const handleTrackError = () => {
+                if (token !== playRequestToken) return;
+                bgMusic.removeEventListener("canplay", startPlayback);
+                bgMusic.removeEventListener("error", handleTrackError);
+                updatePlayButtonUI(false);
+                console.warn("Gagal memuat file audio:", bgMusic.src);
+            };
+
+            bgMusic.addEventListener("canplay", startPlayback, { once: true });
+            bgMusic.addEventListener("error", handleTrackError, { once: true });
+
+            // Cadangan jika event canplay sudah siap sebelum listener terpasang
+            if (bgMusic.readyState >= 3) {
+                startPlayback();
+            }
         }
 
-        loadTrack(currentTrackIndex);
+        loadTrack(currentTrackIndex, false);
 
         function fadeInAudio(duration = 1200) {
             clearInterval(fadeInterval);
@@ -1115,12 +1146,8 @@
 
         function nextTrack(event) {
             if (event) event.stopPropagation();
-
-            clearInterval(fadeInterval);
-            bgMusic.pause();
             currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-            loadTrack(currentTrackIndex);
-            fadeInAudio(900);
+            loadTrack(currentTrackIndex, true);
         }
 
         function toggleMinimizePlayer() {
