@@ -467,7 +467,7 @@
                                             <circle cx="0" cy="7" r="1.6" fill="#ff9f1c"/>
                                         </g>
                                     </g>
-                                    
+
                                     <!-- Batang Bunga di Bagian Bawah -->
                                     <g stroke="#4d8066" stroke-width="2.6" stroke-linecap="round">
                                         <line x1="118" y1="196" x2="112" y2="224"/>
@@ -529,28 +529,218 @@
                         </div>
                     </div>
 
-                    <!-- Opsi 3: Kue, Tiup Lilin & Kirim Pesan ke Gmail -->
+                    <!-- Opsi 3: Kue Tingkat Putih, Cupcake Pita Pink & Kirim Pesan -->
                     <div id="opt-content-3" class="opt-panel">
                         <h3>Close your eyes & make a wish 🎂</h3>
-                        <p class="opt-desc">Tiup lilinnya dengan klik kue di bawah, lalu tulis harapan atau pesanmu!</p>
+                        <p class="opt-desc">Tiup lilinnya dengan klik kue di bawah, lalu tulis harapanmu!</p>
                         
-                        <div class="cake-box" onclick="blowCandle()">
-                            <div id="flame" class="flame">🔥</div>
-                            <div class="candle"></div>
-                            <div class="cake-top"></div>
-                            <div class="cake-base"></div>
+                        <div class="cake-box" onclick="blowCandle()" title="Klik untuk meniup lilin">
+                            <svg class="coquette-cake-svg" viewBox="0 0 320 245" width="285" height="218">
+                                <defs>
+                                    <filter id="cake-shadow" x="-10%" y="-10%" width="120%" height="125%">
+                                        <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.42"/>
+                                    </filter>
+                                    <linearGradient id="cake-ivory" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#f3e6d3"/>
+                                        <stop offset="28%" stop-color="#fffaf2"/>
+                                        <stop offset="75%" stop-color="#fcf4e6"/>
+                                        <stop offset="100%" stop-color="#ead9c0"/>
+                                    </linearGradient>
+                                    <linearGradient id="cupcake-wrapper" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#e36d96"/>
+                                        <stop offset="50%" stop-color="#f794b8"/>
+                                        <stop offset="100%" stop-color="#d95b87"/>
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Piring Saji Kue -->
+                                <ellipse cx="160" cy="212" rx="142" ry="22" fill="#2a1936" stroke="rgba(255, 182, 214, 0.45)" stroke-width="1.5"/>
+                                <ellipse cx="160" cy="209" rx="132" ry="17" fill="rgba(255, 248, 240, 0.1)" stroke="rgba(255, 214, 232, 0.3)" stroke-width="1"/>
+
+                                <!-- CUPCAKE BELAKANG KIRI -->
+                                <g transform="translate(56, 166) scale(0.84)">
+                                    <polygon points="-18,8 18,8 13,30 -13,30" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1"/>
+                                    <line x1="-9" y1="8" x2="-6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <line x1="0" y1="8" x2="0" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <line x1="9" y1="8" x2="6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <ellipse cx="0" cy="8" rx="19" ry="5" fill="#e6be8a"/>
+                                    <ellipse cx="0" cy="3" rx="18" ry="7" fill="#ffb8d4"/>
+                                    <ellipse cx="0" cy="-3" rx="13" ry="6" fill="#ff9ec9"/>
+                                    <ellipse cx="0" cy="-8" rx="8" ry="4.5" fill="#ffcce0"/>
+                                    <!-- Pita Pink Atas Cupcake -->
+                                    <path d="M0,-12 C-10,-20 -16,-12 -8,-8 C-4,-6 -1,-9 0,-12 Z" fill="#ff6ea6"/>
+                                    <path d="M0,-12 C10,-20 16,-12 8,-8 C4,-6 1,-9 0,-12 Z" fill="#ff6ea6"/>
+                                    <circle cx="0" cy="-11" r="2.5" fill="#ff9ec9"/>
+                                </g>
+
+                                <!-- CUPCAKE BELAKANG KANAN -->
+                                <g transform="translate(264, 166) scale(0.84)">
+                                    <polygon points="-18,8 18,8 13,30 -13,30" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1"/>
+                                    <line x1="-9" y1="8" x2="-6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <line x1="0" y1="8" x2="0" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <line x1="9" y1="8" x2="6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <ellipse cx="0" cy="8" rx="19" ry="5" fill="#e6be8a"/>
+                                    <ellipse cx="0" cy="3" rx="18" ry="7" fill="#ffb8d4"/>
+                                    <ellipse cx="0" cy="-3" rx="13" ry="6" fill="#ff9ec9"/>
+                                    <ellipse cx="0" cy="-8" rx="8" ry="4.5" fill="#ffcce0"/>
+                                    <!-- Pita Pink Atas Cupcake -->
+                                    <path d="M0,-12 C-10,-20 -16,-12 -8,-8 C-4,-6 -1,-9 0,-12 Z" fill="#ff6ea6"/>
+                                    <path d="M0,-12 C10,-20 16,-12 8,-8 C4,-6 1,-9 0,-12 Z" fill="#ff6ea6"/>
+                                    <circle cx="0" cy="-11" r="2.5" fill="#ff9ec9"/>
+                                </g>
+
+                                <!-- KUE UTAMA 2 TINGKAT PUTIH VINTAGE COQUETTE -->
+                                <g filter="url(#cake-shadow)">
+                                    <!-- TINGKAT BAWAH -->
+                                    <path d="M84,132 L84,192 A76,15 0 0,0 236,192 L236,132 Z" fill="url(#cake-ivory)" stroke="#d9c3a5" stroke-width="1.2"/>
+                                    <ellipse cx="160" cy="132" rx="76" ry="15" fill="#fffaf2" stroke="#dcc7aa" stroke-width="1.2"/>
+                                    <!-- Garis Krim Berombak (Swags) Tingkat Bawah -->
+                                    <path d="M86,154 Q110,170 135,156 Q160,172 185,156 Q210,170 234,154" fill="none" stroke="#c9a982" stroke-width="1.5"/>
+                                    <path d="M86,158 Q110,174 135,160 Q160,176 185,160 Q210,174 234,158" fill="none" stroke="#dfC5a3" stroke-width="1"/>
+                                    <!-- Piping Krim Tepian Bawah & Atas -->
+                                    <path d="M85,192 Q160,210 235,192" fill="none" stroke="#d4b58e" stroke-width="3" stroke-dasharray="5 3" stroke-linecap="round"/>
+                                    <path d="M85,133 Q160,150 235,133" fill="none" stroke="#d4b58e" stroke-width="2.6" stroke-dasharray="4 3" stroke-linecap="round"/>
+
+                                    <!-- 4 Pita Merah Vintage di Tingkat Bawah -->
+                                    <!-- Pita Bawah Kiri Ujung -->
+                                    <g transform="translate(89, 138)">
+                                        <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-4,18 -5,32 M1,2 Q2,18 1,34" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <!-- Pita Bawah Tengah Kiri -->
+                                    <g transform="translate(135, 145)">
+                                        <path d="M0,0 C-8,-6 -11,1 -3,3 Z M0,0 C8,-6 11,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-3,20 -4,36 M1,2 Q3,20 3,38" stroke="#b82542" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <!-- Pita Bawah Tengah Kanan -->
+                                    <g transform="translate(185, 145)">
+                                        <path d="M0,0 C-8,-6 -11,1 -3,3 Z M0,0 C8,-6 11,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-3,20 -3,38 M1,2 Q3,20 4,36" stroke="#b82542" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <!-- Pita Bawah Kanan Ujung -->
+                                    <g transform="translate(231, 138)">
+                                        <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-2,18 -1,34 M1,2 Q4,18 5,32" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    </g>
+
+                                    <!-- TINGKAT ATAS -->
+                                    <path d="M106,80 L106,130 A54,11 0 0,0 214,130 L214,80 Z" fill="url(#cake-ivory)" stroke="#d9c3a5" stroke-width="1.2"/>
+                                    <ellipse cx="160" cy="80" rx="54" ry="11" fill="#fffcf7" stroke="#dcc7aa" stroke-width="1.2"/>
+                                    <!-- Garis Krim Berombak (Swags) Tingkat Atas -->
+                                    <path d="M107,102 Q133,115 160,104 Q187,115 213,102" fill="none" stroke="#c9a982" stroke-width="1.4"/>
+                                    <path d="M107,81 Q160,94 213,81" fill="none" stroke="#d4b58e" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/>
+
+                                    <!-- Aksen Hati Merah Kecil di Atas Kue -->
+                                    <path d="M120,76 C118,73 114,75 120,79 C126,75 122,73 120,76 Z" fill="#b82542"/>
+                                    <path d="M200,76 C198,73 194,75 200,79 C206,75 202,73 200,76 Z" fill="#b82542"/>
+
+                                    <!-- 3 Pita Merah Vintage di Tingkat Atas -->
+                                    <g transform="translate(122, 87)">
+                                        <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-3,18 -3,32 M1,2 Q2,18 2,33" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <g transform="translate(160, 90)">
+                                        <path d="M0,0 C-8,-6 -11,1 -3,3 Z M0,0 C8,-6 11,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-2,20 -2,35 M1,2 Q2,20 2,35" stroke="#b82542" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <g transform="translate(198, 87)">
+                                        <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-2,18 -2,33 M1,2 Q3,18 3,32" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    </g>
+
+                                    <!-- 3 LILIN MERAH RAMPING DI PUNCAK KUE -->
+                                    <!-- Lilin Kiri -->
+                                    <rect x="135" y="55" width="4" height="22" rx="1.5" transform="rotate(-5 137 77)" fill="#b82542"/>
+                                    <line x1="135" y1="62" x2="139" y2="60" stroke="#fff5f7" stroke-width="1.2"/>
+                                    <line x1="135" y1="69" x2="139" y2="67" stroke="#fff5f7" stroke-width="1.2"/>
+
+                                    <!-- Lilin Tengah (Lebih Tinggi + Pita Kecil di Pangkal) -->
+                                    <rect x="158" y="48" width="4.5" height="29" rx="1.5" fill="#b82542"/>
+                                    <line x1="158" y1="56" x2="162.5" y2="54" stroke="#fff5f7" stroke-width="1.3"/>
+                                    <line x1="158" y1="64" x2="162.5" y2="62" stroke="#fff5f7" stroke-width="1.3"/>
+                                    <path d="M160,74 C154,70 152,75 158,76 Z M160,74 C166,70 168,75 162,76 Z" fill="#9e1c36"/>
+
+                                    <!-- Lilin Kanan -->
+                                    <rect x="181" y="55" width="4" height="22" rx="1.5" transform="rotate(5 183 77)" fill="#b82542"/>
+                                    <line x1="181" y1="62" x2="185" y2="60" stroke="#fff5f7" stroke-width="1.2"/>
+                                    <line x1="181" y1="69" x2="185" y2="67" stroke="#fff5f7" stroke-width="1.2"/>
+
+                                    <!-- API LILIN (BISA DITIUP) -->
+                                    <g id="flame" class="candle-flames">
+                                        <!-- Api Tengah -->
+                                        <g transform="translate(160.2, 41)">
+                                            <ellipse class="flame-glow" cx="0" cy="0" rx="8" ry="11" fill="rgba(255, 209, 102, 0.35)"/>
+                                            <path class="flame-core" d="M0,-8 C4,-2 4,4 0,6 C-4,4 -4,-2 0,-8 Z" fill="#ffbe0b"/>
+                                            <path d="M0,-4 C2,-1 2,2 0,4 C-2,2 -2,-1 0,-4 Z" fill="#fff8d6"/>
+                                        </g>
+                                        <!-- Api Kiri -->
+                                        <g transform="translate(136, 48)">
+                                            <ellipse class="flame-glow" cx="0" cy="0" rx="6.5" ry="9" fill="rgba(255, 209, 102, 0.3)"/>
+                                            <path class="flame-core" d="M0,-6.5 C3,-1.5 3,3.5 0,5 C-3,3.5 -3,-1.5 0,-6.5 Z" fill="#ffbe0b"/>
+                                            <path d="M0,-3 C1.5,-0.5 1.5,2 0,3.5 C-1.5,2 -1.5,-0.5 0,-3 Z" fill="#fff8d6"/>
+                                        </g>
+                                        <!-- Api Kanan -->
+                                        <g transform="translate(184, 48)">
+                                            <ellipse class="flame-glow" cx="0" cy="0" rx="6.5" ry="9" fill="rgba(255, 209, 102, 0.3)"/>
+                                            <path class="flame-core" d="M0,-6.5 C3,-1.5 3,3.5 0,5 C-3,3.5 -3,-1.5 0,-6.5 Z" fill="#ffbe0b"/>
+                                            <path d="M0,-3 C1.5,-0.5 1.5,2 0,3.5 C-1.5,2 -1.5,-0.5 0,-3 Z" fill="#fff8d6"/>
+                                        </g>
+                                    </g>
+                                </g>
+
+                                <!-- CUPCAKE DEPAN KIRI -->
+                                <g transform="translate(74, 194)" filter="url(#cake-shadow)">
+                                    <polygon points="-19,8 19,8 14,32 -14,32" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1.1"/>
+                                    <line x1="-10" y1="8" x2="-7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <line x1="0" y1="8" x2="0" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <line x1="10" y1="8" x2="7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <ellipse cx="0" cy="8" rx="20" ry="5.5" fill="#e6be8a"/>
+                                    <ellipse cx="0" cy="3" rx="19" ry="7.5" fill="#ffc2da"/>
+                                    <ellipse cx="0" cy="-3" rx="14" ry="6.5" fill="#ffa3c8"/>
+                                    <ellipse cx="0" cy="-9" rx="8.5" ry="4.5" fill="#ffd6e7"/>
+                                    <!-- Taburan Mutiara Pink -->
+                                    <circle cx="-8" cy="2" r="1.2" fill="#ffffff"/>
+                                    <circle cx="7" cy="3" r="1.2" fill="#ffffff"/>
+                                    <circle cx="2" cy="-3" r="1.1" fill="#ffffff"/>
+                                    <!-- Pita Satin Pink Atas -->
+                                    <path d="M0,-13 C-11,-22 -18,-13 -9,-8 C-4,-6 -1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
+                                    <path d="M0,-13 C11,-22 18,-13 9,-8 C4,-6 1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
+                                    <path d="M-2,-10 L-8,-3 M2,-10 L8,-3" stroke="#ff66a1" stroke-width="2" stroke-linecap="round"/>
+                                    <circle cx="0" cy="-12" r="2.8" fill="#ffb3d4"/>
+                                </g>
+
+                                <!-- CUPCAKE DEPAN KANAN -->
+                                <g transform="translate(246, 194)" filter="url(#cake-shadow)">
+                                    <polygon points="-19,8 19,8 14,32 -14,32" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1.1"/>
+                                    <line x1="-10" y1="8" x2="-7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <line x1="0" y1="8" x2="0" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <line x1="10" y1="8" x2="7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <ellipse cx="0" cy="8" rx="20" ry="5.5" fill="#e6be8a"/>
+                                    <ellipse cx="0" cy="3" rx="19" ry="7.5" fill="#ffc2da"/>
+                                    <ellipse cx="0" cy="-3" rx="14" ry="6.5" fill="#ffa3c8"/>
+                                    <ellipse cx="0" cy="-9" rx="8.5" ry="4.5" fill="#ffd6e7"/>
+                                    <!-- Taburan Mutiara Pink -->
+                                    <circle cx="-7" cy="3" r="1.2" fill="#ffffff"/>
+                                    <circle cx="8" cy="2" r="1.2" fill="#ffffff"/>
+                                    <circle cx="-2" cy="-3" r="1.1" fill="#ffffff"/>
+                                    <!-- Pita Satin Pink Atas -->
+                                    <path d="M0,-13 C-11,-22 -18,-13 -9,-8 C-4,-6 -1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
+                                    <path d="M0,-13 C11,-22 18,-13 9,-8 C4,-6 1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
+                                    <path d="M-2,-10 L-8,-3 M2,-10 L8,-3" stroke="#ff66a1" stroke-width="2" stroke-linecap="round"/>
+                                    <circle cx="0" cy="-12" r="2.8" fill="#ffb3d4"/>
+                                </g>
+                            </svg>
                         </div>
                         <p id="wish-status" class="wish-status">Tap the candle to blow it out ✨</p>
 
                         <div class="wish-form">
-                            <textarea id="wish-input" rows="3" placeholder="Tulis harapan ulang tahunmu atau pesan balasan di sini..."></textarea>
+                            <textarea id="wish-input" rows="3" placeholder="Tulis semua harapan mu sayanggg!!!"></textarea>
                             <button id="btn-send-wish" class="btn-glass-pink" onclick="sendWishToEmail()">
                                 Send My Wish 💌
                             </button>
                             <p id="send-feedback" class="send-feedback"></p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
