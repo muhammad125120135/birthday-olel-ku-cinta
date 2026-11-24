@@ -484,11 +484,19 @@
         bgMusic.addEventListener("pause", () => updatePlayButtonUI(false));
         bgMusic.addEventListener("ended", () => updatePlayButtonUI(false));
 
+       function applyPlaybackRate(rate) {
+            bgMusic.defaultPlaybackRate = rate;
+            bgMusic.playbackRate = rate;
+        }
+
         function cycleSpeed(event) {
             if (event) event.stopPropagation();
             currentSpeedIndex = (currentSpeedIndex + 1) % speedRates.length;
             const newRate = speedRates[currentSpeedIndex];
-            bgMusic.playbackRate = newRate;
+
+            applyPlaybackRate(newRate);
+            setTimeout(() => applyPlaybackRate(newRate), 60);
+
             const speedBtn = document.getElementById("speed-btn");
             if (speedBtn) speedBtn.innerText = newRate + "x";
         }
@@ -645,6 +653,11 @@
         }
 
         bgMusic.addEventListener("timeupdate", function () {
+            const targetRate = speedRates[currentSpeedIndex];
+            if (Math.abs(bgMusic.playbackRate - targetRate) > 0.01) {
+                applyPlaybackRate(targetRate);
+            }
+
             if (bgMusic.duration) {
                 const percent = (bgMusic.currentTime / bgMusic.duration) * 100;
                 const progressBar = document.getElementById("player-progress-bar");
@@ -682,7 +695,7 @@
             const player = document.getElementById("mini-player");
             player.classList.toggle("minimized");
         }
-        
+
         /* ==========================================
            4. ANIMASI BUKA AMPLOP & SURAT
            ========================================== */
