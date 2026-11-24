@@ -311,66 +311,193 @@
 
                 <div class="option-display glass-card interactive-glass" data-tilt="true">
                     
-                    <!-- Opsi 1: Buket Bunga Animasi -->
+                    <!-- Opsi 1: Buket Bunga Animasi (Basket + Mixed Bouquet) -->
                     <div id="opt-content-1" class="opt-panel show">
                         <h3>A Special Bouquet For You 💐</h3>
-                        <p class="opt-desc">Tap the bouquet to make it bloom & sparkle!</p>
+                        <p class="opt-desc">Tap the bouquet to burst flowers & sparkle!</p>
                         
-                        <div id="bouquet-box" class="bouquet-box" onclick="bloomBouquet()">
-                            <span class="sparkle sp1">🌸</span>
-                            <span class="sparkle sp2">✨</span>
-                            <span class="sparkle sp3">🌸</span>
-                            <span class="sparkle sp4">💖</span>
+                        <div id="bouquet-box" class="bouquet-box" onclick="bloomBouquet(event)">
+                            <!-- Lapisan Partikel Bunga yang Bertebaran dari Tengah ke Luar -->
+                            <div id="flower-burst-layer" class="flower-burst-layer"></div>
 
-                            <svg class="bouquet-svg" viewBox="0 0 220 220" width="190" height="190">
-                                <polygon points="110,205 42,95 110,65 178,95" fill="rgba(255, 182, 206, 0.25)" stroke="#ff85b3" stroke-width="2"/>
-                                <ellipse cx="68" cy="95" rx="18" ry="10" transform="rotate(-35 68 95)" fill="#4e7a69"/>
-                                <ellipse cx="152" cy="95" rx="18" ry="10" transform="rotate(35 152 95)" fill="#4e7a69"/>
-                                <ellipse cx="110" cy="68" rx="12" ry="20" fill="#689e89"/>
-                                <ellipse cx="85" cy="78" rx="14" ry="9" transform="rotate(-20 85 78)" fill="#689e89"/>
-                                <ellipse cx="135" cy="78" rx="14" ry="9" transform="rotate(20 135 78)" fill="#689e89"/>
+                            <svg class="bouquet-svg" viewBox="0 0 280 265" width="245" height="232">
+                                <defs>
+                                    <filter id="sticker-glow" x="-10%" y="-10%" width="120%" height="120%">
+                                        <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.35"/>
+                                    </filter>
+                                </defs>
 
-                                <line x1="110" y1="185" x2="82" y2="105" stroke="#538270" stroke-width="3"/>
-                                <line x1="110" y1="185" x2="110" y2="90" stroke="#538270" stroke-width="3"/>
-                                <line x1="110" y1="185" x2="138" y2="105" stroke="#538270" stroke-width="3"/>
-
-                                <g class="flower f1">
-                                    <circle cx="80" cy="100" r="18" fill="#ff7eb3"/>
-                                    <circle cx="72" cy="92" r="10" fill="#ffb3d1"/>
-                                    <circle cx="88" cy="92" r="10" fill="#ffb3d1"/>
-                                    <circle cx="72" cy="107" r="10" fill="#ffb3d1"/>
-                                    <circle cx="88" cy="107" r="10" fill="#ffb3d1"/>
-                                    <circle cx="80" cy="100" r="7" fill="#ffe680"/>
+                                <!-- 1. KERANJANG KAWAT PINK PASTEL (BELAKANG) -->
+                                <g class="wire-basket-back" stroke="#ff9ec9" fill="none">
+                                    <!-- Rangka Utama Keranjang -->
+                                    <rect x="64" y="82" width="166" height="154" rx="16" stroke-width="3" fill="rgba(255, 182, 214, 0.06)"/>
+                                    <!-- Garis Kisi Vertikal -->
+                                    <line x1="92" y1="82" x2="92" y2="236" stroke-width="1.6" opacity="0.75"/>
+                                    <line x1="120" y1="82" x2="120" y2="236" stroke-width="1.6" opacity="0.75"/>
+                                    <line x1="148" y1="82" x2="148" y2="236" stroke-width="1.6" opacity="0.75"/>
+                                    <line x1="176" y1="82" x2="176" y2="236" stroke-width="1.6" opacity="0.75"/>
+                                    <line x1="204" y1="82" x2="204" y2="236" stroke-width="1.6" opacity="0.75"/>
+                                    <!-- Garis Kisi Horizontal -->
+                                    <line x1="64" y1="112" x2="230" y2="112" stroke-width="1.6" opacity="0.75"/>
+                                    <line x1="64" y1="142" x2="230" y2="142" stroke-width="1.6" opacity="0.75"/>
+                                    <line x1="64" y1="172" x2="230" y2="172" stroke-width="1.6" opacity="0.75"/>
+                                    <line x1="64" y1="202" x2="230" y2="202" stroke-width="1.6" opacity="0.75"/>
+                                    <!-- Gagang Samping Kanan -->
+                                    <path d="M230,118 C242,118 242,152 230,152" stroke-width="2.6" stroke-linecap="round"/>
                                 </g>
 
-                                <g class="flower f2">
-                                    <circle cx="110" cy="84" r="20" fill="#fff0f6"/>
-                                    <circle cx="101" cy="76" r="11" fill="#ffffff"/>
-                                    <circle cx="119" cy="76" r="11" fill="#ffffff"/>
-                                    <circle cx="101" cy="92" r="11" fill="#ffffff"/>
-                                    <circle cx="119" cy="92" r="11" fill="#ffffff"/>
-                                    <circle cx="110" cy="84" r="8" fill="#ffd166"/>
+                                <!-- 2. BUKET BUNGA (POSISI AGAK KE KIRI DI DALAM KERANJANG) -->
+                                <g class="bouquet-bundle" filter="url(#sticker-glow)">
+                                    <!-- Kertas Pembungkus Belakang (Krem & Pink Berlapis) -->
+                                    <polygon points="124,205 46,96 92,48 162,48 202,98" fill="#fff4e6" stroke="#f3d8be" stroke-width="1.5"/>
+                                    <polygon points="124,205 38,112 76,62 124,78" fill="#ff85b3" stroke="#ffb3d1" stroke-width="1.5"/>
+                                    <polygon points="124,205 206,112 172,60 124,78" fill="#f472a8" stroke="#ffb3d1" stroke-width="1.5"/>
+
+                                    <!-- Daun Hijau Sage & Kuncup Bunga -->
+                                    <ellipse cx="64" cy="96" rx="18" ry="9" transform="rotate(-38 64 96)" fill="#4d8066"/>
+                                    <ellipse cx="184" cy="94" rx="18" ry="9" transform="rotate(35 184 94)" fill="#4d8066"/>
+                                    <ellipse cx="94" cy="60" rx="15" ry="8" transform="rotate(-65 94 60)" fill="#639c7e"/>
+                                    <ellipse cx="152" cy="58" rx="15" ry="8" transform="rotate(60 152 58)" fill="#639c7e"/>
+                                    <!-- Kuncup Kecil -->
+                                    <ellipse cx="78" cy="74" rx="5" ry="9" transform="rotate(-25 78 74)" fill="#a3d9a5" stroke="#5c946e" stroke-width="1"/>
+                                    <ellipse cx="168" cy="70" rx="5" ry="9" transform="rotate(25 168 70)" fill="#a3d9a5" stroke="#5c946e" stroke-width="1"/>
+
+                                    <!-- Mawar Ungu (Atas Kiri & Atas Tengah) -->
+                                    <g class="flower f-purple-1">
+                                        <circle cx="94" cy="82" r="16" fill="#7b2cbf"/>
+                                        <circle cx="88" cy="77" r="9" fill="#9d4edd"/>
+                                        <circle cx="100" cy="77" r="9" fill="#9d4edd"/>
+                                        <circle cx="94" cy="86" r="9" fill="#c77dff"/>
+                                        <circle cx="94" cy="81" r="5" fill="#5a189a"/>
+                                    </g>
+                                    <g class="flower f-purple-2">
+                                        <circle cx="132" cy="72" r="15" fill="#7b2cbf"/>
+                                        <circle cx="127" cy="68" r="8" fill="#9d4edd"/>
+                                        <circle cx="137" cy="68" r="8" fill="#c77dff"/>
+                                        <circle cx="132" cy="72" r="4.5" fill="#5a189a"/>
+                                    </g>
+
+                                    <!-- Mawar Krem Putih (Atas Kanan & Tengah Kiri) -->
+                                    <g class="flower f-cream-1">
+                                        <circle cx="158" cy="84" r="15" fill="#f5e6cc"/>
+                                        <circle cx="153" cy="80" r="8" fill="#fffaf0"/>
+                                        <circle cx="163" cy="80" r="8" fill="#fffaf0"/>
+                                        <circle cx="158" cy="85" r="5" fill="#e6ccb2"/>
+                                    </g>
+                                    <g class="flower f-cream-2">
+                                        <circle cx="74" cy="112" r="13" fill="#f5e6cc"/>
+                                        <circle cx="74" cy="112" r="7" fill="#fffaf0"/>
+                                        <circle cx="74" cy="112" r="3.5" fill="#e6ccb2"/>
+                                    </g>
+
+                                    <!-- BUNGA MATAHARI 1 (Kiri Tengah) -->
+                                    <g class="flower f-sun-1" transform="translate(96, 112)">
+                                        <g fill="#ffb703" stroke="#fb8500" stroke-width="0.8">
+                                            <ellipse cx="0" cy="-18" rx="4.5" ry="10"/>
+                                            <ellipse cx="0" cy="18" rx="4.5" ry="10"/>
+                                            <ellipse cx="-18" cy="0" rx="10" ry="4.5"/>
+                                            <ellipse cx="18" cy="0" rx="10" ry="4.5"/>
+                                            <ellipse cx="-13" cy="-13" rx="4.5" ry="10" transform="rotate(-45 -13 -13)"/>
+                                            <ellipse cx="13" cy="13" rx="4.5" ry="10" transform="rotate(-45 13 13)"/>
+                                            <ellipse cx="13" cy="-13" rx="4.5" ry="10" transform="rotate(45 13 -13)"/>
+                                            <ellipse cx="-13" cy="13" rx="4.5" ry="10" transform="rotate(45 -13 13)"/>
+                                        </g>
+                                        <circle cx="0" cy="0" r="10.5" fill="#3d1e10"/>
+                                        <circle cx="0" cy="0" r="7" fill="#5c3018" stroke="#ffb703" stroke-width="1" stroke-dasharray="2 2"/>
+                                    </g>
+
+                                    <!-- BUNGA MATAHARI 2 (Kanan Tengah) -->
+                                    <g class="flower f-sun-2" transform="translate(154, 114)">
+                                        <g fill="#ffb703" stroke="#fb8500" stroke-width="0.8">
+                                            <ellipse cx="0" cy="-17" rx="4.2" ry="9.5"/>
+                                            <ellipse cx="0" cy="17" rx="4.2" ry="9.5"/>
+                                            <ellipse cx="-17" cy="0" rx="9.5" ry="4.2"/>
+                                            <ellipse cx="17" cy="0" rx="9.5" ry="4.2"/>
+                                            <ellipse cx="-12" cy="-12" rx="4.2" ry="9.5" transform="rotate(-45 -12 -12)"/>
+                                            <ellipse cx="12" cy="12" rx="4.2" ry="9.5" transform="rotate(-45 12 12)"/>
+                                            <ellipse cx="12" cy="-12" rx="4.2" ry="9.5" transform="rotate(45 12 -12)"/>
+                                            <ellipse cx="-12" cy="12" rx="4.2" ry="9.5" transform="rotate(45 -12 12)"/>
+                                        </g>
+                                        <circle cx="0" cy="0" r="9.5" fill="#3d1e10"/>
+                                        <circle cx="0" cy="0" r="6.5" fill="#5c3018" stroke="#ffb703" stroke-width="1" stroke-dasharray="2 2"/>
+                                    </g>
+
+                                    <!-- Mawar Pink Lembut (Selipan) -->
+                                    <g class="flower f-pink-1">
+                                        <circle cx="124" cy="96" r="13" fill="#ff758f"/>
+                                        <circle cx="120" cy="93" r="7" fill="#ffadc9"/>
+                                        <circle cx="128" cy="93" r="7" fill="#ffadc9"/>
+                                        <circle cx="124" cy="96" r="4" fill="#e03a68"/>
+                                    </g>
+                                    <g class="flower f-pink-2">
+                                        <circle cx="172" cy="134" r="12" fill="#ff758f"/>
+                                        <circle cx="172" cy="134" r="6.5" fill="#ffadc9"/>
+                                        <circle cx="172" cy="134" r="3.5" fill="#e03a68"/>
+                                    </g>
+
+                                    <!-- Mawar Ungu Bawah Kiri -->
+                                    <g class="flower f-purple-3">
+                                        <circle cx="92" cy="140" r="13" fill="#7b2cbf"/>
+                                        <circle cx="88" cy="137" r="7" fill="#9d4edd"/>
+                                        <circle cx="96" cy="141" r="7" fill="#c77dff"/>
+                                        <circle cx="92" cy="140" r="4" fill="#5a189a"/>
+                                    </g>
+
+                                    <!-- BUNGA LILI PINK STARGAZER (Fokus Utama Tengah Bawah) -->
+                                    <g class="flower f-lily" transform="translate(125, 130)">
+                                        <g fill="#e63980" stroke="#ffd6e8" stroke-width="1.2">
+                                            <ellipse cx="0" cy="-16" rx="5.5" ry="14"/>
+                                            <ellipse cx="14" cy="-8" rx="5.5" ry="14" transform="rotate(60 14 -8)"/>
+                                            <ellipse cx="14" cy="8" rx="5.5" ry="14" transform="rotate(120 14 8)"/>
+                                            <ellipse cx="0" cy="16" rx="5.5" ry="14"/>
+                                            <ellipse cx="-14" cy="8" rx="5.5" ry="14" transform="rotate(60 -14 8)"/>
+                                            <ellipse cx="-14" cy="-8" rx="5.5" ry="14" transform="rotate(120 -14 -8)"/>
+                                        </g>
+                                        <!-- Benang Sari Lili -->
+                                        <line x1="0" y1="0" x2="-4" y2="-7" stroke="#fff3b0" stroke-width="1.2"/>
+                                        <line x1="0" y1="0" x2="4" y2="-7" stroke="#fff3b0" stroke-width="1.2"/>
+                                        <line x1="0" y1="0" x2="0" y2="7" stroke="#fff3b0" stroke-width="1.2"/>
+                                        <circle cx="-4" cy="-7" r="1.6" fill="#ff9f1c"/>
+                                        <circle cx="4" cy="-7" r="1.6" fill="#ff9f1c"/>
+                                        <circle cx="0" cy="7" r="1.6" fill="#ff9f1c"/>
+                                    </g>
+
+                                    <!-- Batang Bunga di Bagian Bawah -->
+                                    <g stroke="#4d8066" stroke-width="2.6" stroke-linecap="round">
+                                        <line x1="118" y1="196" x2="112" y2="224"/>
+                                        <line x1="124" y1="196" x2="124" y2="227"/>
+                                        <line x1="130" y1="196" x2="136" y2="223"/>
+                                    </g>
+
+                                    <!-- Kertas Pembungkus Depan (Kerucut & Lipatan Ruffle Pink-Krem) -->
+                                    <polygon points="124,206 54,132 104,154 124,144 144,154 194,132" fill="#ffe8f0" stroke="#ffb3d1" stroke-width="1.5"/>
+                                    <polygon points="124,208 66,144 124,162 182,144" fill="#f783b5" stroke="#ffbcd8" stroke-width="1.4"/>
+
+                                    <!-- Pita Satin Pink Menjuntai -->
+                                    <path d="M124,168 C105,158 94,166 102,175 C110,181 120,174 124,168 Z" fill="#ff4d94"/>
+                                    <path d="M124,168 C143,158 154,166 146,175 C138,181 128,174 124,168 Z" fill="#ff4d94"/>
+                                    <!-- Ekor Pita Melambai -->
+                                    <path d="M122,171 C106,188 86,198 70,194" fill="none" stroke="#ff70a6" stroke-width="4.5" stroke-linecap="round"/>
+                                    <path d="M125,171 C132,192 128,214 118,228" fill="none" stroke="#ff4d94" stroke-width="4.5" stroke-linecap="round"/>
+                                    <path d="M127,171 C140,186 150,198 158,208" fill="none" stroke="#ff85b3" stroke-width="4" stroke-linecap="round"/>
+                                    <circle cx="124" cy="169" r="5" fill="#ff9ec9"/>
                                 </g>
 
-                                <g class="flower f3">
-                                    <circle cx="140" cy="100" r="18" fill="#e85d95"/>
-                                    <circle cx="132" cy="92" r="10" fill="#ff94be"/>
-                                    <circle cx="148" cy="92" r="10" fill="#ff94be"/>
-                                    <circle cx="132" cy="107" r="10" fill="#ff94be"/>
-                                    <circle cx="148" cy="107" r="10" fill="#ff94be"/>
-                                    <circle cx="140" cy="100" r="7" fill="#ffe680"/>
+                                <!-- 3. KISI DEPAN KERANJANG & KARTU UCAPAN MINI (POJOK KANAN BAWAH) -->
+                                <g class="wire-basket-front" stroke="#ffb3d4" fill="none">
+                                    <path d="M64,174 L230,174 L230,222 Q230,236 214,236 L80,236 Q64,236 64,222 Z" stroke-width="2.8" fill="rgba(255, 194, 222, 0.08)"/>
+                                    <line x1="64" y1="205" x2="230" y2="205" stroke-width="1.6"/>
                                 </g>
 
-                                <circle cx="95" cy="118" r="11" fill="#ffc2da"/>
-                                <circle cx="95" cy="118" r="4" fill="#ffe680"/>
-                                <circle cx="125" cy="118" r="11" fill="#ffc2da"/>
-                                <circle cx="125" cy="118" r="4" fill="#ffe680"/>
-
-                                <polygon points="110,205 56,118 110,136 164,118" fill="rgba(255, 224, 236, 0.2)" stroke="#ff94be" stroke-width="2"/>
-                                <path d="M92,155 Q110,165 128,155" fill="none" stroke="#ff7eb3" stroke-width="5" stroke-linecap="round"/>
-                                <polygon points="110,158 95,172 103,157" fill="#ff7eb3"/>
-                                <polygon points="110,158 125,172 117,157" fill="#ff7eb3"/>
-                                <circle cx="110" cy="158" r="5" fill="#ffb3d1"/>
+                                <!-- Kartu Ucapan Mini dengan Selotip Pink -->
+                                <g transform="translate(182, 174) rotate(7)">
+                                    <rect x="0" y="0" width="56" height="62" rx="4" fill="#fffaf2" stroke="#e6d3bc" stroke-width="1.2"/>
+                                    <!-- Selotip Pink di Atas Kartu -->
+                                    <rect x="14" y="-5" width="28" height="9" rx="1.5" fill="rgba(255, 133, 179, 0.85)"/>
+                                    <text x="28" y="24" text-anchor="middle" fill="#d94686" font-size="13" font-weight="bold">♥</text>
+                                    <text x="28" y="39" text-anchor="middle" fill="#6e4e3a" font-family="Courier New, monospace" font-size="7.5" font-weight="bold">FOR LOWFY</text>
+                                    <text x="28" y="50" text-anchor="middle" fill="#b0436f" font-family="Courier New, monospace" font-size="7">19th ✨</text>
+                                </g>
                             </svg>
                         </div>
 
@@ -1054,17 +1181,61 @@
             document.getElementById("opt-content-" + optionNumber).classList.add("show");
         }
 
-        function bloomBouquet() {
+const BURST_FLOWERS = ["🌻", "🌸", "🌺", "💜", "🌷", "🌼", "✨", "💖"];
+
+        function bloomBouquet(event) {
+            if (event) event.stopPropagation();
+
             const box = document.getElementById("bouquet-box");
             const msg = document.getElementById("bouquet-msg");
-            
+            const burstLayer = document.getElementById("flower-burst-layer");
+
+            // Animasi membal pada keranjang buket
             box.classList.remove("blooming");
             void box.offsetWidth;
             box.classList.add("blooming");
-            
-            msg.innerText = "Sending you endless happiness & warm hugs! 💐✨";
-        }
 
+            msg.innerText = "Sending you endless happiness & warm hugs! 💐✨";
+
+            // Munculkan 18 bunga bertebaran radial 360° dari tengah ke luar
+            if (!burstLayer) return;
+            const totalParticles = 18;
+
+            for (let i = 0; i < totalParticles; i++) {
+                const particle = document.createElement("span");
+                particle.className = "burst-flower";
+                particle.innerText = BURST_FLOWERS[Math.floor(Math.random() * BURST_FLOWERS.length)];
+
+                // Sebar sudut merata 360 derajat + sedikit variasi acak
+                const baseAngle = (i / totalParticles) * Math.PI * 2;
+                const angle = baseAngle + (Math.random() - 0.5) * 0.35;
+                const distance = 95 + Math.random() * 75; // Jarak sebaran dari tengah ke luar (px)
+
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                const rot = (Math.random() - 0.5) * 420;
+                const scale = 0.85 + Math.random() * 0.65;
+
+                particle.style.setProperty("--tx", `${tx.toFixed(1)}px`);
+                particle.style.setProperty("--ty", `${ty.toFixed(1)}px`);
+                particle.style.setProperty("--rot", `${rot.toFixed(0)}deg`);
+                particle.style.setProperty("--sc", scale.toFixed(2));
+                particle.style.fontSize = `${16 + Math.floor(Math.random() * 10)}px`;
+
+                burstLayer.appendChild(particle);
+
+                // Picu transisi menyebar keluar pada frame berikutnya
+                requestAnimationFrame(() => {
+                    particle.classList.add("scatter");
+                });
+
+                // Hapus elemen setelah animasi selesai agar ringan
+                setTimeout(() => {
+                    particle.remove();
+                }, 1350);
+            }
+        }
+        
         function blowCandle() {
             const flame = document.getElementById("flame");
             const status = document.getElementById("wish-status");
