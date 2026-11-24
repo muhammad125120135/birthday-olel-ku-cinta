@@ -1,0 +1,1114 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Georgia', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #080510;
+    background-image: radial-gradient(circle at 50% 0%, #1d112b 0%, #090612 60%, #05030a 100%);
+    color: #f8f2f6;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* KANVAS KUNANG-KUNANG MALAM */
+#fireflies-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* CAHAYA AMBIENT LEMBUT */
+.ambient-orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.42;
+    will-change: transform;
+    animation: orbDrift 16s ease-in-out infinite alternate;
+}
+
+.orb-1 {
+    width: 620px;
+    height: 620px;
+    background: radial-gradient(circle, rgba(255, 94, 156, 0.38) 0%, rgba(255, 94, 156, 0) 70%);
+    top: -180px;
+    left: -180px;
+}
+
+.orb-2 {
+    width: 680px;
+    height: 680px;
+    background: radial-gradient(circle, rgba(138, 63, 252, 0.35) 0%, rgba(217, 83, 143, 0.18) 45%, transparent 72%);
+    bottom: -200px;
+    right: -200px;
+    animation-delay: 4s;
+}
+
+@keyframes orbDrift {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(35px, 25px, 0); }
+}
+
+/* KELAS DASAR KACA */
+.glass-card {
+    background: rgba(24, 15, 36, 0.62);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 166, 206, 0.24);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    position: relative;
+    overflow: hidden;
+}
+
+.interactive-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        460px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(255, 126, 179, 0.14),
+        transparent 60%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* =========================================
+   1. AMPLOP PEMBUKA (MIDNIGHT GLASS WAX SEAL)
+   ========================================= */
+.envelope-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(28, 15, 42, 0.96) 0%, rgba(8, 5, 16, 0.99) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    will-change: transform, opacity;
+    transition: transform 1.1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.9s ease;
+}
+
+.envelope-overlay.opened {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.envelope-card {
+    text-align: center;
+    cursor: pointer;
+    perspective: 1000px;
+    z-index: 5;
+}
+
+.sub-label {
+    font-size: 1.55rem;
+    color: #fff5fa;
+    margin-bottom: 34px;
+    line-height: 1.25;
+    text-shadow: 0 0 18px rgba(255, 126, 179, 0.45);
+}
+
+.sub-label span {
+    font-style: italic;
+    font-size: 1.25rem;
+    color: #ff94c2;
+}
+
+.wax-envelope {
+    position: relative;
+    width: 276px;
+    height: 180px;
+    margin: 0 auto;
+    transition: transform 0.35s ease;
+}
+
+.envelope-card:hover .wax-envelope:not(.unsealed) {
+    transform: translateY(-6px) scale(1.02);
+}
+
+.env-back {
+    position: absolute;
+    inset: 0;
+    background: rgba(36, 22, 52, 0.85);
+    border: 1px solid rgba(255, 148, 194, 0.35);
+    border-radius: 12px;
+    box-shadow: 0 22px 45px rgba(0, 0, 0, 0.65), 0 0 25px rgba(255, 110, 175, 0.2);
+    z-index: 1;
+}
+
+.env-letter-peek {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 12px;
+    height: 152px;
+    background: linear-gradient(145deg, #2d1a3e, #180e24);
+    border: 1px solid rgba(255, 158, 203, 0.45);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+    will-change: transform;
+    transform: translateY(-14px);
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+}
+
+.peek-tag {
+    display: inline-block;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.68rem;
+    color: #ffb3d4;
+    letter-spacing: 1.5px;
+    margin-bottom: 3px;
+}
+
+.peek-title {
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 126, 179, 0.6);
+    margin-bottom: 10px;
+}
+
+.peek-lines {
+    height: 46px;
+    background-image: repeating-linear-gradient(
+        transparent,
+        transparent 11px,
+        rgba(255, 166, 206, 0.2) 12px
+    );
+}
+
+.env-front-left {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(84, 42, 74, 0.92), rgba(28, 16, 40, 0.96));
+    clip-path: polygon(0 0, 52% 52%, 0 100%);
+    border-radius: 12px 0 0 12px;
+    z-index: 3;
+}
+
+.env-front-right {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(225deg, rgba(78, 38, 70, 0.92), rgba(24, 14, 36, 0.96));
+    clip-path: polygon(100% 0, 48% 52%, 100% 100%);
+    border-radius: 0 12px 12px 0;
+    z-index: 3;
+}
+
+.env-front-bottom {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #321b47 0%, #170d24 100%);
+    clip-path: polygon(0 100%, 50% 46%, 100% 100%);
+    border-radius: 0 0 12px 12px;
+    z-index: 4;
+    border-bottom: 1px solid rgba(255, 158, 203, 0.35);
+}
+
+.env-flap-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 108px;
+    background: linear-gradient(180deg, #69325d 0%, #2b163e 100%);
+    clip-path: polygon(0 0, 100% 0, 50% 95%);
+    border-radius: 12px 12px 0 0;
+    transform-origin: top center;
+    will-change: transform;
+    z-index: 5;
+    transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.15s, z-index 0s linear 0.35s;
+}
+
+.wax-seal {
+    position: absolute;
+    top: 78px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ff9ec9 0%, #e04885 70%, #992254 100%);
+    box-shadow: 0 0 22px rgba(255, 110, 175, 0.75), inset 0 2px 5px rgba(255, 255, 255, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 6;
+    will-change: transform, opacity;
+    transition: transform 0.4s ease, opacity 0.35s ease;
+}
+
+.wax-seal-inner {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 240, 247, 0.65);
+    color: #ffffff;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wax-envelope.unsealed .wax-seal {
+    transform: translateX(-50%) scale(1.4);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.wax-envelope.unsealed .env-flap-top {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+.wax-envelope.unsealed .env-letter-peek {
+    transform: translateY(-82px);
+}
+
+.tap-hint {
+    margin-top: 26px;
+    font-size: 0.82rem;
+    letter-spacing: 0.8px;
+    color: #ffb8d8;
+    animation: pulseText 1.8s infinite;
+}
+
+@keyframes pulseText {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+}
+
+/* =========================================
+   2. KONTEN UTAMA & ANIMASI SCROLL
+   ========================================= */
+.main-content {
+    opacity: 0;
+    position: relative;
+    z-index: 3;
+    transition: opacity 0.8s ease 0.2s;
+}
+
+.main-content.visible {
+    opacity: 1;
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(35px);
+    transition: all 0.85s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.night-section {
+    min-height: 100vh;
+    padding: 75px 20px 75px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.neon-divider {
+    width: 75%;
+    max-width: 600px;
+    height: 1px;
+    margin: 0 auto;
+    background: linear-gradient(90deg, transparent, rgba(255, 126, 179, 0.65), transparent);
+    box-shadow: 0 0 12px rgba(255, 126, 179, 0.45);
+}
+
+/* =========================================
+   3. BAGIAN 1: HERO & KARTU SURAT KACA
+   ========================================= */
+.header-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    margin-bottom: 42px;
+    flex-wrap: wrap;
+}
+
+.glass-pill {
+    position: relative;
+    font-size: 3.3rem;
+    background: rgba(255, 126, 179, 0.12);
+    border: 1px solid rgba(255, 158, 203, 0.35);
+    box-shadow: 0 0 28px rgba(255, 110, 175, 0.25);
+    padding: 16px 22px;
+    border-radius: 50%;
+}
+
+.balloon {
+    position: absolute;
+    font-size: 1.35rem;
+    animation: floatBalloon 3s ease-in-out infinite;
+}
+
+.b1 { top: -8px; left: -10px; }
+.b2 { top: -12px; right: -10px; animation-delay: 1s; }
+
+@keyframes floatBalloon {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.title-stack {
+    text-align: left;
+}
+
+.edition-badge, .section-tag {
+    display: inline-block;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    color: #ff94c2;
+    background: rgba(255, 126, 179, 0.14);
+    border: 1px solid rgba(255, 148, 194, 0.3);
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+}
+
+.main-title {
+    font-size: 2.55rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1.12;
+    background: linear-gradient(135deg, #ffffff 30%, #ff9ec9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.letter-paper {
+    max-width: 620px;
+    width: 100%;
+    border-radius: 22px;
+    padding: 40px 30px 34px;
+    will-change: transform, opacity;
+    transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.3s ease;
+
+    opacity: 0;
+    transform: scaleY(0.88) translateY(18px);
+    transform-origin: top center;
+}
+
+.letter-paper.unfolded {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+}
+
+.paper-tape {
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #ff7eb3, transparent);
+    box-shadow: 0 0 15px #ff7eb3;
+}
+
+.letter-body {
+    position: relative;
+    z-index: 2;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.93rem;
+    line-height: 1.85;
+    color: #f3e8ee;
+}
+
+.letter-body p {
+    margin-bottom: 20px;
+}
+
+.greeting-highlight {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #ff9ec9;
+    text-shadow: 0 0 14px rgba(255, 126, 179, 0.35);
+    letter-spacing: 0.4px;
+}
+
+.closing {
+    text-align: right;
+    margin-top: 28px;
+    margin-bottom: 0 !important;
+    font-style: italic;
+    font-weight: bold;
+    color: #ffb8d8;
+}
+
+.sweep-text {
+    opacity: 0;
+    transform: translateX(-20px);
+    -webkit-mask-image: linear-gradient(90deg, #000 50%, transparent 100%);
+    -webkit-mask-size: 220% 100%;
+    -webkit-mask-position: 100% 0;
+    mask-image: linear-gradient(90deg, #000 50%, transparent 100%);
+    mask-size: 220% 100%;
+    mask-position: 100% 0;
+    transition: opacity 1.8s ease, transform 1.8s cubic-bezier(0.22, 1, 0.36, 1),
+                -webkit-mask-position 2.2s ease-out, mask-position 2.2s ease-out;
+}
+
+.sweep-text.swept {
+    opacity: 1;
+    transform: translateX(0);
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+}
+
+.scroll-indicator {
+    margin-top: 34px;
+    font-size: 0.85rem;
+    color: #ffb8d8;
+    opacity: 0.8;
+    animation: bounceDown 1.6s infinite;
+}
+
+@keyframes bounceDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+}
+
+/* =========================================
+   4. BAGIAN 2: GLASS JAR LITTLE NOTES
+   ========================================= */
+.jar-area {
+    text-align: center;
+}
+
+.jar-title, .options-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.jar-sub, .options-sub {
+    font-size: 0.9rem;
+    color: #d6c3ce;
+    margin-bottom: 34px;
+}
+
+.jar {
+    width: 150px;
+    margin: 0 auto 28px;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+}
+
+.jar:hover {
+    transform: scale(1.04);
+}
+
+.jar-lid {
+    width: 84px;
+    height: 18px;
+    background: linear-gradient(90deg, #e04885, #ff85b3, #e04885);
+    margin: 0 auto;
+    border-radius: 6px 6px 2px 2px;
+    box-shadow: 0 0 14px rgba(255, 126, 179, 0.5);
+}
+
+.jar-neck {
+    width: 74px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.12);
+    border-left: 1px solid rgba(255, 182, 214, 0.4);
+    border-right: 1px solid rgba(255, 182, 214, 0.4);
+    margin: 0 auto;
+}
+
+.jar-glass {
+    width: 144px;
+    height: 190px;
+    margin: 0 auto;
+    background: rgba(36, 22, 52, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 166, 206, 0.45);
+    border-radius: 34px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 24px rgba(255, 126, 179, 0.25), 0 14px 34px rgba(0, 0, 0, 0.5);
+}
+
+.note-slip {
+    position: absolute;
+    width: 36px;
+    height: 28px;
+    background: rgba(255, 126, 179, 0.24);
+    border: 1px solid rgba(255, 194, 222, 0.65);
+    border-radius: 6px;
+    color: #ffe3f0;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.s1 { bottom: 14px; left: 18px; transform: rotate(-18deg); }
+.s2 { bottom: 16px; right: 20px; transform: rotate(22deg); }
+.s3 { bottom: 44px; left: 50px; transform: rotate(10deg); }
+.s4 { bottom: 70px; left: 22px; transform: rotate(-28deg); }
+.s5 { bottom: 66px; right: 26px; transform: rotate(15deg); }
+
+.shaking {
+    animation: jarShake 0.5s ease-in-out;
+}
+
+@keyframes jarShake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-10deg) translateX(-4px); }
+    40% { transform: rotate(10deg) translateX(4px); }
+    60% { transform: rotate(-8deg); }
+    80% { transform: rotate(8deg); }
+}
+
+.btn-glass-pink {
+    background: linear-gradient(135deg, rgba(255, 110, 175, 0.38), rgba(217, 70, 134, 0.48));
+    color: #ffffff;
+    border: 1px solid rgba(255, 179, 214, 0.65);
+    padding: 11px 26px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255, 110, 175, 0.3);
+    transition: all 0.25s ease;
+}
+
+.btn-glass-pink:hover {
+    background: linear-gradient(135deg, rgba(255, 110, 175, 0.58), rgba(217, 70, 134, 0.68));
+    box-shadow: 0 0 24px rgba(255, 110, 175, 0.55);
+    transform: translateY(-2px);
+}
+
+.btn-glass-pink:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   5. BAGIAN 3: AREA 3 OPSI INTERAKTIF
+   ========================================= */
+.options-area {
+    text-align: center;
+    padding-bottom: 110px;
+}
+
+.options-wrapper {
+    max-width: 560px;
+    width: 100%;
+}
+
+.options-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+}
+
+.opt-btn {
+    background: rgba(36, 22, 52, 0.65);
+    color: #e6d5df;
+    border: 1px solid rgba(255, 166, 206, 0.28);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.opt-btn:hover {
+    background: rgba(255, 126, 179, 0.2);
+    color: #ffffff;
+}
+
+.opt-btn.active {
+    background: linear-gradient(135deg, #ff7eb3, #d94686);
+    color: #ffffff;
+    border-color: #ffc2de;
+    font-weight: 700;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 110, 175, 0.45);
+}
+
+.option-display {
+    border-radius: 22px;
+    padding: 32px 24px;
+    min-height: 310px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+}
+
+.opt-panel {
+    display: none;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.opt-panel.show {
+    display: block;
+    animation: fadeSlideUp 0.45s ease;
+}
+
+@keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.opt-panel h3 {
+    font-size: 1.35rem;
+    color: #ffb8d8;
+    margin-bottom: 6px;
+}
+
+.opt-desc {
+    font-size: 0.84rem;
+    color: #cbb5c2;
+    margin-bottom: 14px;
+}
+
+/* Buket Bunga (Opsi 1) */
+.bouquet-box {
+    position: relative;
+    width: 210px;
+    height: 200px;
+    margin: 4px auto 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bouquet-svg {
+    transform-origin: bottom center;
+    animation: bouquetSway 3.5s ease-in-out infinite;
+}
+
+@keyframes bouquetSway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+}
+
+.flower {
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: flowerBreathe 2.8s ease-in-out infinite;
+}
+
+.f2 { animation-delay: 0.4s; }
+.f3 { animation-delay: 0.8s; }
+
+@keyframes flowerBreathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+.bouquet-box.blooming .bouquet-svg {
+    animation: bouquetPop 0.6s ease, bouquetSway 3.5s ease-in-out infinite 0.6s;
+}
+
+@keyframes bouquetPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.14); }
+    100% { transform: scale(1); }
+}
+
+.sparkle {
+    position: absolute;
+    font-size: 1.1rem;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.bouquet-box.blooming .sparkle {
+    animation: floatPetal 1.4s ease-out forwards;
+}
+
+.sp1 { top: 30px; left: 25px; animation-delay: 0.05s; }
+.sp2 { top: 20px; right: 30px; animation-delay: 0.15s; }
+.sp3 { top: 65px; left: 12px; animation-delay: 0.25s; }
+.sp4 { top: 55px; right: 15px; animation-delay: 0.1s; }
+
+@keyframes floatPetal {
+    0% { opacity: 1; transform: translateY(10px) scale(0.6); }
+    100% { opacity: 0; transform: translateY(-35px) scale(1.3); }
+}
+
+/* 3 Things I Admire (Opsi 2) */
+.admire-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+    margin-top: 16px;
+}
+
+.admire-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid #ff7eb3;
+    padding: 13px 16px;
+    border-radius: 10px;
+}
+
+.admire-card strong {
+    display: block;
+    font-size: 0.94rem;
+    color: #ff9ec9;
+    margin-bottom: 4px;
+}
+
+.admire-card p {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.84rem;
+    color: #ebd9e3;
+    line-height: 1.55;
+}
+
+/* Kue & Lilin (Opsi 3) */
+.cake-box {
+    margin: 22px auto 14px;
+    width: 140px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.flame {
+    font-size: 1.6rem;
+    animation: flicker 0.6s infinite alternate;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.flame.blown {
+    opacity: 0;
+    transform: scale(0.2);
+}
+
+@keyframes flicker {
+    from { transform: scale(1) rotate(-3deg); }
+    to { transform: scale(1.12) rotate(3deg); }
+}
+
+.candle {
+    width: 10px;
+    height: 28px;
+    background: repeating-linear-gradient(45deg, #ff7eb3, #ff7eb3 4px, #fff 4px, #fff 8px);
+    border-radius: 3px;
+}
+
+.cake-top {
+    width: 100px;
+    height: 24px;
+    background: #ff7eb3;
+    border-radius: 10px 10px 0 0;
+}
+
+.cake-base {
+    width: 126px;
+    height: 36px;
+    background: #6c3b6e;
+    border-radius: 6px 6px 12px 12px;
+}
+
+.wish-status {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #ffb8d8;
+    margin-top: 6px;
+}
+
+.wish-form {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.wish-form textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 158, 203, 0.4);
+    background: rgba(15, 9, 24, 0.72);
+    color: #ffffff;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.86rem;
+    resize: none;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.wish-form textarea::placeholder {
+    color: rgba(255, 214, 232, 0.45);
+}
+
+.wish-form textarea:focus {
+    border-color: #ff7eb3;
+    box-shadow: 0 0 16px rgba(255, 126, 179, 0.3);
+}
+
+.send-feedback {
+    font-size: 0.84rem;
+    font-weight: bold;
+    min-height: 18px;
+}
+
+/* =========================================
+   6. POPUP MODAL GLASSMORPHISM
+   ========================================= */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 3, 12, 0.78);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 200;
+}
+
+.modal.show {
+    display: flex;
+    animation: fadeInModal 0.25s ease;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-card {
+    max-width: 350px;
+    width: 100%;
+    padding: 30px 24px 26px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.modal-x {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.05rem;
+    color: #ffb8d8;
+    cursor: pointer;
+}
+
+.modal-icon {
+    color: #ff7eb3;
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+}
+
+.modal-card h3 {
+    font-size: 1.35rem;
+    margin-bottom: 12px;
+    color: #ffffff;
+}
+
+.modal-card p {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: #f0e1ea;
+    margin-bottom: 22px;
+}
+
+/* =========================================
+   7. MINI PLAYER BERGAYA RETRO GLASS
+   ========================================= */
+.mini-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(20, 13, 30, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 8px 14px 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 126, 179, 0.15);
+    border: 1px solid rgba(255, 158, 203, 0.25);
+    z-index: 180;
+    will-change: transform, opacity;
+
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mini-player.show-player {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    pointer-events: auto;
+}
+
+.player-window-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 2px 4px;
+}
+
+.dot-red {
+    width: 10px;
+    height: 10px;
+    background-color: #ff5f56;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px rgba(255, 95, 86, 0.6);
+}
+
+.grip-dots {
+    font-size: 11px;
+    line-height: 1;
+    color: #9e8a96;
+    letter-spacing: 1px;
+}
+
+.player-cover {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 182, 214, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    min-width: 95px;
+    max-width: 135px;
+}
+
+.player-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-artist {
+    font-size: 0.75rem;
+    color: #d6b6c7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 4px;
+}
+
+.btn-circle-play {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffffff, #ffd6e8);
+    color: #1a0f24;
+    border: none;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(255, 158, 203, 0.4);
+    transition: transform 0.15s ease;
+}
+
+.btn-circle-play:hover {
+    transform: scale(1.08);
+}
+
+.btn-next-track {
+    background: none;
+    border: none;
+    color: #e8cddb;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-next-track:hover {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.mini-player.minimized .player-info,
+.mini-player.minimized .btn-next-track {
+    display: none;
+}
+
+/* =========================================
+   8. RESPONSIVITAS LAYAR SMARTPHONE
+   ========================================= */
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 1.95rem;
+    }
+
+    .letter-paper {
+        padding: 28px 20px 26px;
+    }
+
+    .mini-player {
+        bottom: 12px;
+        right: 12px;
+        padding: 6px 10px;
+    }
+
+    .options-area {
+        padding-bottom: 135px;
+    }
+}

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 19th Birthday, Lowfy!</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+    <!-- Kanvas Kunang-Kunang Malam (Offscreen Sprite Optimized) -->
+    <canvas id="fireflies-canvas"></canvas>
+
+    <!-- Cahaya Ambient Malam -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+
+    <!-- Pemutar Audio Latar -->
+    <audio id="bg-music" preload="none"></audio>
+
+    <!-- MINI PLAYER BERGAYA RETRO GLASS -->
+    <div id="mini-player" class="mini-player">
+        <div class="player-window-controls" onclick="toggleMinimizePlayer()" title="Kecilkan / Perbesar Player">
+            <span class="dot-red"></span>
+            <span class="grip-dots">⋮⋮</span>
+        </div>
+
+        <div id="player-cover" class="player-cover">🌸</div>
+
+        <div class="player-info">
+            <div id="player-title" class="player-title">24/7</div>
+            <div id="player-artist" class="player-artist">Romaria</div>
+        </div>
+
+        <div class="player-actions">
+            <button id="play-pause-btn" class="btn-circle-play" onclick="toggleMusic(event)" title="Play / Pause">
+                ▶
+            </button>
+            <button class="btn-next-track" onclick="nextTrack(event)" title="Ganti Lagu Berikutnya">
+                ⏭
+            </button>
+        </div>
+    </div>
+    
+    <!-- 1. LAYAR AMPLOP PEMBUKA (Midnight Glass Wax Seal) -->
+    <div id="envelope-overlay" class="envelope-overlay">
+        <div class="envelope-card" onclick="openGift(event)">
+            <p class="sub-label">i have something<br><span>for you.</span></p>
+            
+            <div id="wax-envelope" class="wax-envelope">
+                <div class="env-back"></div>
+
+                <!-- Kartu Surat Kaca Menyembul -->
+                <div class="env-letter-peek">
+                    <span class="peek-tag">12 . 12 . 2026</span>
+                    <p class="peek-title">For Lowfy ♥</p>
+                    <div class="peek-lines"></div>
+                </div>
+
+                <div class="env-front-left"></div>
+                <div class="env-front-right"></div>
+                <div class="env-front-bottom"></div>
+                <div class="env-flap-top"></div>
+
+                <!-- Segel Lilin Pink Neon 3D -->
+                <div class="wax-seal">
+                    <div class="wax-seal-inner">♥</div>
+                </div>
+            </div>
+
+            <p class="tap-hint">tap the wax seal<br>to open</p>
+        </div>
+    </div>
+
+    <!-- 2. KONTEN UTAMA -->
+    <main id="main-content" class="main-content">
+        
+        <!-- Bagian 1: Hero & Surat Utama -->
+        <section class="night-section">
+            <div class="header-area reveal">
+                <div class="illustration-badge glass-pill">
+                    <span class="balloon b1">✨</span>
+                    <span class="avatar">🥳</span>
+                    <span class="balloon b2">🌙</span>
+                </div>
+                <div class="title-stack">
+                    <span class="edition-badge">19TH EDITION • 12.12.2026</span>
+                    <h1 class="main-title">HAPPY 19TH<br>BIRTHDAY!</h1>
+                </div>
+            </div>
+
+            <!-- Kartu Kaca Surat Utama -->
+            <div id="letter-paper" class="letter-paper glass-card interactive-glass" data-tilt="false">
+                <div class="paper-tape"></div>
+
+                <div class="letter-body">
+                    <p class="sweep-text greeting-highlight">HAIII SAYANG QU YANG SANGAT SANGAT CANTIK DAN LUCU.</p>
+
+                    <p class="sweep-text">
+                        HAPPY BIRTHDAY LOWFY! Hari ini, tepatnya di tanggal 12 Desember 2026, kamu uda menyentuh umur 19 tahun looo.. waktu beneran jalan kaya mobil racing aja. Nggak ada rasanya yaa.. sekarang kamu uda nyentuh umur 19, dan itu hampir 20 yaa.. WOW.. beneran uda masuk dalam fase baru di mana kamu uda pelan-pelan mulai menghadapi dunia yang bener-bener jauh lebih luas dari yang kemarin-kemarin.
+                    </p>
+
+                    <p class="sweep-text">
+                        Kalo boleh jujur, akhir-akhir ini aku sering banget kepikiran sama kamu. Kaya berat banget nggak sih jalanin hari-hari kamu sekarang? terutama kamu sekarang uda masuk dan mulai adaptasi di kehidupan perkuliahan ini? Aku tau kok kalo dunia kuliah itu nggak semudah yang di bayangin. Yang pasti banyak banget hal-hal baru yang mungkin bikin kamu kaget, dari tugas-tugas yang selalu datang tanpa lampu merah, jadwal yang lumayan padat, atau ada beberapa momen di mana kamu kaya ngerasa capek banget mulai dari fisik atau pikiran kamu. Juga kadang mungkin ada hari di mana kamu ngerasa riwueh banget, pengen ngeluh, bahkan kaya kamu mungkin ngerasa meragukan diri kamu sendiri.
+                    </p>
+
+                    <p class="sweep-text">
+                        Setiap kali kamu ngerasain hari kamu berat, iki cuma mau kamu ingat satu hal sayang.. kamu nggak sendirian. Iki selalu berharap supaya kamu selalu punya kesabaran dan kesehatan buat jalanin semuanya badai yang datang, yang pastinya bareng sama iki. Iki pasti bakal selalu temani hari-hari kamu.. enggak cuman di hari-hari di mana kamu lagi senang atau bahagia, tapi juga di hari-hari kamu dimana lagi capek-capeknya, sedih, atau kamu butuh tempat buat bersandar. Iki bakal selalu terus ada di sisi kamu, dengerin semua cerita kamu tentang apapun itu, dan jalanin semuanya sama-sama sampai tahun-tahun selanjutnya.
+                    </p>
+
+                    <p class="sweep-text">
+                        Intinya, iki beneran bangga banget sama kamu, olel. Bangga karena kamu sendiri uda mau berusaha sejauh ini, bangga karena kamu tetap bertahan meskipun kadang rasanya pasti cape dan lelah banget di kamu nya, dan bangga bisa punya pasangan sehebat, sekuat, dan secantik kamu di kondisi apapun.
+                    </p>
+
+                    <p class="sweep-text">
+                        Di umur kamu yang uda menyentuh 19 tahun ini, aku selalu doain yang terbaik buat kamu. Semoga apa pun yang kamu mau, semua impian yang diam-diam kamu simpan di dalam hati dan pikiran kamu, dan segala rencana baik yang sedang kamu susun bisa satu per satu tercapai dengan bertahap. Semoga semesta selalu berpihak sama kamu, dan segala hal baik dari orang-orang yang ada di sekitar kamu selalu membawakan hal-hal baik, energi yang positif, dan menyenangkan buat kamu.
+                    </p>
+
+                    <p class="sweep-text">
+                        Dan... kalo nanti kamu ketemu sama hari yang rasanya bener-bener buruk atau apes banget, hari di mana semuanya bakal terasa berat banget dan kamu nggak menemukan satu pun hal baik yang ada, jangan pernah kepikiran buat pendam itu sendirian okeyy? Kamu punya tempat pulang yang banyak termasuk aku (harus aku). Walau kamu nggak menemukan hal baiknya, aku bakal kasih kamu seluruh dunia buat peluk kamu se erat-eratnya sampai semua rasa cape dan sedih kamu hilang.. sampai kamu balik merasa aman dan nyaman lagi..
+                    </p>
+
+                    <p class="sweep-text">
+                        Selamat ulang tahun yang ke-19 ya andiyashafa ku cinta. Aku bener-bener terima kasih uda lahir di dunia ini, terima kasih uda bertahan sampai hari ini sampai detik ini, juga terima kasih sudah kasih kesempatan buat iki jadi bagian dari perjalanan hidup kamu.
+                    </p>
+
+                    <p class="sweep-text closing">
+                        Once again, happy 19th birthday, lowfy.<br>
+                        I love you so much, today, tomorrow, and always. ♥
+                    </p>
+                </div>
+            </div>
+
+            <div class="scroll-indicator">
+                <span>scroll down ↓</span>
+            </div>
+        </section>
+
+        <!-- Garis Pemisah Cahaya Pink -->
+        <div class="neon-divider"></div>
+
+        <!-- Bagian 2: Glass Jar Little Notes -->
+        <section id="jar-section" class="night-section jar-area">
+            <div class="jar-wrapper reveal">
+                <span class="section-tag">MEMORIES & WISHES</span>
+                <h2 class="jar-title">Little notes, just for you</h2>
+                <p class="jar-sub">give it a little shake, or tap them one by one</p>
+
+                <div id="jar" class="jar" onclick="pickNote()">
+                    <div class="jar-lid"></div>
+                    <div class="jar-neck"></div>
+                    <div class="jar-glass">
+                        <div class="note-slip s1">♥</div>
+                        <div class="note-slip s2">★</div>
+                        <div class="note-slip s3">✿</div>
+                        <div class="note-slip s4">✦</div>
+                        <div class="note-slip s5">♥</div>
+                    </div>
+                </div>
+
+                <button class="btn-glass-pink" onclick="pickNote()">Shake it! ✨</button>
+            </div>
+        </section>
+
+        <!-- Garis Pemisah Cahaya Pink -->
+        <div class="neon-divider"></div>
+
+        <!-- Bagian 3: AREA 3 OPSI INTERAKTIF -->
+        <section id="options-section" class="night-section options-area">
+            <div class="options-wrapper reveal">
+                <span class="section-tag">INTERACTIVE SURPRISES</span>
+                <h2 class="options-title">One more thing... ✨</h2>
+                <p class="options-sub">tap one of these three little surprises below</p>
+
+                <div class="options-buttons">
+                    <button class="opt-btn active" onclick="selectOption(1, this)">
+                        💐 Flower Bouquet
+                    </button>
+                    <button class="opt-btn" onclick="selectOption(2, this)">
+                        🌙 3 Things I Admire
+                    </button>
+                    <button class="opt-btn" onclick="selectOption(3, this)">
+                        🎂 Make a Wish
+                    </button>
+                </div>
+
+                <!-- Kotak Kaca Hasil Interaktif -->
+                <div class="option-display glass-card interactive-glass" data-tilt="true">
+                    
+                    <!-- Opsi 1: Buket Bunga Animasi -->
+                    <div id="opt-content-1" class="opt-panel show">
+                        <h3>A Special Bouquet For You 💐</h3>
+                        <p class="opt-desc">Tap the bouquet to make it bloom & sparkle!</p>
+                        
+                        <div id="bouquet-box" class="bouquet-box" onclick="bloomBouquet()">
+                            <span class="sparkle sp1">🌸</span>
+                            <span class="sparkle sp2">✨</span>
+                            <span class="sparkle sp3">🌸</span>
+                            <span class="sparkle sp4">💖</span>
+
+                            <svg class="bouquet-svg" viewBox="0 0 220 220" width="190" height="190">
+                                <polygon points="110,205 42,95 110,65 178,95" fill="rgba(255, 182, 206, 0.25)" stroke="#ff85b3" stroke-width="2"/>
+                                <ellipse cx="68" cy="95" rx="18" ry="10" transform="rotate(-35 68 95)" fill="#4e7a69"/>
+                                <ellipse cx="152" cy="95" rx="18" ry="10" transform="rotate(35 152 95)" fill="#4e7a69"/>
+                                <ellipse cx="110" cy="68" rx="12" ry="20" fill="#689e89"/>
+                                <ellipse cx="85" cy="78" rx="14" ry="9" transform="rotate(-20 85 78)" fill="#689e89"/>
+                                <ellipse cx="135" cy="78" rx="14" ry="9" transform="rotate(20 135 78)" fill="#689e89"/>
+
+                                <line x1="110" y1="185" x2="82" y2="105" stroke="#538270" stroke-width="3"/>
+                                <line x1="110" y1="185" x2="110" y2="90" stroke="#538270" stroke-width="3"/>
+                                <line x1="110" y1="185" x2="138" y2="105" stroke="#538270" stroke-width="3"/>
+
+                                <g class="flower f1">
+                                    <circle cx="80" cy="100" r="18" fill="#ff7eb3"/>
+                                    <circle cx="72" cy="92" r="10" fill="#ffb3d1"/>
+                                    <circle cx="88" cy="92" r="10" fill="#ffb3d1"/>
+                                    <circle cx="72" cy="107" r="10" fill="#ffb3d1"/>
+                                    <circle cx="88" cy="107" r="10" fill="#ffb3d1"/>
+                                    <circle cx="80" cy="100" r="7" fill="#ffe680"/>
+                                </g>
+
+                                <g class="flower f2">
+                                    <circle cx="110" cy="84" r="20" fill="#fff0f6"/>
+                                    <circle cx="101" cy="76" r="11" fill="#ffffff"/>
+                                    <circle cx="119" cy="76" r="11" fill="#ffffff"/>
+                                    <circle cx="101" cy="92" r="11" fill="#ffffff"/>
+                                    <circle cx="119" cy="92" r="11" fill="#ffffff"/>
+                                    <circle cx="110" cy="84" r="8" fill="#ffd166"/>
+                                </g>
+
+                                <g class="flower f3">
+                                    <circle cx="140" cy="100" r="18" fill="#e85d95"/>
+                                    <circle cx="132" cy="92" r="10" fill="#ff94be"/>
+                                    <circle cx="148" cy="92" r="10" fill="#ff94be"/>
+                                    <circle cx="132" cy="107" r="10" fill="#ff94be"/>
+                                    <circle cx="148" cy="107" r="10" fill="#ff94be"/>
+                                    <circle cx="140" cy="100" r="7" fill="#ffe680"/>
+                                </g>
+
+                                <circle cx="95" cy="118" r="11" fill="#ffc2da"/>
+                                <circle cx="95" cy="118" r="4" fill="#ffe680"/>
+                                <circle cx="125" cy="118" r="11" fill="#ffc2da"/>
+                                <circle cx="125" cy="118" r="4" fill="#ffe680"/>
+
+                                <polygon points="110,205 56,118 110,136 164,118" fill="rgba(255, 224, 236, 0.2)" stroke="#ff94be" stroke-width="2"/>
+                                <path d="M92,155 Q110,165 128,155" fill="none" stroke="#ff7eb3" stroke-width="5" stroke-linecap="round"/>
+                                <polygon points="110,158 95,172 103,157" fill="#ff7eb3"/>
+                                <polygon points="110,158 125,172 117,157" fill="#ff7eb3"/>
+                                <circle cx="110" cy="158" r="5" fill="#ffb3d1"/>
+                            </svg>
+                        </div>
+
+                        <p id="bouquet-msg" class="wish-status">Flowers that never wilt, just like my wishes for you 🌸</p>
+                    </div>
+
+                    <!-- Opsi 2: 3 Hal yang Dikagumi -->
+                    <div id="opt-content-2" class="opt-panel">
+                        <h3>3 Things I Admire About You 🌙</h3>
+                        <div class="admire-list">
+                            <div class="admire-card">
+                                <strong>01. Your Warmth</strong>
+                                <p>Cara kamu bikin suasana di sekitarmu terasa lebih nyaman dan nggak kaku.</p>
+                            </div>
+                            <div class="admire-card">
+                                <strong>02. Your Resilience</strong>
+                                <p>Meskipun lagi capek, kamu tetap berusaha jalanin hari-hari sebaik mungkin.</p>
+                            </div>
+                            <div class="admire-card">
+                                <strong>03. Simply Being You</strong>
+                                <p>Nggak perlu pura-pura jadi orang lain, versi asli kamu sudah sangat berharga.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opsi 3: Kue, Tiup Lilin & Kirim Pesan ke Gmail -->
+                    <div id="opt-content-3" class="opt-panel">
+                        <h3>Close your eyes & make a wish 🎂</h3>
+                        <p class="opt-desc">Tiup lilinnya dengan klik kue di bawah, lalu tulis harapan atau pesanmu!</p>
+                        
+                        <div class="cake-box" onclick="blowCandle()">
+                            <div id="flame" class="flame">🔥</div>
+                            <div class="candle"></div>
+                            <div class="cake-top"></div>
+                            <div class="cake-base"></div>
+                        </div>
+                        <p id="wish-status" class="wish-status">Tap the candle to blow it out ✨</p>
+
+                        <div class="wish-form">
+                            <textarea id="wish-input" rows="3" placeholder="Tulis harapan ulang tahunmu atau pesan balasan di sini..."></textarea>
+                            <button id="btn-send-wish" class="btn-glass-pink" onclick="sendWishToEmail()">
+                                Send My Wish 💌
+                            </button>
+                            <p id="send-feedback" class="send-feedback"></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- POPUP MODAL NOTE (Glassmorphism) -->
+    <div id="modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-card glass-card">
+            <button class="modal-x" onclick="forceCloseModal()">✕</button>
+            <div class="modal-icon">✦</div>
+            <h3 id="note-title">Laughter</h3>
+            <p id="note-text">Isi pesan...</p>
+            <button class="btn-glass-pink" onclick="pickNote()">Shake again!</button>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================
+           0. LINK FORMSPREE UNTUK TERIMA WISH DI GMAIL
+           Ganti link di bawah dengan link dari formspree.io Anda
+           ========================================== */
+        const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
+
+        /* ==========================================
+           1. KUNANG-KUNANG SUPER RINGAN (SPRITE CACHE)
+           ========================================== */
+        const canvas = document.getElementById("fireflies-canvas");
+        const ctx = canvas.getContext("2d", { alpha: true });
+        let fireflies = [];
+
+        function createGlowSprite(r, g, b) {
+            const sprite = document.createElement("canvas");
+            sprite.width = 32;
+            sprite.height = 32;
+            const sCtx = sprite.getContext("2d");
+            const grad = sCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+            grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 1)`);
+            grad.addColorStop(0.35, `rgba(${r}, ${g}, ${b}, 0.4)`);
+            grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+            sCtx.fillStyle = grad;
+            sCtx.fillRect(0, 0, 32, 32);
+            return sprite;
+        }
+
+        const pinkSprite = createGlowSprite(255, 130, 190);
+        const goldSprite = createGlowSprite(255, 228, 150);
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        class Firefly {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 14 + 10;
+                this.speedX = (Math.random() - 0.5) * 0.42;
+                this.speedY = (Math.random() - 0.5) * 0.42 - 0.1;
+                this.alpha = Math.random();
+                this.alphaSpeed = (Math.random() * 0.012) + 0.004;
+                this.growing = Math.random() > 0.5;
+                this.sprite = Math.random() > 0.45 ? pinkSprite : goldSprite;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.growing) {
+                    this.alpha += this.alphaSpeed;
+                    if (this.alpha >= 0.88) this.growing = false;
+                } else {
+                    this.alpha -= this.alphaSpeed;
+                    if (this.alpha <= 0.12) this.growing = true;
+                }
+
+                if (this.x < -20) this.x = canvas.width + 20;
+                if (this.x > canvas.width + 20) this.x = -20;
+                if (this.y < -20) this.y = canvas.height + 20;
+                if (this.y > canvas.height + 20) this.y = -20;
+            }
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.drawImage(this.sprite, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
+            }
+        }
+
+        for (let i = 0; i < 36; i++) {
+            fireflies.push(new Firefly());
+        }
+
+        function animateFireflies() {
+            if (!document.hidden) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < fireflies.length; i++) {
+                    fireflies[i].update();
+                    fireflies[i].draw();
+                }
+            }
+            requestAnimationFrame(animateFireflies);
+        }
+        requestAnimationFrame(animateFireflies);
+
+        /* ==========================================
+           2. EFEK INTERAKTIF KACA (THROTTLED RAF)
+           ========================================== */
+        document.querySelectorAll(".interactive-glass").forEach((card) => {
+            let ticking = false;
+            const allowTilt = card.dataset.tilt === "true";
+
+            card.addEventListener("mousemove", (e) => {
+                if (ticking) return;
+                ticking = true;
+
+                requestAnimationFrame(() => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty("--mouse-x", `${x}px`);
+                    card.style.setProperty("--mouse-y", `${y}px`);
+
+                    if (allowTilt) {
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const rotateX = ((y - centerY) / centerY) * -1.8;
+                        const rotateY = ((x - centerX) / centerX) * 1.8;
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    }
+                    ticking = false;
+                });
+            });
+
+            if (allowTilt) {
+                card.addEventListener("mouseleave", () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+                });
+            }
+        });
+
+        /* ==========================================
+           3. AUDIO CROSSFADE & MINI PLAYER PLAYLIST
+           ========================================== */
+        let isEnvelopeOpened = false;
+        const bgMusic = document.getElementById("bg-music");
+        const playPauseBtn = document.getElementById("play-pause-btn");
+        const playerTitle = document.getElementById("player-title");
+        const playerArtist = document.getElementById("player-artist");
+        const playerCover = document.getElementById("player-cover");
+
+        const TARGET_VOLUME = 0.6;
+        let fadeInterval = null;
+        let isAutoFadingOut = false;
+
+        const playlist = [
+            {
+                title: "24/7",
+                artist: "Romaria",
+                file: "static/24_7 - ROMARIA _ Lirik Lagu.mp3",
+                cover: "🌸",
+                bg: "rgba(255, 126, 179, 0.35)"
+            },
+            {
+                title: "Remaja",
+                artist: "HIVI!",
+                file: "static/HIVI! - Remaja (lirik) - (64 Kbps).mp3",
+                cover: "🌷",
+                bg: "rgba(232, 93, 149, 0.35)"
+            },
+            {
+                title: "SPEED DIAL #1",
+                artist: "Paul Partohap",
+                file: "static/Paul Partohap - SPEED DIAL #1 (Lyric Video) - (64 Kbps).mp3",
+                cover: "💌",
+                bg: "rgba(181, 131, 255, 0.35)"
+            },
+            {
+                title: "the space between us",
+                artist: "siopaolo",
+                file: "static/siopaolo - the space between us [audio] - (64 Kbps).mp3",
+                cover: "✨",
+                bg: "rgba(120, 179, 255, 0.35)"
+            },
+            {
+                title: "RECIPE OF US",
+                artist: "Paul Partohap",
+                file: "static/Paul Partohap - RECIPE OF US (Lyric Video) - (64 Kbps).mp3",
+                cover: "🎂",
+                bg: "rgba(255, 209, 102, 0.35)"
+            }
+        ];
+
+        let currentTrackIndex = 0;
+
+        function loadTrack(index) {
+            const track = playlist[index];
+            bgMusic.src = track.file;
+            playerTitle.innerText = track.title;
+            playerArtist.innerText = track.artist;
+            playerCover.innerText = track.cover;
+            playerCover.style.backgroundColor = track.bg;
+            isAutoFadingOut = false;
+        }
+
+        loadTrack(currentTrackIndex);
+
+        function fadeInAudio(duration = 1200) {
+            clearInterval(fadeInterval);
+            bgMusic.volume = 0;
+            const playPromise = bgMusic.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    playPauseBtn.innerText = "⏸";
+                    const steps = 25;
+                    const stepTime = duration / steps;
+                    const volumeStep = TARGET_VOLUME / steps;
+
+                    fadeInterval = setInterval(() => {
+                        if (bgMusic.volume + volumeStep < TARGET_VOLUME) {
+                            bgMusic.volume = Math.min(TARGET_VOLUME, bgMusic.volume + volumeStep);
+                        } else {
+                            bgMusic.volume = TARGET_VOLUME;
+                            clearInterval(fadeInterval);
+                        }
+                    }, stepTime);
+                }).catch((err) => {
+                    if (err.name !== "AbortError") {
+                        console.log("Info audio:", err.message);
+                    }
+                });
+            }
+        }
+
+        function fadeOutAudio(duration = 800, onComplete = null) {
+            clearInterval(fadeInterval);
+            if (bgMusic.paused || bgMusic.volume === 0) {
+                if (onComplete) onComplete();
+                return;
+            }
+
+            const steps = 20;
+            const stepTime = duration / steps;
+            const volumeStep = bgMusic.volume / steps;
+
+            fadeInterval = setInterval(() => {
+                if (bgMusic.volume - volumeStep > 0.01) {
+                    bgMusic.volume = Math.max(0, bgMusic.volume - volumeStep);
+                } else {
+                    bgMusic.volume = 0;
+                    clearInterval(fadeInterval);
+                    if (onComplete) onComplete();
+                }
+            }, stepTime);
+        }
+
+        bgMusic.addEventListener("timeupdate", function () {
+            if (
+                bgMusic.duration &&
+                !bgMusic.paused &&
+                !isAutoFadingOut &&
+                bgMusic.duration - bgMusic.currentTime <= 3.0
+            ) {
+                isAutoFadingOut = true;
+                fadeOutAudio(2600);
+            }
+        });
+
+        bgMusic.addEventListener("ended", function () {
+            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+            loadTrack(currentTrackIndex);
+            fadeInAudio(1400);
+        });
+
+        function nextTrack(event) {
+            if (event) event.stopPropagation();
+
+            fadeOutAudio(650, () => {
+                bgMusic.pause();
+                currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+                loadTrack(currentTrackIndex);
+                fadeInAudio(1200);
+            });
+        }
+
+        function toggleMinimizePlayer() {
+            const player = document.getElementById("mini-player");
+            player.classList.toggle("minimized");
+        }
+
+        /* ==========================================
+           4. ANIMASI BUKA AMPLOP & SURAT
+           ========================================== */
+        function openGift(event) {
+            if (event) event.stopPropagation();
+            if (isEnvelopeOpened) return;
+            isEnvelopeOpened = true;
+
+            const waxEnvelope = document.getElementById("wax-envelope");
+            const overlay = document.getElementById("envelope-overlay");
+            const main = document.getElementById("main-content");
+            const letterPaper = document.getElementById("letter-paper");
+            const miniPlayer = document.getElementById("mini-player");
+
+            waxEnvelope.classList.add("unsealed");
+            fadeInAudio(1600);
+
+            setTimeout(() => {
+                overlay.classList.add("opened");
+                main.classList.add("visible");
+                miniPlayer.classList.add("show-player");
+            }, 1150);
+
+            setTimeout(() => {
+                checkReveal();
+                letterPaper.classList.add("unfolded");
+            }, 1750);
+
+            setTimeout(() => {
+                triggerSweepText();
+            }, 2600);
+        }
+
+        function triggerSweepText() {
+            const items = document.querySelectorAll(".sweep-text");
+            items.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add("swept");
+                }, index * 350);
+            });
+        }
+
+        function toggleMusic(event) {
+            if (event) event.stopPropagation();
+
+            if (!bgMusic.paused && !bgMusic.ended) {
+                playPauseBtn.innerText = "▶";
+                fadeOutAudio(750, () => {
+                    bgMusic.pause();
+                });
+            } else {
+                if (bgMusic.ended || (bgMusic.duration && bgMusic.currentTime >= bgMusic.duration - 0.5)) {
+                    bgMusic.currentTime = 0;
+                }
+                isAutoFadingOut = false;
+                fadeInAudio(1000);
+            }
+        }
+
+        function checkReveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            const windowHeight = window.innerHeight;
+
+            reveals.forEach((el) => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 80) {
+                    el.classList.add("active");
+                }
+            });
+        }
+
+        window.addEventListener("scroll", checkReveal, { passive: true });
+
+        /* ==========================================
+           5. JAR NOTES (LANGSUNG DI BROWSER TANPA PYTHON)
+           ========================================== */
+        const NOTES_LIST = [
+            {
+                title: "Laughter",
+                text: "Our best memories always start with a random laugh that lasts way too long."
+            },
+            {
+                title: "Dreams",
+                text: "Keep chasing every goal you have—I'm cheering for you from here."
+            },
+            {
+                title: "New Chapter",
+                text: "A brand new year of your life is starting. Wishing you peace, joy, and growth."
+            },
+            {
+                title: "Stay Soft",
+                text: "You don't have to rush everything. Take it one step at a time."
+            },
+            {
+                title: "Proud of You",
+                text: "Look how far you've come. Even on quiet days, you are doing amazing."
+            },
+            {
+                title: "Little Things",
+                text: "May your coffee be warm, your playlists hit right, and your heart feel light."
+            }
+        ];
+
+        let remainingNotes = [];
+        let lastShownTitle = null;
+
+        function getUniqueRandomNote() {
+            if (remainingNotes.length === 0) {
+                remainingNotes = [...NOTES_LIST];
+                for (let i = remainingNotes.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [remainingNotes[i], remainingNotes[j]] = [remainingNotes[j], remainingNotes[i]];
+                }
+                if (remainingNotes.length > 1 && remainingNotes[remainingNotes.length - 1].title === lastShownTitle) {
+                    [remainingNotes[0], remainingNotes[remainingNotes.length - 1]] =
+                        [remainingNotes[remainingNotes.length - 1], remainingNotes[0]];
+                }
+            }
+            const note = remainingNotes.pop();
+            lastShownTitle = note.title;
+            return note;
+        }
+
+        function pickNote() {
+            forceCloseModal();
+            const jar = document.getElementById("jar");
+            
+            jar.classList.remove("shaking");
+            void jar.offsetWidth;
+            jar.classList.add("shaking");
+
+            const data = getUniqueRandomNote();
+            setTimeout(() => {
+                document.getElementById("note-title").innerText = data.title;
+                document.getElementById("note-text").innerText = data.text;
+                document.getElementById("modal").classList.add("show");
+            }, 450);
+        }
+
+        function closeModal(event) {
+            if (event.target.id === "modal") {
+                forceCloseModal();
+            }
+        }
+
+        function forceCloseModal() {
+            document.getElementById("modal").classList.remove("show");
+        }
+
+        /* ==========================================
+           6. OPSI INTERAKTIF & KIRIM PESAN KE GMAIL
+           ========================================== */
+        function selectOption(optionNumber, clickedBtn) {
+            document.querySelectorAll(".opt-btn").forEach((btn) => {
+                btn.classList.remove("active");
+            });
+            clickedBtn.classList.add("active");
+
+            document.querySelectorAll(".opt-panel").forEach((panel) => {
+                panel.classList.remove("show");
+            });
+            document.getElementById("opt-content-" + optionNumber).classList.add("show");
+        }
+
+        function bloomBouquet() {
+            const box = document.getElementById("bouquet-box");
+            const msg = document.getElementById("bouquet-msg");
+            
+            box.classList.remove("blooming");
+            void box.offsetWidth;
+            box.classList.add("blooming");
+            
+            msg.innerText = "Sending you endless happiness & warm hugs! 💐✨";
+        }
+
+        function blowCandle() {
+            const flame = document.getElementById("flame");
+            const status = document.getElementById("wish-status");
+            
+            if (!flame.classList.contains("blown")) {
+                flame.classList.add("blown");
+                status.innerText = "Yeay! Sekarang tulis harapanmu di bawah ini 🎉✨";
+            } else {
+                flame.classList.remove("blown");
+                status.innerText = "Tap the candle to blow it out ✨";
+            }
+        }
+
+        async function sendWishToEmail() {
+            const input = document.getElementById("wish-input");
+            const btn = document.getElementById("btn-send-wish");
+            const feedback = document.getElementById("send-feedback");
+            const wishText = input.value.trim();
+
+            if (!wishText) {
+                feedback.style.color = "#ff85b3";
+                feedback.innerText = "Tulis dulu pesan atau harapanmu ya! ✍️";
+                return;
+            }
+
+            if (FORMSPREE_URL.includes("GANTI_DENGAN_KODE_ANDA")) {
+                feedback.style.color = "#a8ffcb";
+                feedback.innerText = "Harapanmu tersimpan di semesta! ✨ (Pasang link Formspree agar masuk ke email)";
+                input.value = "";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Sending... 🕊️";
+            feedback.innerText = "";
+
+            try {
+                const response = await fetch(FORMSPREE_URL, {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        subject: "🎂 New Birthday Wish From Lowfy!",
+                        wish: wishText
+                    })
+                });
+
+                if (response.ok) {
+                    feedback.style.color = "#a8ffcb";
+                    feedback.innerText = "Pesanmu sudah terkirim! Semoga terwujud ✨💌";
+                    input.value = "";
+                } else {
+                    feedback.style.color = "#ff85b3";
+                    feedback.innerText = "Gagal mengirim pesan. Coba sebentar lagi.";
+                }
+            } catch (err) {
+                feedback.style.color = "#ff85b3";
+                feedback.innerText = "Terjadi kesalahan jaringan.";
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Send My Wish 💌";
+            }
+        }
+    </script>
+</body>
+</html>
