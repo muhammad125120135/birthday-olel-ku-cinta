@@ -402,9 +402,8 @@ body {
 
 /* WADAH KERTAS TULIS REALISTIS */
 .real-paper-wrapper {
-    max-width: 650px;
+    max-width: 660px;
     width: 100%;
-    perspective: 1500px;
     opacity: 0;
     transform: translateY(28px) scale(0.95);
     transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease;
@@ -415,22 +414,22 @@ body {
     transform: translateY(0) scale(1);
 }
 
-/* LEMBARAN KERTAS KREM/GADING DENGAN TEKSTUR & GARIS BUKU */
+/* LEMBARAN KERTAS KREM/GADING SELARAS GARIS BUKU (GRID 32PX) */
 .real-paper-sheet {
     position: relative;
     background-color: #fbf5e8;
     background-image:
         /* Garis vertikal margin merah tipis khas kertas surat */
-        linear-gradient(90deg, transparent 42px, rgba(214, 108, 122, 0.28) 42px, rgba(214, 108, 122, 0.28) 43px, transparent 43px),
-        /* Garis horizontal tipis khas kertas tulis */
-        repeating-linear-gradient(180deg, transparent 0px, transparent 31px, rgba(132, 156, 184, 0.2) 32px),
+        linear-gradient(90deg, transparent 42px, rgba(214, 108, 122, 0.32) 42px, rgba(214, 108, 122, 0.32) 43px, transparent 43px),
+        /* Garis horizontal tipis setiap 32px selaras dengan line-height teks */
+        repeating-linear-gradient(180deg, transparent 0px, transparent 31px, rgba(132, 156, 184, 0.24) 32px),
         /* Gradasi pencahayaan kertas alami */
         radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.65), rgba(235, 219, 192, 0.45));
+    background-position: 0 0, 0 5px, 0 0;
     color: #2b211b;
     border-radius: 6px;
     border: 1px solid #dfd0b6;
-    padding: 34px 28px 26px 56px;
-    /* Efek bayangan tumpukan beberapa lembar kertas di bawahnya */
+    padding: 32px 28px 28px 56px;
     box-shadow:
         0 24px 55px rgba(0, 0, 0, 0.65),
         inset 0 0 38px rgba(173, 140, 99, 0.18),
@@ -452,7 +451,7 @@ body {
     border-left: 1px dashed rgba(255, 255, 255, 0.55);
     border-right: 1px dashed rgba(255, 255, 255, 0.55);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
-    z-index: 5;
+    z-index: 15;
 }
 
 .paper-top-meta {
@@ -461,11 +460,12 @@ body {
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+    min-height: 32px;
+    line-height: 32px;
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.76rem;
     color: #7d6652;
-    padding-bottom: 12px;
-    margin-bottom: 14px;
+    margin-bottom: 32px;
     border-bottom: 1px dashed rgba(145, 118, 90, 0.35);
 }
 
@@ -473,35 +473,39 @@ body {
     background: rgba(196, 86, 128, 0.12);
     color: #a63a66;
     border: 1px solid rgba(196, 86, 128, 0.28);
-    padding: 2px 10px;
+    padding: 0 10px;
+    height: 22px;
+    line-height: 20px;
     border-radius: 999px;
     font-weight: bold;
 }
 
-/* KONTAINER LIPATAN KERTAS 3D */
+/* KONTAINER LIPATAN KERTAS */
 .accordion-letter {
+    position: relative;
     display: flex;
     flex-direction: column;
-    transform-style: preserve-3d;
 }
 
 .paper-fold {
     position: relative;
+    z-index: 5;
     transform-origin: top center;
-    transform-style: preserve-3d;
     transition:
-        transform 0.72s cubic-bezier(0.22, 1, 0.36, 1),
-        background-color 0.35s ease,
-        box-shadow 0.35s ease,
-        margin 0.35s ease;
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
-/* Garis Lipatan (Crease) Antar Paragraf */
+/* Garis Lipatan (Crease) Antar Paragraf — Tinggi 32px agar selaras garis kertas */
 .fold-crease-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 10px;
+    gap: 8px;
+    min-height: 32px;
+    line-height: 32px;
+    padding: 0 8px;
     border-radius: 4px;
     cursor: pointer;
     user-select: none;
@@ -515,23 +519,22 @@ body {
     letter-spacing: 1px;
     text-transform: uppercase;
     color: #9a7e63;
+    flex-shrink: 0;
 }
 
 .crease-action {
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.72rem;
-    color: #b0436f;
-    font-weight: 600;
+    color: #a83865;
+    font-weight: 700;
+    text-align: right;
 }
 
 /* KEADAAN 1: LIPATAN TERBUKA */
 .paper-fold.is-open {
-    transform: rotateX(0deg);
-    margin-bottom: 10px;
-    padding-top: 4px;
-    /* Bayangan lipatan kertas realistis di bagian sambungan */
-    background: linear-gradient(180deg, rgba(161, 132, 98, 0.14) 0%, rgba(255, 255, 255, 0.18) 12px, transparent 28px);
-    border-top: 1px solid rgba(163, 135, 102, 0.32);
+    transform: perspective(900px) rotateX(0deg);
+    background: linear-gradient(180deg, rgba(161, 132, 98, 0.11) 0%, rgba(255, 255, 255, 0.14) 10px, transparent 26px);
+    border-top: 1px solid rgba(163, 135, 102, 0.3);
 }
 
 .paper-fold[data-fold="1"].is-open {
@@ -540,40 +543,40 @@ body {
 }
 
 .paper-fold.is-open .fold-crease-bar:hover {
-    background: rgba(176, 67, 111, 0.08);
+    background: rgba(176, 67, 111, 0.09);
 }
 
 .paper-fold.is-open .fold-content {
     max-height: 1200px;
     opacity: 1;
-    transform: translateY(0);
-    padding: 6px 4px 12px;
+    padding: 0 4px 32px;
     overflow: visible;
-    transition: max-height 0.75s ease, opacity 0.55s ease 0.12s, transform 0.55s ease 0.12s;
+    transition: max-height 0.7s ease, opacity 0.5s ease 0.1s;
 }
 
-/* KEADAAN 2: LIPATAN BERIKUTNYA YANG SIAP DIBUKA (TERLIPAT 3D) */
+/* KEADAAN 2: LIPATAN BERIKUTNYA YANG SIAP DIBUKA */
 .paper-fold.is-next-folded {
-    transform: rotateX(-24deg);
-    margin-top: 4px;
+    z-index: 10;
+    transform: perspective(900px) rotateX(-12deg);
+    margin-top: 6px;
     margin-bottom: 4px;
-    background: linear-gradient(180deg, #eadbc1 0%, #f5ebd8 55%, #e5d3b5 100%);
+    background: linear-gradient(180deg, #eadbc1 0%, #f7eedc 52%, #e4d2b3 100%);
     border: 1px solid #cbb796;
     border-radius: 5px;
     box-shadow:
-        0 8px 16px rgba(84, 62, 38, 0.22),
-        inset 0 2px 4px rgba(255, 255, 255, 0.65);
+        0 6px 14px rgba(84, 62, 38, 0.2),
+        inset 0 1px 3px rgba(255, 255, 255, 0.7);
     cursor: pointer;
 }
 
 .paper-fold.is-next-folded:hover {
-    transform: rotateX(-10deg) translateY(-2px);
-    background: linear-gradient(180deg, #efe2ca 0%, #fbf3e4 55%, #ebd9bc 100%);
-    box-shadow: 0 12px 22px rgba(84, 62, 38, 0.28);
+    transform: perspective(900px) rotateX(-4deg) translateY(-1px);
+    background: linear-gradient(180deg, #efe2ca 0%, #fcf5e8 52%, #ebd9bc 100%);
+    box-shadow: 0 9px 18px rgba(84, 62, 38, 0.26);
 }
 
 .paper-fold.is-next-folded .fold-crease-bar {
-    padding: 12px 14px;
+    padding: 6px 12px;
 }
 
 .paper-fold.is-next-folded .fold-content {
@@ -585,14 +588,15 @@ body {
 
 /* KEADAAN 3: LIPATAN LANJUTAN YANG MASIH TERTUMPUK DI BAWAH */
 .paper-fold.is-stacked-folded {
-    transform: rotateX(-55deg);
-    height: 10px;
-    margin-top: -2px;
+    z-index: 8;
+    transform: perspective(900px) rotateX(-28deg);
+    height: 9px;
+    margin-top: -1px;
     background: linear-gradient(180deg, #dfd0b4, #cbb896);
     border-bottom: 1px solid #b59f7b;
     border-radius: 0 0 4px 4px;
-    opacity: 0.72;
-    pointer-events: none;
+    opacity: 0.78;
+    cursor: pointer;
     overflow: hidden;
 }
 
@@ -601,13 +605,14 @@ body {
     opacity: 0;
     max-height: 0;
     overflow: hidden;
+    pointer-events: none;
 }
 
-/* TIPOGRAFI TINTA DI ATAS KERTAS */
+/* TIPOGRAFI TINTA DI ATAS KERTAS (LINE-HEIGHT 32PX SELARAS GARIS) */
 .paper-text {
     font-family: 'Lora', 'Georgia', serif;
     font-size: 0.96rem;
-    line-height: 1.92;
+    line-height: 32px;
     color: #2b211b;
     text-align: left;
 }
@@ -615,31 +620,30 @@ body {
 .greeting-highlight {
     font-family: 'Lora', 'Georgia', serif;
     font-weight: 600;
-    font-size: 1.03rem;
+    font-size: 1.02rem;
+    line-height: 32px;
     color: #9e2d59;
     letter-spacing: 0.3px;
 }
 
 /* KERTAS PALING AKHIR: FONT TULISAN TANGAN */
 .closing-handwriting-box {
-    margin-top: 8px;
-    padding: 14px 12px 8px;
+    padding: 0 8px;
     text-align: right;
-    border-top: 1px dashed rgba(158, 45, 89, 0.25);
 }
 
 .closing-handwriting {
     font-family: 'Caveat', 'Dancing Script', 'Segoe Script', 'Brush Script MT', cursive;
-    font-size: 1.78rem;
+    font-size: 1.72rem;
     font-weight: 700;
-    line-height: 1.38;
+    line-height: 32px;
     color: #8f224d;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .signature-flourish {
-    display: inline-block;
-    margin-top: 8px;
+    display: block;
+    line-height: 32px;
     font-family: 'Dancing Script', 'Caveat', cursive;
     font-size: 1.25rem;
     color: #6e4e3a;
@@ -651,8 +655,8 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    margin-top: 18px;
-    padding-top: 14px;
+    margin-top: 8px;
+    padding-top: 16px;
     border-top: 1px solid rgba(156, 128, 96, 0.3);
 }
 
@@ -1416,10 +1420,11 @@ body {
 
     .real-paper-sheet {
         background-image:
-            linear-gradient(90deg, transparent 24px, rgba(214, 108, 122, 0.28) 24px, rgba(214, 108, 122, 0.28) 25px, transparent 25px),
-            repeating-linear-gradient(180deg, transparent 0px, transparent 31px, rgba(132, 156, 184, 0.2) 32px),
+            linear-gradient(90deg, transparent 24px, rgba(214, 108, 122, 0.32) 24px, rgba(214, 108, 122, 0.32) 25px, transparent 25px),
+            repeating-linear-gradient(180deg, transparent 0px, transparent 31px, rgba(132, 156, 184, 0.24) 32px),
             radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.65), rgba(235, 219, 192, 0.45));
-        padding: 28px 16px 22px 34px;
+        background-position: 0 0, 0 5px, 0 0;
+        padding: 32px 16px 24px 34px;
     }
 
     .paper-text {

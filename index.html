@@ -112,7 +112,7 @@
                 </div>
             </div>
 
-            <!-- KERTAS TULIS REALISTIS DENGAN LIPATAN INTERAKTIF -->
+<!-- KERTAS TULIS REALISTIS DENGAN LIPATAN INTERAKTIF -->
             <div id="letter-paper" class="real-paper-wrapper">
                 <div class="real-paper-sheet">
                     <!-- Selotip Kertas & Header Tanggal -->
@@ -122,12 +122,12 @@
                         <span id="fold-counter-badge" class="fold-counter-badge">Lipatan 1 / 9</span>
                     </div>
 
-                    <!-- Area Tumpukan Lipatan 3D -->
+                    <!-- Area Tumpukan Lipatan Kertas -->
                     <div id="accordion-letter" class="accordion-letter">
 
                         <!-- Lipatan 1 -->
                         <div class="paper-fold is-open" data-fold="1">
-                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(1)">
+                            <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 01</span>
                                 <span class="crease-action">Bagian Pembuka</span>
                             </div>
@@ -137,8 +137,8 @@
                         </div>
 
                         <!-- Lipatan 2 -->
-                        <div class="paper-fold is-next-folded" data-fold="2" onclick="handleClosedFoldClick(2)">
-                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(2, event)">
+                        <div class="paper-fold is-next-folded" data-fold="2" onclick="handleFoldClick(2, event)">
+                            <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 02</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
                             </div>
@@ -150,8 +150,8 @@
                         </div>
 
                         <!-- Lipatan 3 -->
-                        <div class="paper-fold is-stacked-folded" data-fold="3" onclick="handleClosedFoldClick(3)">
-                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(3, event)">
+                        <div class="paper-fold is-stacked-folded" data-fold="3" onclick="handleFoldClick(3, event)">
+                            <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 03</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
                             </div>
@@ -163,8 +163,8 @@
                         </div>
 
                         <!-- Lipatan 4 -->
-                        <div class="paper-fold is-stacked-folded" data-fold="4" onclick="handleClosedFoldClick(4)">
-                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(4, event)">
+                        <div class="paper-fold is-stacked-folded" data-fold="4" onclick="handleFoldClick(4, event)">
+                            <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 04</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
                             </div>
@@ -176,8 +176,8 @@
                         </div>
 
                         <!-- Lipatan 5 -->
-                        <div class="paper-fold is-stacked-folded" data-fold="5" onclick="handleClosedFoldClick(5)">
-                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(5, event)">
+                        <div class="paper-fold is-stacked-folded" data-fold="5" onclick="handleFoldClick(5, event)">
+                            <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 05</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
                             </div>
@@ -189,8 +189,8 @@
                         </div>
 
                         <!-- Lipatan 6 -->
-                        <div class="paper-fold is-stacked-folded" data-fold="6" onclick="handleClosedFoldClick(6)">
-                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(6, event)">
+                        <div class="paper-fold is-stacked-folded" data-fold="6" onclick="handleFoldClick(6, event)">
+                            <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 06</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
                             </div>
@@ -202,8 +202,8 @@
                         </div>
 
                         <!-- Lipatan 7 -->
-                        <div class="paper-fold is-stacked-folded" data-fold="7" onclick="handleClosedFoldClick(7)">
-                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(7, event)">
+                        <div class="paper-fold is-stacked-folded" data-fold="7" onclick="handleFoldClick(7, event)">
+                            <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 07</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
                             </div>
@@ -215,8 +215,8 @@
                         </div>
 
                         <!-- Lipatan 8 -->
-                        <div class="paper-fold is-stacked-folded" data-fold="8" onclick="handleClosedFoldClick(8)">
-                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(8, event)">
+                        <div class="paper-fold is-stacked-folded" data-fold="8" onclick="handleFoldClick(8, event)">
+                            <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 08</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
                             </div>
@@ -228,8 +228,8 @@
                         </div>
 
                         <!-- Lipatan 9 (Kertas Terakhir dengan Font Tulisan Tangan) -->
-                        <div class="paper-fold is-stacked-folded final-fold" data-fold="9" onclick="handleClosedFoldClick(9)">
-                            <div class="fold-crease-bar" onclick="handleFoldHeaderClick(9, event)">
+                        <div class="paper-fold is-stacked-folded final-fold" data-fold="9" onclick="handleFoldClick(9, event)">
+                            <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 09 • Penutup</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan terakhir ↓">Ketuk untuk membuka lipatan terakhir ↓</span>
                             </div>
@@ -252,7 +252,7 @@
                             ↑ Lipat Sebelumnya
                         </button>
                         <button type="button" id="btn-next-fold" class="btn-paper-nav primary" onclick="unfoldNext()">
-                            Buka Lipatan Selanjutnya ↓
+                            Buka Lipatan 2 ↓
                         </button>
                     </div>
                 </div>
@@ -885,24 +885,20 @@
             }
         }
 
-        function handleClosedFoldClick(foldNum) {
-            if (foldNum === openFoldCount + 1) {
-                openFoldCount = foldNum;
-                updateFoldsUI(true);
-            }
-        }
-
-        function handleFoldHeaderClick(foldNum, event) {
+        function handleFoldClick(foldNum, event) {
             if (event) event.stopPropagation();
 
+            // Jika lipatan masih tertutup, klik di mana saja pada area lipatan akan membukanya
             if (foldNum > openFoldCount) {
-                // Membuka lipatan berikutnya
-                if (foldNum === openFoldCount + 1) {
-                    openFoldCount = foldNum;
+                if (openFoldCount < TOTAL_FOLDS) {
+                    openFoldCount++;
                     updateFoldsUI(true);
                 }
-            } else if (foldNum > 1) {
-                // Menutup/melipat kembali mulai dari lipatan ini ke lipatan sebelumnya
+                return;
+            }
+
+            // Jika lipatan sudah terbuka, klik pada baris header lipatan akan melipatnya kembali
+            if (foldNum > 1 && event && event.target.closest(".fold-crease-bar")) {
                 openFoldCount = foldNum - 1;
                 updateFoldsUI(true);
             }
