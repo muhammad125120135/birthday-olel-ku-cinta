@@ -960,13 +960,14 @@ body {
     -webkit-backdrop-filter: blur(14px);
     color: #ffffff;
     border-radius: 16px;
-    padding: 8px 14px 8px 10px;
+    padding: 8px 14px 10px 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 126, 179, 0.15);
     border: 1px solid rgba(255, 158, 203, 0.25);
     z-index: 180;
+    overflow: hidden;
     will-change: transform, opacity;
 
     opacity: 0;
@@ -1022,8 +1023,8 @@ body {
     display: flex;
     flex-direction: column;
     text-align: left;
-    min-width: 85px;
-    max-width: 125px;
+    min-width: 80px;
+    max-width: 120px;
 }
 
 .player-title {
@@ -1047,8 +1048,7 @@ body {
 .player-volume {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 0 2px;
+    gap: 4px;
 }
 
 .btn-volume-icon {
@@ -1063,7 +1063,7 @@ body {
 .volume-slider {
     -webkit-appearance: none;
     appearance: none;
-    width: 58px;
+    width: 52px;
     height: 4px;
     background: rgba(255, 182, 214, 0.28);
     border-radius: 999px;
@@ -1098,10 +1098,29 @@ body {
     cursor: pointer;
 }
 
+/* TOMBOL KECEPATAN LAGU (1x, 1.25x, 1.5x, 0.75x) */
+.btn-speed {
+    background: rgba(255, 126, 179, 0.18);
+    color: #ffb8d8;
+    border: 1px solid rgba(255, 158, 203, 0.35);
+    border-radius: 8px;
+    padding: 4px 7px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.btn-speed:hover {
+    background: rgba(255, 126, 179, 0.35);
+    color: #ffffff;
+}
+
 .player-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
 }
 
 .btn-circle-play {
@@ -1145,9 +1164,33 @@ body {
     transform: scale(1.1);
 }
 
+/* GARIS DURASI LAGU DI BAGIAN BAWAH PLAYER */
+.player-progress-wrap {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.player-progress-wrap:hover {
+    height: 6px;
+}
+
+.player-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff7eb3, #ffd166);
+    transition: width 0.15s linear;
+}
+
 .mini-player.minimized .player-info,
 .mini-player.minimized .player-volume,
-.mini-player.minimized .btn-next-track {
+.mini-player.minimized .btn-speed,
+.mini-player.minimized .btn-next-track,
+.mini-player.minimized .player-progress-wrap {
     display: none;
 }
 
@@ -1165,11 +1208,11 @@ body {
 
     .mini-player {
         bottom: 12px;
-        right: 10px;
-        left: 10px;
+        right: 8px;
+        left: 8px;
         justify-content: space-between;
-        padding: 7px 12px 7px 8px;
-        gap: 6px;
+        padding: 7px 10px 9px 7px;
+        gap: 5px;
     }
 
     .mini-player.minimized {
@@ -1178,18 +1221,28 @@ body {
     }
 
     .player-cover {
-        width: 34px;
-        height: 34px;
-        font-size: 1.05rem;
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
     }
 
     .player-info {
-        min-width: 65px;
-        max-width: 95px;
+        min-width: 55px;
+        max-width: 82px;
     }
 
     .volume-slider {
-        width: 46px;
+        width: 38px;
+    }
+
+    .btn-speed {
+        padding: 3px 5px;
+        font-size: 0.68rem;
+    }
+
+    .btn-circle-play {
+        width: 30px;
+        height: 30px;
     }
 
     .options-area {

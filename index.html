@@ -39,6 +39,10 @@
             <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.6" oninput="changeVolume(this.value)">
         </div>
 
+        <button type="button" id="speed-btn" class="btn-speed" onclick="cycleSpeed(event)" title="Ubah Kecepatan Lagu">
+            1x
+        </button>
+
         <div class="player-actions">
             <button type="button" id="play-pause-btn" class="btn-circle-play" onclick="toggleMusic(event)" title="Play / Pause">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -51,6 +55,11 @@
                     <rect x="17" y="5" width="3" height="14" rx="1"></rect>
                 </svg>
             </button>
+        </div>
+
+        <!-- Garis Durasi Lagu (Klik untuk Geser / Percepat Bagian Lagu) -->
+        <div class="player-progress-wrap" onclick="seekTrack(event)" title="Klik untuk menggeser durasi lagu">
+            <div id="player-progress-bar" class="player-progress-bar"></div>
         </div>
     </div>
     
@@ -444,8 +453,8 @@
             }
         });
 
-        /* ==========================================
-           3. AUDIO CROSSFADE, VOLUME & MINI PLAYER PLAYLIST
+/* ==========================================
+           3. AUDIO CROSSFADE, VOLUME, SPEED & PLAYLIST
            ========================================== */
         let isEnvelopeOpened = false;
         const bgMusic = document.getElementById("bg-music");
@@ -459,6 +468,9 @@
         const PLAY_ICON_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"></polygon></svg>';
         const PAUSE_ICON_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
 
+        const speedRates = [1, 1.25, 1.5, 0.75];
+        let currentSpeedIndex = 0;
+
         let userVolume = 0.6;
         let previousVolume = 0.6;
         let fadeInterval = null;
@@ -471,6 +483,24 @@
         bgMusic.addEventListener("play", () => updatePlayButtonUI(true));
         bgMusic.addEventListener("pause", () => updatePlayButtonUI(false));
         bgMusic.addEventListener("ended", () => updatePlayButtonUI(false));
+
+        function cycleSpeed(event) {
+            if (event) event.stopPropagation();
+            currentSpeedIndex = (currentSpeedIndex + 1) % speedRates.length;
+            const newRate = speedRates[currentSpeedIndex];
+            bgMusic.playbackRate = newRate;
+            const speedBtn = document.getElementById("speed-btn");
+            if (speedBtn) speedBtn.innerText = newRate + "x";
+        }
+
+        function seekTrack(event) {
+            if (event) event.stopPropagation();
+            if (!bgMusic.duration) return;
+            const rect = event.currentTarget.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+            bgMusic.currentTime = ratio * bgMusic.duration;
+        }
 
         function changeVolume(val) {
             clearInterval(fadeInterval);
@@ -513,7 +543,7 @@
                 bg: "rgba(232, 93, 149, 0.35)"
             },
             {
-                title: "Speed dial",
+                title: "SPEED DIAL #1",
                 artist: "Paul Partohap",
                 filename: "speed dial.mp3",
                 cover: "💌",
@@ -527,7 +557,7 @@
                 bg: "rgba(120, 179, 255, 0.35)"
             },
             {
-                title: "Recipe of us",
+                title: "RECIPE OF US",
                 artist: "Paul Partohap",
                 filename: "recipe of us.mp3",
                 cover: "🎂",
@@ -541,6 +571,7 @@
             const track = playlist[index];
             bgMusic.src = "static/" + encodeURIComponent(track.filename);
             bgMusic.load();
+            bgMusic.playbackRate = speedRates[currentSpeedIndex];
 
             playerTitle.innerText = track.title;
             playerArtist.innerText = track.artist;
@@ -548,6 +579,9 @@
             playerCover.style.backgroundColor = track.bg;
             isAutoFadingOut = false;
             updatePlayButtonUI(false);
+
+            const progressBar = document.getElementById("player-progress-bar");
+            if (progressBar) progressBar.style.width = "0%";
         }
 
         loadTrack(currentTrackIndex);
@@ -555,10 +589,12 @@
         function fadeInAudio(duration = 1200) {
             clearInterval(fadeInterval);
             bgMusic.volume = 0;
+            bgMusic.playbackRate = speedRates[currentSpeedIndex];
             const playPromise = bgMusic.play();
 
             if (playPromise !== undefined) {
                 playPromise.then(() => {
+                    bgMusic.playbackRate = speedRates[currentSpeedIndex];
                     updatePlayButtonUI(true);
                     if (userVolume === 0) {
                         bgMusic.volume = 0;
@@ -609,6 +645,12 @@
         }
 
         bgMusic.addEventListener("timeupdate", function () {
+            if (bgMusic.duration) {
+                const percent = (bgMusic.currentTime / bgMusic.duration) * 100;
+                const progressBar = document.getElementById("player-progress-bar");
+                if (progressBar) progressBar.style.width = percent + "%";
+            }
+
             if (
                 bgMusic.duration &&
                 !bgMusic.paused &&
@@ -640,7 +682,7 @@
             const player = document.getElementById("mini-player");
             player.classList.toggle("minimized");
         }
-
+        
         /* ==========================================
            4. ANIMASI BUKA AMPLOP & SURAT
            ========================================== */
