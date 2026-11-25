@@ -11,6 +11,9 @@
 </head>
 <body>
 
+    <!-- Indikator Progres Scroll Atas -->
+    <div id="scroll-progress" class="scroll-progress-bar"></div>
+
     <!-- Kanvas Kunang-Kunang Malam -->
     <canvas id="fireflies-canvas"></canvas>
 
@@ -36,19 +39,15 @@
         </div>
 
         <div class="player-volume" title="Atur Volume Musik">
-            <button type="button" id="volume-btn" class="btn-volume-icon" onclick="toggleMute(event)" title="Mute / Unmute">
-                🔊
-            </button>
+            <button type="button" id="volume-btn" class="btn-volume-icon" onclick="toggleMute(event)" title="Mute / Unmute">🔊</button>
             <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.7" oninput="changeVolume(this.value)">
         </div>
 
-        <button type="button" id="speed-btn" class="btn-speed" onclick="cycleSpeed(event)" title="Ubah Kecepatan Lagu">
-            1x
-        </button>
+        <button type="button" id="speed-btn" class="btn-speed" onclick="cycleSpeed(event)" title="Ubah Kecepatan Lagu">1x</button>
 
         <div class="player-actions">
             <button type="button" id="play-pause-btn" class="btn-circle-play" onclick="toggleMusic(event)" title="Play / Pause">
-                <img src="static/tombol play.png" alt="Play" class="player-state-img">
+                <img src="static/tombol play.png" onerror="this.onerror=null;this.src='static/play.png';" alt="Play" class="player-state-img">
             </button>
             <button type="button" class="btn-next-track" onclick="nextTrack(event)" title="Ganti Lagu Berikutnya">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -62,12 +61,12 @@
             <div id="player-progress-bar" class="player-progress-bar"></div>
         </div>
     </div>
-    
+
     <!-- 1. LAYAR AMPLOP PEMBUKA -->
     <div id="envelope-overlay" class="envelope-overlay">
-        <div class="envelope-card" onclick="openGift(event)">
+        <div id="envelope-card" class="envelope-card" onclick="openGift(event)">
             <p class="sub-label">i have something<br><span>for you.</span></p>
-            
+
             <div id="wax-envelope" class="wax-envelope">
                 <div class="env-back"></div>
 
@@ -82,7 +81,7 @@
                 <div class="env-front-bottom"></div>
                 <div class="env-flap-top"></div>
 
-                <div class="wax-seal">
+                <div id="wax-seal" class="wax-seal">
                     <div class="wax-seal-inner">♥</div>
                 </div>
             </div>
@@ -93,22 +92,22 @@
 
     <!-- 2. KONTEN UTAMA -->
     <main id="main-content" class="main-content">
-        
+
         <!-- Bagian 1: Hero & Kertas Tulis Lipat Realistis -->
         <section class="night-section">
-            <div class="header-area reveal">
-                <div class="header-cutout-badge">
+            <div class="header-area">
+                <div class="header-cutout-badge hero-stagger">
                     <span class="balloon b1">✨</span>
                     <img src="static/untuk header.png" alt="Lowfy Birthday" class="header-cutout-img">
                     <span class="balloon b2">🌙</span>
                 </div>
-                <div class="title-stack">
+                <div class="title-stack hero-stagger">
                     <span class="edition-badge">19TH EDITION • 12.12.2026</span>
                     <h1 class="main-title">HAPPY 19TH<br>BIRTHDAY!</h1>
                 </div>
             </div>
 
-            <div id="letter-paper" class="real-paper-wrapper">
+            <div id="letter-paper" class="real-paper-wrapper hero-stagger">
                 <div class="real-paper-sheet">
                     <div class="paper-washi-tape"></div>
                     <div class="paper-top-meta">
@@ -117,7 +116,6 @@
                     </div>
 
                     <div id="accordion-letter" class="accordion-letter">
-
                         <div class="paper-fold is-open" data-fold="1">
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 01</span>
@@ -227,7 +225,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="paper-fold-controls">
@@ -248,16 +245,17 @@
 
         <div class="neon-divider"></div>
 
-        <!-- Bagian 2: Glass Jar Little Notes + Foto Kiri & Kanan -->
+        <!-- Bagian 2: Glass Jar Little Notes + Foto & Dekorasi Kiri & Kanan -->
         <section id="jar-section" class="night-section jar-area">
-            <div class="jar-wrapper reveal">
-                <span class="section-tag">MEMORIES & WISHES</span>
-                <h2 class="jar-title">Little notes, just for you</h2>
-                <p class="jar-sub">give it a little shake, or tap them one by one</p>
+            <div class="jar-wrapper motion-section">
+                <span class="section-tag motion-item">MEMORIES & WISHES</span>
+                <h2 class="jar-title motion-item">Little notes, just for you</h2>
+                <p class="jar-sub motion-item">give it a little shake, or tap them one by one</p>
 
                 <div class="jar-stage">
                     <!-- Sisi Kiri Jar -->
-                    <div class="jar-side-wing left-wing">
+                    <div class="jar-side-wing left-wing motion-item">
+                        <div class="wing-glow"></div>
                         <span class="wing-deco d1">✦</span>
                         <span class="wing-deco d2">🐾</span>
                         <div class="wing-note-tag tag-left">
@@ -265,11 +263,12 @@
                             sweet memories ♥
                         </div>
                         <img src="static/di samping kiri jar.png" alt="Lowfy Left" class="jar-side-photo">
+                        <div class="wing-mini-pill pill-left">★ little moments</div>
                         <span class="wing-deco d3">✿</span>
                     </div>
 
                     <!-- Tengah: Botol Jar -->
-                    <div class="jar-center-col">
+                    <div class="jar-center-col motion-item">
                         <div id="jar" class="jar" onclick="pickNote()">
                             <div class="jar-lid"></div>
                             <div class="jar-neck"></div>
@@ -291,7 +290,8 @@
                     </div>
 
                     <!-- Sisi Kanan Jar -->
-                    <div class="jar-side-wing right-wing">
+                    <div class="jar-side-wing right-wing motion-item">
+                        <div class="wing-glow"></div>
                         <span class="wing-deco d1">✨</span>
                         <span class="wing-deco d2">🌷</span>
                         <div class="wing-note-tag tag-right">
@@ -299,11 +299,12 @@
                             19 & glowing ✨
                         </div>
                         <img src="static/di samping kanan jar.png" alt="Lowfy Right" class="jar-side-photo">
+                        <div class="wing-mini-pill pill-right">♥ always smiling</div>
                         <span class="wing-deco d3">♥</span>
                     </div>
                 </div>
 
-                <button class="btn-glass-pink" onclick="pickNote()">Shake it! ✨</button>
+                <button type="button" class="btn-glass-pink motion-item" onclick="pickNote()">Shake it! ✨</button>
             </div>
         </section>
 
@@ -311,36 +312,35 @@
 
         <!-- Bagian 3: AREA 3 OPSI INTERAKTIF -->
         <section id="options-section" class="night-section options-area">
-            <div class="options-wrapper reveal">
-                <span class="section-tag">INTERACTIVE SURPRISES</span>
-                <h2 class="options-title">One more thing... ✨</h2>
-                <p class="options-sub">tap one of these three little surprises below</p>
+            <div class="options-wrapper motion-section">
+                <span class="section-tag motion-item">INTERACTIVE SURPRISES</span>
+                <h2 class="options-title motion-item">One more thing... ✨</h2>
+                <p class="options-sub motion-item">tap one of these three little surprises below</p>
 
-                <div class="options-buttons">
-                    <button class="opt-btn active" onclick="selectOption(1, this)">
-                        💐 Flower Bouquet
-                    </button>
-                    <button class="opt-btn" onclick="selectOption(2, this)">
-                        🌙 3 Things I Admire
-                    </button>
-                    <button class="opt-btn" onclick="selectOption(3, this)">
-                        🎂 Make a Wish
-                    </button>
+                <div class="options-buttons motion-item">
+                    <button type="button" class="opt-btn active" onclick="selectOption(1, this)">💐 Flower Bouquet</button>
+                    <button type="button" class="opt-btn" onclick="selectOption(2, this)">🌙 3 Things I Admire</button>
+                    <button type="button" class="opt-btn" onclick="selectOption(3, this)">🎂 Make a Wish</button>
                 </div>
 
-                <div class="option-display glass-card interactive-glass" data-tilt="true">
-                    
+                <div class="option-display glass-card interactive-glass motion-item" data-tilt="true">
+
                     <!-- Opsi 1: Buket Bunga Aset Gambar + Efek 3D & Animasi -->
                     <div id="opt-content-1" class="opt-panel show">
                         <h3>A Special Bouquet For You 💐</h3>
                         <p class="opt-desc">Tap the bouquet to burst flowers & sparkle!</p>
-                        
+
                         <div id="bouquet-box" class="bouquet-box" onclick="bloomBouquet(event)">
-                            <div class="bouquet-aura"></div>
+                            <div id="bouquet-aura" class="bouquet-aura"></div>
                             <div id="flower-burst-layer" class="flower-burst-layer"></div>
 
-                            <div class="bouquet-3d-wrap">
-                                <img src="static/bouquet bunga.png" alt="Flower Bouquet" class="bouquet-img">
+                            <div id="bouquet-3d-wrap" class="bouquet-3d-wrap">
+                                <img
+                                    src="static/bouquet.png"
+                                    data-fallbacks="static/bouqwet.png,static/bouquet.jpg,static/bouqwet.jpg,static/bouquet.jpeg,static/bouquet.webp,static/buket.png"
+                                    onerror="const list=(this.dataset.fallbacks||'').split(',').filter(Boolean); if(list.length){this.src=list.shift(); this.dataset.fallbacks=list.join(',');} else {this.onerror=null;}"
+                                    alt="Flower Bouquet"
+                                    class="bouquet-img">
                                 <div class="bouquet-shine"></div>
                             </div>
                         </div>
@@ -371,8 +371,8 @@
                     <div id="opt-content-3" class="opt-panel">
                         <h3>Close your eyes & make a wish 🎂</h3>
                         <p class="opt-desc">Tiup lilinnya dengan klik kue di bawah, lalu tulis harapanmu!</p>
-                        
-                        <div class="cake-box" onclick="blowCandle()" title="Klik untuk meniup lilin">
+
+                        <div id="cake-box" class="cake-box" onclick="blowCandle()" title="Klik untuk meniup lilin">
                             <svg class="coquette-cake-svg" viewBox="0 0 320 245" width="285" height="218">
                                 <defs>
                                     <filter id="cake-shadow" x="-10%" y="-10%" width="120%" height="125%">
@@ -541,7 +541,7 @@
 
                         <div class="wish-form">
                             <textarea id="wish-input" rows="3" placeholder="Tulis semua harapan mu sayanggg!!!"></textarea>
-                            <button id="btn-send-wish" class="btn-glass-pink" onclick="sendWishToEmail()">
+                            <button type="button" id="btn-send-wish" class="btn-glass-pink" onclick="sendWishToEmail()">
                                 Send My Wish 💌
                             </button>
                             <p id="send-feedback" class="send-feedback"></p>
@@ -556,20 +556,34 @@
 
     <!-- POPUP MODAL NOTE -->
     <div id="modal" class="modal" onclick="closeModal(event)">
-        <div class="modal-card glass-card">
-            <button class="modal-x" onclick="forceCloseModal()">✕</button>
+        <div id="modal-card" class="modal-card glass-card">
+            <button type="button" class="modal-x" onclick="forceCloseModal()">✕</button>
             <div class="modal-icon">✦</div>
             <h3 id="note-title">Laughter</h3>
             <p id="note-text">Isi pesan...</p>
-            <button class="btn-glass-pink" onclick="pickNote()">Shake again!</button>
+            <button type="button" class="btn-glass-pink" onclick="pickNote()">Shake again!</button>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { animate, scroll, inView, stagger, press, hover } from "https://cdn.jsdelivr.net/npm/motion@latest/+esm";
+
         const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const SPRING_SNAPPY = { type: "spring", stiffness: 360, damping: 24 };
+        const SPRING_BOUNCY = { type: "spring", stiffness: 280, damping: 18 };
+
+        function motionPlay(target, keyframes, options) {
+            if (!target || prefersReducedMotion) return;
+            try {
+                return animate(target, keyframes, options);
+            } catch (_) {
+                // shortcut: fallback silently if Web Animations API rejects an unsupported property on older mobile browsers
+            }
+        }
 
         /* ==========================================
-           0. PRELOAD ASET GAMBAR INTERAKTIF
+           0. PRELOAD ASET GAMBAR
            ========================================== */
         const BURST_FLOWER_IMAGES = [
             "static/flower 1.png",
@@ -582,6 +596,8 @@
         [
             "static/tombol play.png",
             "static/tombol pouse.png",
+            "static/play.png",
+            "static/puse.png",
             "static/bouquet.png",
             ...BURST_FLOWER_IMAGES
         ].forEach((src) => {
@@ -590,11 +606,58 @@
         });
 
         /* ==========================================
-           1. KUNANG-KUNANG SUPER RINGAN
+           1. MOTION: SCROLL PROGRESS, INVIEW & GESTURES
+           ========================================== */
+        if (!prefersReducedMotion) {
+            // Progres bar scroll di puncak layar
+            scroll(animate("#scroll-progress", { scaleX: [0, 1] }, { ease: "linear" }));
+
+            // Parallax halus pada foto header & sayap kiri-kanan jar saat scroll
+            scroll(
+                animate(".header-cutout-img", { y: [-8, 16], rotate: [-2, 3] }, { ease: "linear" }),
+                { target: document.querySelector(".header-area"), offset: ["start end", "end start"] }
+            );
+
+            scroll(
+                animate(".left-wing .jar-side-photo", { y: [14, -14], rotate: [-4, -1] }, { ease: "linear" }),
+                { target: document.getElementById("jar-section"), offset: ["start end", "end start"] }
+            );
+
+            scroll(
+                animate(".right-wing .jar-side-photo", { y: [14, -14], rotate: [4, 1] }, { ease: "linear" }),
+                { target: document.getElementById("jar-section"), offset: ["start end", "end start"] }
+            );
+
+            // Entrance animasi amplop pembuka
+            motionPlay("#envelope-card", { opacity: [0, 1], y: [26, 0], scale: [0.94, 1] }, SPRING_BOUNCY);
+
+            hover("#envelope-card", (el) => {
+                motionPlay(el, { y: -6, scale: 1.02 }, SPRING_SNAPPY);
+                return () => motionPlay(el, { y: 0, scale: 1 }, SPRING_SNAPPY);
+            });
+
+            // Tactile spring press pada seluruh tombol interaktif
+            press(".btn-glass-pink, .opt-btn, .btn-paper-nav, .btn-circle-play, .btn-speed", (el) => {
+                motionPlay(el, { scale: 0.94 }, { type: "spring", stiffness: 520, damping: 24 });
+                return () => motionPlay(el, { scale: 1 }, SPRING_SNAPPY);
+            });
+
+            // Staggered scroll reveal untuk section Jar & Interactive Surprises
+            inView(".motion-section", (section) => {
+                const items = section.querySelectorAll(".motion-item");
+                motionPlay(
+                    items,
+                    { opacity: [0, 1], y: [28, 0], scale: [0.97, 1] },
+                    { duration: 0.55, delay: stagger(0.08), ease: [0.22, 1, 0.36, 1] }
+                );
+            }, { amount: 0.16 });
+        }
+
+        /* ==========================================
+           2. KUNANG-KUNANG MALAM (CANVAS)
            ========================================== */
         const canvas = document.getElementById("fireflies-canvas");
         const ctx = canvas.getContext("2d", { alpha: true });
-        let fireflies = [];
 
         function createGlowSprite(r, g, b) {
             const sprite = document.createElement("canvas");
@@ -617,57 +680,38 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
-        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener("resize", resizeCanvas, { passive: true });
         resizeCanvas();
 
-        class Firefly {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 14 + 10;
-                this.speedX = (Math.random() - 0.5) * 0.42;
-                this.speedY = (Math.random() - 0.5) * 0.42 - 0.1;
-                this.alpha = Math.random();
-                this.alphaSpeed = (Math.random() * 0.012) + 0.004;
-                this.growing = Math.random() > 0.5;
-                this.sprite = Math.random() > 0.45 ? pinkSprite : goldSprite;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                if (this.growing) {
-                    this.alpha += this.alphaSpeed;
-                    if (this.alpha >= 0.88) this.growing = false;
-                } else {
-                    this.alpha -= this.alphaSpeed;
-                    if (this.alpha <= 0.12) this.growing = true;
-                }
-
-                if (this.x < -20) this.x = canvas.width + 20;
-                if (this.x > canvas.width + 20) this.x = -20;
-                if (this.y < -20) this.y = canvas.height + 20;
-                if (this.y > canvas.height + 20) this.y = -20;
-            }
-            draw() {
-                ctx.globalAlpha = this.alpha;
-                ctx.drawImage(this.sprite, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
-            }
-        }
-
-        for (let i = 0; i < 36; i++) {
-            fireflies.push(new Firefly());
-        }
+        const fireflies = Array.from({ length: 34 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 14 + 10,
+            vx: (Math.random() - 0.5) * 0.42,
+            vy: (Math.random() - 0.5) * 0.42 - 0.1,
+            alpha: Math.random(),
+            va: Math.random() * 0.012 + 0.004,
+            growing: Math.random() > 0.5,
+            sprite: Math.random() > 0.45 ? pinkSprite : goldSprite
+        }));
 
         function animateFireflies() {
             if (!document.hidden) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let i = 0; i < fireflies.length; i++) {
-                    fireflies[i].update();
-                    fireflies[i].draw();
+                for (const f of fireflies) {
+                    f.x += f.vx;
+                    f.y += f.vy;
+                    f.alpha += f.growing ? f.va : -f.va;
+                    if (f.alpha >= 0.88) f.growing = false;
+                    if (f.alpha <= 0.12) f.growing = true;
+
+                    if (f.x < -20) f.x = canvas.width + 20;
+                    if (f.x > canvas.width + 20) f.x = -20;
+                    if (f.y < -20) f.y = canvas.height + 20;
+                    if (f.y > canvas.height + 20) f.y = -20;
+
+                    ctx.globalAlpha = f.alpha;
+                    ctx.drawImage(f.sprite, f.x - f.size / 2, f.y - f.size / 2, f.size, f.size);
                 }
             }
             requestAnimationFrame(animateFireflies);
@@ -675,7 +719,7 @@
         requestAnimationFrame(animateFireflies);
 
         /* ==========================================
-           2. EFEK INTERAKTIF KACA & 3D TILT BOUQUET
+           3. EFEK KACA INTERAKTIF & 3D TILT BOUQUET
            ========================================== */
         document.querySelectorAll(".interactive-glass").forEach((card) => {
             let ticking = false;
@@ -684,7 +728,6 @@
             card.addEventListener("mousemove", (e) => {
                 if (ticking) return;
                 ticking = true;
-
                 requestAnimationFrame(() => {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;
@@ -693,10 +736,8 @@
                     card.style.setProperty("--mouse-y", `${y}px`);
 
                     if (allowTilt) {
-                        const centerX = rect.width / 2;
-                        const centerY = rect.height / 2;
-                        const rotateX = ((y - centerY) / centerY) * -1.8;
-                        const rotateY = ((x - centerX) / centerX) * 1.8;
+                        const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -1.8;
+                        const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 1.8;
                         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                     }
                     ticking = false;
@@ -705,13 +746,13 @@
 
             if (allowTilt) {
                 card.addEventListener("mouseleave", () => {
-                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+                    card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
                 });
             }
         });
 
         const bouquetBoxEl = document.getElementById("bouquet-box");
-        const bouquet3dWrap = document.querySelector(".bouquet-3d-wrap");
+        const bouquet3dWrap = document.getElementById("bouquet-3d-wrap");
         if (bouquetBoxEl && bouquet3dWrap) {
             bouquetBoxEl.addEventListener("mousemove", (e) => {
                 const rect = bouquetBoxEl.getBoundingClientRect();
@@ -726,9 +767,8 @@
         }
 
         /* ==========================================
-           3. AUDIO PLAYER, VOLUME FADE, SPEED & PLAYLIST
+           4. AUDIO PLAYER, VOLUME FADE & PLAYLIST
            ========================================== */
-        let isEnvelopeOpened = false;
         const bgMusic = document.getElementById("bg-music");
         const playPauseBtn = document.getElementById("play-pause-btn");
         const playerTitle = document.getElementById("player-title");
@@ -737,16 +777,24 @@
         const volumeSlider = document.getElementById("volume-slider");
         const volumeBtn = document.getElementById("volume-btn");
 
-        const PLAY_ICON_HTML = '<img src="static/tombol play.png" alt="Play" class="player-state-img">';
-        const PAUSE_ICON_HTML = '<img src="static/tombol pouse.png" alt="Pause" class="player-state-img">';
+        const PLAY_ICON_HTML = '<img src="static/tombol play.png" onerror="this.onerror=null;this.src=\'static/play.png\';" alt="Play" class="player-state-img">';
+        const PAUSE_ICON_HTML = '<img src="static/tombol pouse.png" onerror="this.onerror=null;this.src=\'static/puse.png\';" alt="Pause" class="player-state-img">';
 
         const speedRates = [1, 1.25, 1.5, 0.75];
         let currentSpeedIndex = 0;
-
         let userVolume = 0.7;
         let previousVolume = 0.7;
         let isAutoFadingOut = false;
         let volumeFadeTimer = null;
+
+        const playlist = [
+            { title: "24/7", artist: "Romaria", filename: "romaria.mp3", cover: "🌸", bg: "rgba(255, 126, 179, 0.25)" },
+            { title: "Remaja", artist: "HIVI!", filename: "remaja.mp3", cover: "🌷", bg: "rgba(232, 93, 149, 0.25)" },
+            { title: "SPEED DIAL #1", artist: "Paul Partohap", filename: "speed dial.mp3", cover: "✨", bg: "rgba(181, 131, 255, 0.25)" },
+            { title: "the space between us", artist: "siopaolo", filename: "the space between us.mp3", cover: "🌙", bg: "rgba(120, 179, 255, 0.25)" },
+            { title: "RECIPE OF US", artist: "Paul Partohap", filename: "recipe of us.mp3", cover: "🕯️", bg: "rgba(255, 209, 102, 0.25)" }
+        ];
+        let currentTrackIndex = 0;
 
         function stopVolumeFade() {
             if (volumeFadeTimer !== null) {
@@ -758,6 +806,7 @@
         function updatePlayButtonUI(isPlaying) {
             playPauseBtn.innerHTML = isPlaying ? PAUSE_ICON_HTML : PLAY_ICON_HTML;
             playPauseBtn.classList.toggle("is-playing", isPlaying);
+            motionPlay(playPauseBtn, { scale: [0.88, 1.06, 1] }, SPRING_SNAPPY);
         }
 
         bgMusic.addEventListener("play", () => updatePlayButtonUI(true));
@@ -766,50 +815,6 @@
         function applyPlaybackRate(rate) {
             bgMusic.defaultPlaybackRate = rate;
             bgMusic.playbackRate = rate;
-        }
-
-        function cycleSpeed(event) {
-            if (event) event.stopPropagation();
-            currentSpeedIndex = (currentSpeedIndex + 1) % speedRates.length;
-            const newRate = speedRates[currentSpeedIndex];
-            applyPlaybackRate(newRate);
-
-            const speedBtn = document.getElementById("speed-btn");
-            if (speedBtn) speedBtn.innerText = newRate + "x";
-        }
-
-        function seekTrack(event) {
-            if (event) event.stopPropagation();
-            if (!bgMusic.duration || Number.isNaN(bgMusic.duration)) return;
-            const rect = event.currentTarget.getBoundingClientRect();
-            const clickX = event.clientX - rect.left;
-            const ratio = Math.max(0, Math.min(1, clickX / rect.width));
-            bgMusic.currentTime = ratio * bgMusic.duration;
-        }
-
-        function changeVolume(val) {
-            stopVolumeFade();
-            userVolume = parseFloat(val);
-            bgMusic.volume = userVolume;
-
-            if (userVolume > 0) {
-                previousVolume = userVolume;
-                volumeBtn.innerText = userVolume < 0.4 ? "🔉" : "🔊";
-            } else {
-                volumeBtn.innerText = "🔇";
-            }
-        }
-
-        function toggleMute(event) {
-            if (event) event.stopPropagation();
-            if (userVolume > 0) {
-                volumeSlider.value = 0;
-                changeVolume(0);
-            } else {
-                const restoreVol = previousVolume > 0 ? previousVolume : 0.7;
-                volumeSlider.value = restoreVol;
-                changeVolume(restoreVol);
-            }
         }
 
         function fadeVolumeTo(targetVol, durationMs = 450, onDone = null) {
@@ -829,9 +834,7 @@
 
             volumeFadeTimer = setInterval(() => {
                 currentStep++;
-                const progress = currentStep / steps;
-                bgMusic.volume = Math.max(0, Math.min(1, startVol + diff * progress));
-
+                bgMusic.volume = Math.max(0, Math.min(1, startVol + diff * (currentStep / steps)));
                 if (currentStep >= steps) {
                     stopVolumeFade();
                     bgMusic.volume = clampedTarget;
@@ -839,46 +842,6 @@
                 }
             }, 35);
         }
-
-        const playlist = [
-            {
-                title: "24/7",
-                artist: "Romaria",
-                filename: "romaria.mp3",
-                cover: "🌸",
-                bg: "rgba(255, 126, 179, 0.25)"
-            },
-            {
-                title: "Remaja",
-                artist: "HIVI!",
-                filename: "remaja.mp3",
-                cover: "🌷",
-                bg: "rgba(232, 93, 149, 0.25)"
-            },
-            {
-                title: "SPEED DIAL #1",
-                artist: "Paul Partohap",
-                filename: "speed dial.mp3",
-                cover: "✨",
-                bg: "rgba(181, 131, 255, 0.25)"
-            },
-            {
-                title: "the space between us",
-                artist: "siopaolo",
-                filename: "the space between us.mp3",
-                cover: "🌙",
-                bg: "rgba(120, 179, 255, 0.25)"
-            },
-            {
-                title: "RECIPE OF US",
-                artist: "Paul Partohap",
-                filename: "recipe of us.mp3",
-                cover: "🕯️",
-                bg: "rgba(255, 209, 102, 0.25)"
-            }
-        ];
-
-        let currentTrackIndex = 0;
 
         function setTrackSource(index) {
             const track = playlist[index];
@@ -895,6 +858,7 @@
 
             const progressBar = document.getElementById("player-progress-bar");
             if (progressBar) progressBar.style.width = "0%";
+            motionPlay(playerCover, { scale: [0.82, 1.1, 1], rotate: [-12, 6, 0] }, SPRING_BOUNCY);
         }
 
         setTrackSource(currentTrackIndex);
@@ -908,10 +872,7 @@
             if (p && typeof p.then === "function") {
                 p.then(() => {
                     applyPlaybackRate(speedRates[currentSpeedIndex]);
-                    updatePlayButtonUI(true);
-                    if (withFadeIn) {
-                        fadeVolumeTo(userVolume, 550);
-                    }
+                    if (withFadeIn) fadeVolumeTo(userVolume, 550);
                 }).catch(() => {
                     bgMusic.volume = userVolume;
                     updatePlayButtonUI(false);
@@ -929,49 +890,22 @@
                 if (typeof onPaused === "function") onPaused();
                 return;
             }
-
             fadeVolumeTo(0, 350, () => {
                 bgMusic.pause();
                 bgMusic.volume = userVolume;
-                updatePlayButtonUI(false);
                 if (typeof onPaused === "function") onPaused();
             });
         }
 
-        function nextTrack(event) {
-            if (event) event.stopPropagation();
-            const nextIdx = (currentTrackIndex + 1) % playlist.length;
-            const wasPlaying = !bgMusic.paused;
-
-            const switchAndPlay = () => {
-                currentTrackIndex = nextIdx;
-                setTrackSource(currentTrackIndex);
-                if (wasPlaying) {
-                    playCurrentTrackDirect(true);
-                } else {
-                    bgMusic.volume = userVolume;
-                    updatePlayButtonUI(false);
-                }
-            };
-
-            if (wasPlaying) {
-                fadeVolumeTo(0, 300, switchAndPlay);
-            } else {
-                switchAndPlay();
-            }
-        }
-
-        bgMusic.addEventListener("ended", function () {
+        bgMusic.addEventListener("ended", () => {
             currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
             setTrackSource(currentTrackIndex);
             playCurrentTrackDirect(true);
         });
 
-        bgMusic.addEventListener("timeupdate", function () {
+        bgMusic.addEventListener("timeupdate", () => {
             const targetRate = speedRates[currentSpeedIndex];
-            if (Math.abs(bgMusic.playbackRate - targetRate) > 0.01) {
-                applyPlaybackRate(targetRate);
-            }
+            if (Math.abs(bgMusic.playbackRate - targetRate) > 0.01) applyPlaybackRate(targetRate);
 
             if (bgMusic.duration && !Number.isNaN(bgMusic.duration)) {
                 const percent = (bgMusic.currentTime / bgMusic.duration) * 100;
@@ -985,20 +919,15 @@
             }
         });
 
-        function toggleMinimizePlayer() {
-            const player = document.getElementById("mini-player");
-            player.classList.toggle("minimized");
-        }
-
         /* ==========================================
-           4. ANIMASI BUKA AMPLOP & LIPATAN KERTAS
+           5. AMPLOP PEMBUKA & LIPATAN SURAT
            ========================================== */
+        let isEnvelopeOpened = false;
         const TOTAL_FOLDS = 9;
         let openFoldCount = 1;
 
         function updateFoldsUI(scrollToNewFold = false) {
-            const folds = document.querySelectorAll(".paper-fold");
-            folds.forEach((foldEl) => {
+            document.querySelectorAll(".paper-fold").forEach((foldEl) => {
                 const foldNum = parseInt(foldEl.dataset.fold, 10);
                 const actionSpan = foldEl.querySelector(".crease-action");
 
@@ -1006,83 +935,34 @@
 
                 if (foldNum <= openFoldCount) {
                     foldEl.classList.add("is-open");
-                    if (actionSpan && actionSpan.dataset.openText) {
-                        actionSpan.innerText = actionSpan.dataset.openText;
-                    }
+                    if (actionSpan?.dataset.openText) actionSpan.innerText = actionSpan.dataset.openText;
                 } else if (foldNum === openFoldCount + 1) {
                     foldEl.classList.add("is-next-folded");
-                    if (actionSpan && actionSpan.dataset.closedText) {
-                        actionSpan.innerText = actionSpan.dataset.closedText;
-                    }
+                    if (actionSpan?.dataset.closedText) actionSpan.innerText = actionSpan.dataset.closedText;
                 } else {
                     foldEl.classList.add("is-stacked-folded");
-                    if (actionSpan && actionSpan.dataset.closedText) {
-                        actionSpan.innerText = actionSpan.dataset.closedText;
-                    }
+                    if (actionSpan?.dataset.closedText) actionSpan.innerText = actionSpan.dataset.closedText;
                 }
             });
 
             const badge = document.getElementById("fold-counter-badge");
-            if (badge) {
-                badge.innerText = `Lipatan ${openFoldCount} / ${TOTAL_FOLDS}`;
-            }
+            if (badge) badge.innerText = `Lipatan ${openFoldCount} / ${TOTAL_FOLDS}`;
 
             const prevBtn = document.getElementById("btn-prev-fold");
             const nextBtn = document.getElementById("btn-next-fold");
-
-            if (prevBtn) {
-                prevBtn.disabled = openFoldCount <= 1;
-            }
-
+            if (prevBtn) prevBtn.disabled = openFoldCount <= 1;
             if (nextBtn) {
-                if (openFoldCount < TOTAL_FOLDS) {
-                    nextBtn.innerText = `Buka Lipatan ${openFoldCount + 1} ↓`;
-                } else {
-                    nextBtn.innerText = "Lipat Kembali dari Awal ↺";
+                nextBtn.innerText = openFoldCount < TOTAL_FOLDS
+                    ? `Buka Lipatan ${openFoldCount + 1} ↓`
+                    : "Lipat Kembali dari Awal ↺";
+            }
+
+            const activeFold = document.querySelector(`.paper-fold[data-fold="${openFoldCount}"]`);
+            if (activeFold) {
+                motionPlay(activeFold.querySelector(".fold-content"), { opacity: [0.4, 1], y: [-6, 0] }, { duration: 0.4, ease: [0.22, 1, 0.36, 1] });
+                if (scrollToNewFold) {
+                    setTimeout(() => activeFold.scrollIntoView({ behavior: "smooth", block: "nearest" }), 160);
                 }
-            }
-
-            if (scrollToNewFold) {
-                const activeFold = document.querySelector(`.paper-fold[data-fold="${openFoldCount}"]`);
-                if (activeFold) {
-                    setTimeout(() => {
-                        activeFold.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                    }, 180);
-                }
-            }
-        }
-
-        function unfoldNext() {
-            if (openFoldCount < TOTAL_FOLDS) {
-                openFoldCount++;
-                updateFoldsUI(true);
-            } else {
-                openFoldCount = 1;
-                updateFoldsUI(true);
-            }
-        }
-
-        function foldPrev() {
-            if (openFoldCount > 1) {
-                openFoldCount--;
-                updateFoldsUI(true);
-            }
-        }
-
-        function handleFoldClick(foldNum, event) {
-            if (event) event.stopPropagation();
-
-            if (foldNum > openFoldCount) {
-                if (openFoldCount < TOTAL_FOLDS) {
-                    openFoldCount++;
-                    updateFoldsUI(true);
-                }
-                return;
-            }
-
-            if (foldNum > 1 && event && event.target.closest(".fold-crease-bar")) {
-                openFoldCount = foldNum - 1;
-                updateFoldsUI(true);
             }
         }
 
@@ -1096,9 +976,9 @@
             const waxEnvelope = document.getElementById("wax-envelope");
             const overlay = document.getElementById("envelope-overlay");
             const main = document.getElementById("main-content");
-            const letterPaper = document.getElementById("letter-paper");
             const miniPlayer = document.getElementById("mini-player");
 
+            motionPlay("#wax-seal", { scale: [1, 1.35, 0], opacity: [1, 1, 0] }, { duration: 0.42 });
             waxEnvelope.classList.add("unsealed");
             playCurrentTrackDirect(true);
 
@@ -1106,40 +986,20 @@
                 overlay.classList.add("opened");
                 main.classList.add("visible");
                 miniPlayer.classList.add("show-player");
-            }, 1150);
+                motionPlay(miniPlayer, { y: [40, 0], opacity: [0, 1] }, SPRING_BOUNCY);
+            }, 1100);
 
             setTimeout(() => {
-                checkReveal();
-                letterPaper.classList.add("unfolded");
-            }, 1750);
+                motionPlay(
+                    ".hero-stagger",
+                    { opacity: [0, 1], y: [28, 0], scale: [0.96, 1] },
+                    { duration: 0.65, delay: stagger(0.12), ease: [0.22, 1, 0.36, 1] }
+                );
+            }, 1350);
         }
-
-        function toggleMusic(event) {
-            if (event) event.stopPropagation();
-
-            if (!bgMusic.paused) {
-                pauseCurrentTrackSmooth();
-            } else {
-                playCurrentTrackDirect(true);
-            }
-        }
-
-        function checkReveal() {
-            const reveals = document.querySelectorAll(".reveal");
-            const windowHeight = window.innerHeight;
-
-            reveals.forEach((el) => {
-                const elementTop = el.getBoundingClientRect().top;
-                if (elementTop < windowHeight - 80) {
-                    el.classList.add("active");
-                }
-            });
-        }
-
-        window.addEventListener("scroll", checkReveal, { passive: true });
 
         /* ==========================================
-           5. JAR NOTES & ANIMASI GOYANG DI DALAM JAR
+           6. GLASS JAR SHAKE (MOTION SPRING) & MODAL
            ========================================== */
         const NOTES_LIST = [
             { title: "Laughter", text: "Our best memories always start with a random laugh that lasts way too long." },
@@ -1152,7 +1012,6 @@
 
         let remainingNotes = [];
         let lastShownTitle = null;
-        let jarShakeTimer = null;
 
         function getUniqueRandomNote() {
             if (remainingNotes.length === 0) {
@@ -1173,29 +1032,48 @@
 
         function pickNote() {
             forceCloseModal();
-            const jar = document.getElementById("jar");
-            
-            jar.classList.remove("shaking");
-            void jar.offsetWidth;
-            jar.classList.add("shaking");
 
-            if (jarShakeTimer) clearTimeout(jarShakeTimer);
-            jarShakeTimer = setTimeout(() => {
-                jar.classList.remove("shaking");
-            }, 900);
+            // Goyangan botol jar berbasis Motion keyframes
+            motionPlay(
+                "#jar",
+                {
+                    rotate: [0, -13, 13, -10, 9, -5, 3, 0],
+                    x: [0, -6, 6, -4, 4, -2, 0]
+                },
+                { duration: 0.65, ease: "easeInOut" }
+            );
+
+            // Ketujuh kertas kecil di dalam jar melompat & berputar dengan stagger
+            document.querySelectorAll(".note-slip").forEach((slip, idx) => {
+                const jumpY = -(52 + (idx % 3) * 16);
+                const driftX = (idx % 2 === 0 ? 1 : -1) * (12 + (idx % 4) * 4);
+                const spin = (idx % 2 === 0 ? 1 : -1) * (115 + idx * 12);
+
+                motionPlay(
+                    slip,
+                    {
+                        y: [0, jumpY, jumpY * 0.35, 0],
+                        x: [0, driftX, -driftX * 0.4, 0],
+                        rotate: [0, spin, -spin * 0.25, 0]
+                    },
+                    { duration: 0.85, delay: idx * 0.025, ease: [0.22, 1, 0.36, 1] }
+                );
+            });
+
+            motionPlay(
+                ".jar-sparkle",
+                { scale: [1, 1.85, 1], y: [0, -24, 0], opacity: [0.7, 1, 0.75] },
+                { duration: 0.75, delay: stagger(0.04) }
+            );
 
             const data = getUniqueRandomNote();
             setTimeout(() => {
                 document.getElementById("note-title").innerText = data.title;
                 document.getElementById("note-text").innerText = data.text;
-                document.getElementById("modal").classList.add("show");
+                const modal = document.getElementById("modal");
+                modal.classList.add("show");
+                motionPlay("#modal-card", { opacity: [0, 1], scale: [0.85, 1.02, 1], y: [18, 0] }, SPRING_BOUNCY);
             }, 520);
-        }
-
-        function closeModal(event) {
-            if (event.target.id === "modal") {
-                forceCloseModal();
-            }
         }
 
         function forceCloseModal() {
@@ -1203,36 +1081,44 @@
         }
 
         /* ==========================================
-           6. OPSI INTERAKTIF & KIRIM PESAN KE GMAIL
+           7. OPSI INTERAKTIF, BOUQUET & FORM WISH
            ========================================== */
         function selectOption(optionNumber, clickedBtn) {
-            document.querySelectorAll(".opt-btn").forEach((btn) => {
-                btn.classList.remove("active");
-            });
+            document.querySelectorAll(".opt-btn").forEach((btn) => btn.classList.remove("active"));
             clickedBtn.classList.add("active");
 
-            document.querySelectorAll(".opt-panel").forEach((panel) => {
-                panel.classList.remove("show");
-            });
-            document.getElementById("opt-content-" + optionNumber).classList.add("show");
+            document.querySelectorAll(".opt-panel").forEach((panel) => panel.classList.remove("show"));
+            const activePanel = document.getElementById("opt-content-" + optionNumber);
+            activePanel.classList.add("show");
+
+            motionPlay(activePanel, { opacity: [0, 1], y: [14, 0] }, { duration: 0.4, ease: [0.22, 1, 0.36, 1] });
+
+            if (optionNumber === 2) {
+                motionPlay(
+                    activePanel.querySelectorAll(".admire-card"),
+                    { opacity: [0, 1], x: [-16, 0] },
+                    { duration: 0.45, delay: stagger(0.09), ease: [0.22, 1, 0.36, 1] }
+                );
+            }
         }
 
         function bloomBouquet(event) {
             if (event) event.stopPropagation();
 
-            const box = document.getElementById("bouquet-box");
             const msg = document.getElementById("bouquet-msg");
             const burstLayer = document.getElementById("flower-burst-layer");
 
-            box.classList.remove("blooming");
-            void box.offsetWidth;
-            box.classList.add("blooming");
+            motionPlay(
+                "#bouquet-3d-wrap",
+                { scale: [1, 1.15, 0.96, 1], y: [0, -12, 2, 0], rotate: [0, 4, -2, 0] },
+                SPRING_BOUNCY
+            );
+            motionPlay("#bouquet-aura", { scale: [1, 1.45, 1], opacity: [0.8, 1, 0.75] }, { duration: 0.65 });
 
             msg.innerText = "Sending you endless happiness & warm hugs! 💐✨";
-
             if (!burstLayer) return;
-            const totalParticles = 15;
 
+            const totalParticles = 15;
             for (let i = 0; i < totalParticles; i++) {
                 const particle = document.createElement("div");
                 particle.className = "burst-flower";
@@ -1245,37 +1131,41 @@
                 flowerImg.style.width = `${sizePx}px`;
                 flowerImg.style.height = `${sizePx}px`;
                 particle.appendChild(flowerImg);
+                burstLayer.appendChild(particle);
 
-                const baseAngle = (i / totalParticles) * Math.PI * 2;
-                const angle = baseAngle + (Math.random() - 0.5) * 0.35;
+                const angle = (i / totalParticles) * Math.PI * 2 + (Math.random() - 0.5) * 0.35;
                 const distance = 95 + Math.random() * 75;
-
                 const tx = Math.cos(angle) * distance;
                 const ty = Math.sin(angle) * distance;
                 const rot = (Math.random() - 0.5) * 420;
-                const scale = 0.85 + Math.random() * 0.5;
+                const sc = 0.85 + Math.random() * 0.5;
 
-                particle.style.setProperty("--tx", `${tx.toFixed(1)}px`);
-                particle.style.setProperty("--ty", `${ty.toFixed(1)}px`);
-                particle.style.setProperty("--rot", `${rot.toFixed(0)}deg`);
-                particle.style.setProperty("--sc", scale.toFixed(2));
+                const anim = motionPlay(
+                    particle,
+                    {
+                        x: [0, tx],
+                        y: [0, ty],
+                        scale: [0.2, sc, sc * 0.9],
+                        rotate: [0, rot],
+                        opacity: [1, 1, 0]
+                    },
+                    { duration: 1.25, ease: [0.16, 1, 0.3, 1] }
+                );
 
-                burstLayer.appendChild(particle);
-
-                requestAnimationFrame(() => {
-                    particle.classList.add("scatter");
-                });
-
-                setTimeout(() => {
-                    particle.remove();
-                }, 1450);
+                if (anim && anim.finished) {
+                    anim.finished.then(() => particle.remove());
+                } else {
+                    setTimeout(() => particle.remove(), 1300);
+                }
             }
         }
 
         function blowCandle() {
             const flame = document.getElementById("flame");
             const status = document.getElementById("wish-status");
-            
+
+            motionPlay("#cake-box", { scale: [1, 0.96, 1.03, 1] }, SPRING_SNAPPY);
+
             if (!flame.classList.contains("blown")) {
                 flame.classList.add("blown");
                 status.innerText = "Yeay! Sekarang tulis harapanmu di bawah ini 🎉✨";
@@ -1283,6 +1173,7 @@
                 flame.classList.remove("blown");
                 status.innerText = "Tap the candle to blow it out ✨";
             }
+            motionPlay(status, { scale: [0.92, 1.04, 1], opacity: [0.6, 1] }, SPRING_SNAPPY);
         }
 
         async function sendWishToEmail() {
@@ -1294,6 +1185,7 @@
             if (!wishText) {
                 feedback.style.color = "#ff85b3";
                 feedback.innerText = "Tulis dulu pesan atau harapanmu ya! ✍️";
+                motionPlay(input, { x: [0, -6, 6, -4, 4, 0] }, { duration: 0.35 });
                 return;
             }
 
@@ -1311,14 +1203,8 @@
             try {
                 const response = await fetch(FORMSPREE_URL, {
                     method: "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        subject: "🎂 New Birthday Wish From Lowfy!",
-                        wish: wishText
-                    })
+                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    body: JSON.stringify({ subject: "🎂 New Birthday Wish From Lowfy!", wish: wishText })
                 });
 
                 if (response.ok) {
@@ -1329,7 +1215,7 @@
                     feedback.style.color = "#ff85b3";
                     feedback.innerText = "Gagal mengirim pesan. Coba sebentar lagi.";
                 }
-            } catch (err) {
+            } catch (_) {
                 feedback.style.color = "#ff85b3";
                 feedback.innerText = "Terjadi kesalahan jaringan.";
             } finally {
@@ -1337,6 +1223,92 @@
                 btn.innerText = "Send My Wish 💌";
             }
         }
+
+        /* ==========================================
+           8. EKSPOR HANDLER KE GLOBAL WINDOW
+           ========================================== */
+        Object.assign(window, {
+            openGift,
+            toggleMusic: (e) => {
+                if (e) e.stopPropagation();
+                bgMusic.paused ? playCurrentTrackDirect(true) : pauseCurrentTrackSmooth();
+            },
+            nextTrack: (e) => {
+                if (e) e.stopPropagation();
+                const nextIdx = (currentTrackIndex + 1) % playlist.length;
+                const wasPlaying = !bgMusic.paused;
+                const switchAndPlay = () => {
+                    currentTrackIndex = nextIdx;
+                    setTrackSource(currentTrackIndex);
+                    wasPlaying ? playCurrentTrackDirect(true) : updatePlayButtonUI(false);
+                };
+                wasPlaying ? fadeVolumeTo(0, 300, switchAndPlay) : switchAndPlay();
+            },
+            cycleSpeed: (e) => {
+                if (e) e.stopPropagation();
+                currentSpeedIndex = (currentSpeedIndex + 1) % speedRates.length;
+                const rate = speedRates[currentSpeedIndex];
+                applyPlaybackRate(rate);
+                const btn = document.getElementById("speed-btn");
+                if (btn) btn.innerText = rate + "x";
+            },
+            seekTrack: (e) => {
+                if (e) e.stopPropagation();
+                if (!bgMusic.duration || Number.isNaN(bgMusic.duration)) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                bgMusic.currentTime = ratio * bgMusic.duration;
+            },
+            changeVolume: (val) => {
+                stopVolumeFade();
+                userVolume = parseFloat(val);
+                bgMusic.volume = userVolume;
+                if (userVolume > 0) {
+                    previousVolume = userVolume;
+                    volumeBtn.innerText = userVolume < 0.4 ? "🔉" : "🔊";
+                } else {
+                    volumeBtn.innerText = "🔇";
+                }
+            },
+            toggleMute: (e) => {
+                if (e) e.stopPropagation();
+                const target = userVolume > 0 ? 0 : (previousVolume > 0 ? previousVolume : 0.7);
+                volumeSlider.value = target;
+                window.changeVolume(target);
+            },
+            toggleMinimizePlayer: () => {
+                document.getElementById("mini-player").classList.toggle("minimized");
+            },
+            unfoldNext: () => {
+                openFoldCount = openFoldCount < TOTAL_FOLDS ? openFoldCount + 1 : 1;
+                updateFoldsUI(true);
+            },
+            foldPrev: () => {
+                if (openFoldCount > 1) {
+                    openFoldCount--;
+                    updateFoldsUI(true);
+                }
+            },
+            handleFoldClick: (foldNum, e) => {
+                if (e) e.stopPropagation();
+                if (foldNum > openFoldCount && openFoldCount < TOTAL_FOLDS) {
+                    openFoldCount++;
+                    updateFoldsUI(true);
+                } else if (foldNum > 1 && e?.target.closest(".fold-crease-bar")) {
+                    openFoldCount = foldNum - 1;
+                    updateFoldsUI(true);
+                }
+            },
+            pickNote,
+            closeModal: (e) => {
+                if (e.target.id === "modal") forceCloseModal();
+            },
+            forceCloseModal,
+            selectOption,
+            bloomBouquet,
+            blowCandle,
+            sendWishToEmail
+        });
     </script>
 </body>
 </html>

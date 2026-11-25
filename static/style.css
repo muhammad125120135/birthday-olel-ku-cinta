@@ -16,10 +16,8 @@ body {
     color: #f8f2f6;
     overflow-x: hidden;
     position: relative;
-    -webkit-tap-highlight-color: transparent;
 }
 
-/* HILANGKAN SOROTAN BIRU & SELEKSI OTOMATIS PADA ELEMEN INTERAKTIF HP */
 button,
 a,
 [onclick],
@@ -27,32 +25,16 @@ a,
 .wax-envelope,
 .paper-fold,
 .fold-crease-bar,
-.btn-paper-nav,
 .jar,
-.btn-glass-pink,
-.opt-btn,
 .bouquet-box,
 .cake-box,
 .modal,
-.modal-x,
 .mini-player,
 .player-window-controls,
-.btn-volume-icon,
-.btn-speed,
-.btn-circle-play,
-.btn-next-track,
 .player-progress-wrap {
-    -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
-    outline: none;
-}
-
-button:focus,
-button:active,
-[onclick]:focus,
-[onclick]:active {
     outline: none;
 }
 
@@ -62,6 +44,21 @@ input,
 .admire-card p {
     -webkit-user-select: text;
     user-select: text;
+}
+
+/* INDIKATOR PROGRES SCROLL ATAS */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff7eb3, #ffd166, #ff9ec9);
+    transform-origin: 0% 50%;
+    transform: scaleX(0);
+    z-index: 250;
+    pointer-events: none;
+    box-shadow: 0 0 12px rgba(255, 126, 179, 0.75);
 }
 
 /* KANVAS KUNANG-KUNANG MALAM */
@@ -88,7 +85,7 @@ input,
 .orb-1 {
     width: 620px;
     height: 620px;
-    background: radial-gradient(circle, rgba(255, 94, 156, 0.38) 0%, rgba(255, 94, 156, 0) 70%);
+    background: radial-gradient(circle, rgba(255, 94, 156, 0.38) 0%, transparent 70%);
     top: -180px;
     left: -180px;
 }
@@ -103,8 +100,7 @@ input,
 }
 
 @keyframes orbDrift {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(35px, 25px, 0); }
+    to { transform: translate3d(35px, 25px, 0); }
 }
 
 /* KELAS DASAR KACA */
@@ -178,11 +174,6 @@ input,
     width: 276px;
     height: 180px;
     margin: 0 auto;
-    transition: transform 0.35s ease;
-}
-
-.envelope-card:hover .wax-envelope:not(.unsealed) {
-    transform: translateY(-6px) scale(1.02);
 }
 
 .env-back {
@@ -207,7 +198,6 @@ input,
     padding: 14px 16px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     z-index: 2;
-    will-change: transform;
     transform: translateY(-14px);
     transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
 }
@@ -231,16 +221,17 @@ input,
 
 .peek-lines {
     height: 46px;
-    background-image: repeating-linear-gradient(
-        transparent,
-        transparent 11px,
-        rgba(143, 165, 194, 0.35) 12px
-    );
+    background-image: repeating-linear-gradient(transparent, transparent 11px, rgba(143, 165, 194, 0.35) 12px);
+}
+
+.env-front-left,
+.env-front-right,
+.env-front-bottom {
+    position: absolute;
+    inset: 0;
 }
 
 .env-front-left {
-    position: absolute;
-    inset: 0;
     background: linear-gradient(135deg, rgba(84, 42, 74, 0.92), rgba(28, 16, 40, 0.96));
     clip-path: polygon(0 0, 52% 52%, 0 100%);
     border-radius: 12px 0 0 12px;
@@ -248,8 +239,6 @@ input,
 }
 
 .env-front-right {
-    position: absolute;
-    inset: 0;
     background: linear-gradient(225deg, rgba(78, 38, 70, 0.92), rgba(24, 14, 36, 0.96));
     clip-path: polygon(100% 0, 48% 52%, 100% 100%);
     border-radius: 0 12px 12px 0;
@@ -257,13 +246,11 @@ input,
 }
 
 .env-front-bottom {
-    position: absolute;
-    inset: 0;
     background: linear-gradient(180deg, #321b47 0%, #170d24 100%);
     clip-path: polygon(0 100%, 50% 46%, 100% 100%);
     border-radius: 0 0 12px 12px;
-    z-index: 4;
     border-bottom: 1px solid rgba(255, 158, 203, 0.35);
+    z-index: 4;
 }
 
 .env-flap-top {
@@ -276,7 +263,6 @@ input,
     clip-path: polygon(0 0, 100% 0, 50% 95%);
     border-radius: 12px 12px 0 0;
     transform-origin: top center;
-    will-change: transform;
     z-index: 5;
     transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.15s, z-index 0s linear 0.35s;
 }
@@ -295,8 +281,6 @@ input,
     align-items: center;
     justify-content: center;
     z-index: 6;
-    will-change: transform, opacity;
-    transition: transform 0.4s ease, opacity 0.35s ease;
 }
 
 .wax-seal-inner {
@@ -309,12 +293,6 @@ input,
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.wax-envelope.unsealed .wax-seal {
-    transform: translateX(-50%) scale(1.4);
-    opacity: 0;
-    pointer-events: none;
 }
 
 .wax-envelope.unsealed .env-flap-top {
@@ -331,16 +309,16 @@ input,
     font-size: 0.82rem;
     letter-spacing: 0.8px;
     color: #ffb8d8;
-    animation: pulseText 1.8s infinite;
+    animation: pulseFade 1.8s ease-in-out infinite;
 }
 
-@keyframes pulseText {
+@keyframes pulseFade {
     0%, 100% { opacity: 0.45; }
     50% { opacity: 1; }
 }
 
 /* =========================================
-   2. KONTEN UTAMA & ANIMASI SCROLL
+   2. KONTEN UTAMA & PEMBATAS
    ========================================= */
 .main-content {
     opacity: 0;
@@ -353,20 +331,9 @@ input,
     opacity: 1;
 }
 
-.reveal {
-    opacity: 0;
-    transform: translateY(35px);
-    transition: all 0.85s ease-out;
-}
-
-.reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 .night-section {
     min-height: 100vh;
-    padding: 75px 20px 75px;
+    padding: 75px 20px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -384,7 +351,7 @@ input,
 }
 
 /* =========================================
-   3. BAGIAN 1: HERO (HEADER FOTO KEPALA) & KERTAS LIPAT
+   3. BAGIAN 1: HERO & KERTAS LIPAT
    ========================================= */
 .header-area {
     display: flex;
@@ -408,37 +375,27 @@ input,
     height: 152px;
     object-fit: contain;
     filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 18px rgba(255, 126, 179, 0.45));
-    animation: headerHeadBob 3.6s ease-in-out infinite;
-    transition: transform 0.3s ease;
-}
-
-.header-cutout-badge:hover .header-cutout-img {
-    transform: scale(1.07) rotate(-2deg);
-}
-
-@keyframes headerHeadBob {
-    0%, 100% { transform: translateY(0) rotate(-2.5deg); }
-    50% { transform: translateY(-7px) rotate(2.5deg); }
+    will-change: transform;
 }
 
 .balloon {
     font-size: 1.35rem;
-    animation: floatBalloon 3s ease-in-out infinite;
+    animation: gentleFloat 3s ease-in-out infinite alternate;
 }
 
-.b1 { transform: translateY(-16px); }
-.b2 { transform: translateY(-20px); animation-delay: 1s; }
+.b2 { animation-delay: 1s; }
 
-@keyframes floatBalloon {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+@keyframes gentleFloat {
+    from { transform: translateY(0); }
+    to { transform: translateY(-8px); }
 }
 
 .title-stack {
     text-align: left;
 }
 
-.edition-badge, .section-tag {
+.edition-badge,
+.section-tag {
     display: inline-block;
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.72rem;
@@ -465,14 +422,6 @@ input,
 .real-paper-wrapper {
     max-width: 660px;
     width: 100%;
-    opacity: 0;
-    transform: translateY(28px) scale(0.95);
-    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease;
-}
-
-.real-paper-wrapper.unfolded {
-    opacity: 1;
-    transform: translateY(0) scale(1);
 }
 
 .real-paper-sheet {
@@ -537,7 +486,6 @@ input,
 }
 
 .accordion-letter {
-    position: relative;
     display: flex;
     flex-direction: column;
 }
@@ -546,10 +494,7 @@ input,
     position: relative;
     z-index: 5;
     transform-origin: top center;
-    transition:
-        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-        background-color 0.3s ease,
-        box-shadow 0.3s ease;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.25s ease;
 }
 
 .fold-crease-bar {
@@ -562,7 +507,6 @@ input,
     padding: 0 8px;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
 }
 
 .crease-label {
@@ -572,7 +516,6 @@ input,
     letter-spacing: 1px;
     text-transform: uppercase;
     color: #9a7e63;
-    flex-shrink: 0;
 }
 
 .crease-action {
@@ -584,7 +527,6 @@ input,
 }
 
 .paper-fold.is-open {
-    transform: perspective(900px) rotateX(0deg);
     background: linear-gradient(180deg, rgba(161, 132, 98, 0.11) 0%, rgba(255, 255, 255, 0.14) 10px, transparent 26px);
     border-top: 1px solid rgba(163, 135, 102, 0.3);
 }
@@ -600,41 +542,36 @@ input,
 
 .paper-fold.is-open .fold-content {
     max-height: 1200px;
-    opacity: 1;
     padding: 0 4px 32px;
-    overflow: visible;
-    transition: max-height 0.7s ease, opacity 0.5s ease 0.1s;
 }
 
 .paper-fold.is-next-folded {
     z-index: 10;
     transform: perspective(900px) rotateX(-12deg);
-    margin-top: 6px;
-    margin-bottom: 4px;
+    margin: 6px 0 4px;
     background: linear-gradient(180deg, #eadbc1 0%, #f7eedc 52%, #e4d2b3 100%);
     border: 1px solid #cbb796;
     border-radius: 5px;
-    box-shadow:
-        0 6px 14px rgba(84, 62, 38, 0.2),
-        inset 0 1px 3px rgba(255, 255, 255, 0.7);
+    box-shadow: 0 6px 14px rgba(84, 62, 38, 0.2), inset 0 1px 3px rgba(255, 255, 255, 0.7);
     cursor: pointer;
 }
 
 .paper-fold.is-next-folded:hover {
     transform: perspective(900px) rotateX(-4deg) translateY(-1px);
     background: linear-gradient(180deg, #efe2ca 0%, #fcf5e8 52%, #ebd9bc 100%);
-    box-shadow: 0 9px 18px rgba(84, 62, 38, 0.26);
 }
 
 .paper-fold.is-next-folded .fold-crease-bar {
     padding: 6px 12px;
 }
 
-.paper-fold.is-next-folded .fold-content {
+.paper-fold.is-next-folded .fold-content,
+.paper-fold.is-stacked-folded .fold-crease-bar,
+.paper-fold.is-stacked-folded .fold-content {
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    padding: 0 4px;
+    pointer-events: none;
 }
 
 .paper-fold.is-stacked-folded {
@@ -648,14 +585,6 @@ input,
     opacity: 0.78;
     cursor: pointer;
     overflow: hidden;
-}
-
-.paper-fold.is-stacked-folded .fold-crease-bar,
-.paper-fold.is-stacked-folded .fold-content {
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    pointer-events: none;
 }
 
 .paper-text {
@@ -672,7 +601,6 @@ input,
     font-size: 1.02rem;
     line-height: 32px;
     color: #9e2d59;
-    letter-spacing: 0.3px;
 }
 
 .closing-handwriting-box {
@@ -681,12 +609,11 @@ input,
 }
 
 .closing-handwriting {
-    font-family: 'Caveat', 'Dancing Script', 'Segoe Script', 'Brush Script MT', cursive;
+    font-family: 'Caveat', 'Dancing Script', cursive;
     font-size: 1.72rem;
     font-weight: 700;
     line-height: 32px;
     color: #8f224d;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .signature-flourish {
@@ -717,12 +644,6 @@ input,
     font-size: 0.78rem;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-paper-nav:hover:not(:disabled) {
-    background: rgba(145, 118, 90, 0.25);
-    transform: translateY(-1px);
 }
 
 .btn-paper-nav:disabled {
@@ -737,26 +658,16 @@ input,
     box-shadow: 0 4px 12px rgba(158, 45, 89, 0.28);
 }
 
-.btn-paper-nav.primary:hover {
-    background: linear-gradient(135deg, #d9578a, #b03565);
-    box-shadow: 0 6px 16px rgba(158, 45, 89, 0.38);
-}
-
 .scroll-indicator {
     margin-top: 38px;
     font-size: 0.85rem;
     color: #ffb8d8;
     opacity: 0.8;
-    animation: bounceDown 1.6s infinite;
-}
-
-@keyframes bounceDown {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(6px); }
+    animation: gentleFloat 1.5s ease-in-out infinite alternate;
 }
 
 /* =========================================
-   4. BAGIAN 2: GLASS JAR + FOTO KIRI & KANAN + DEKORASI
+   4. BAGIAN 2: GLASS JAR + FOTO KIRI & KANAN
    ========================================= */
 .jar-area {
     text-align: center;
@@ -768,14 +679,16 @@ input,
     margin: 0 auto;
 }
 
-.jar-title, .options-title {
+.jar-title,
+.options-title {
     font-size: 1.9rem;
     font-weight: 700;
     color: #ffffff;
     margin-bottom: 8px;
 }
 
-.jar-sub, .options-sub {
+.jar-sub,
+.options-sub {
     font-size: 0.9rem;
     color: #d6c3ce;
     margin-bottom: 30px;
@@ -787,7 +700,6 @@ input,
     justify-content: center;
     gap: 26px;
     margin: 0 auto 28px;
-    position: relative;
 }
 
 .jar-side-wing {
@@ -796,7 +708,6 @@ input,
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     pointer-events: none;
 }
 
@@ -807,12 +718,6 @@ input,
     border-radius: 50%;
     background: radial-gradient(circle, rgba(255, 126, 179, 0.22) 0%, transparent 72%);
     z-index: 1;
-    animation: wingGlowPulse 4s ease-in-out infinite alternate;
-}
-
-@keyframes wingGlowPulse {
-    0% { transform: scale(0.9); opacity: 0.55; }
-    100% { transform: scale(1.12); opacity: 0.95; }
 }
 
 .jar-side-photo {
@@ -822,27 +727,9 @@ input,
     height: 305px;
     object-fit: contain;
     filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.68)) drop-shadow(0 0 20px rgba(255, 126, 179, 0.28));
+    will-change: transform;
 }
 
-.left-wing .jar-side-photo {
-    animation: sideFloatLeft 4.4s ease-in-out infinite;
-}
-
-.right-wing .jar-side-photo {
-    animation: sideFloatRight 4.8s ease-in-out infinite;
-}
-
-@keyframes sideFloatLeft {
-    0%, 100% { transform: translateY(0) rotate(-3deg); }
-    50% { transform: translateY(-9px) rotate(-1deg); }
-}
-
-@keyframes sideFloatRight {
-    0%, 100% { transform: translateY(0) rotate(3deg); }
-    50% { transform: translateY(-9px) rotate(1deg); }
-}
-
-/* Dekorasi Scrapbook di Kiri & Kanan Foto Jar */
 .wing-note-tag {
     position: relative;
     background: rgba(252, 245, 232, 0.94);
@@ -911,22 +798,16 @@ input,
     font-size: 1.2rem;
     color: #ffb8d8;
     text-shadow: 0 0 12px rgba(255, 126, 179, 0.7);
-    animation: wingTwinkle 2.8s ease-in-out infinite alternate;
     z-index: 3;
 }
 
 .left-wing .d1 { top: 18px; left: 8px; }
-.left-wing .d2 { top: 48%; right: 6px; animation-delay: 0.7s; }
-.left-wing .d3 { bottom: 16px; left: 16px; animation-delay: 1.3s; }
+.left-wing .d2 { top: 48%; right: 6px; }
+.left-wing .d3 { bottom: 16px; left: 16px; }
 
-.right-wing .d1 { top: 18px; right: 8px; animation-delay: 0.4s; }
-.right-wing .d2 { top: 48%; left: 6px; animation-delay: 1s; }
-.right-wing .d3 { bottom: 16px; right: 16px; animation-delay: 1.6s; }
-
-@keyframes wingTwinkle {
-    0% { opacity: 0.45; transform: scale(0.9) rotate(-8deg); }
-    100% { opacity: 1; transform: scale(1.15) rotate(8deg); }
-}
+.right-wing .d1 { top: 18px; right: 8px; }
+.right-wing .d2 { top: 48%; left: 6px; }
+.right-wing .d3 { bottom: 16px; right: 16px; }
 
 .jar-center-col {
     flex-shrink: 0;
@@ -937,11 +818,7 @@ input,
     width: 154px;
     margin: 0 auto;
     cursor: pointer;
-    transition: transform 0.25s ease;
-}
-
-.jar:hover {
-    transform: scale(1.04);
+    will-change: transform;
 }
 
 .jar-lid {
@@ -976,7 +853,6 @@ input,
     box-shadow: inset 0 0 26px rgba(255, 126, 179, 0.28), 0 14px 34px rgba(0, 0, 0, 0.55);
 }
 
-/* Kilau kaca di dalam jar */
 .jar-glass::after {
     content: "";
     position: absolute;
@@ -995,18 +871,12 @@ input,
     font-size: 0.72rem;
     opacity: 0.75;
     pointer-events: none;
-    animation: sparkleInsideIdle 2.6s ease-in-out infinite alternate;
 }
 
 .sp1 { top: 28px; left: 32px; }
-.sp2 { top: 44px; right: 34px; animation-delay: 0.5s; }
-.sp3 { top: 68px; left: 68px; animation-delay: 1s; }
-.sp4 { top: 24px; right: 54px; animation-delay: 1.4s; }
-
-@keyframes sparkleInsideIdle {
-    0% { opacity: 0.35; transform: translateY(0) scale(0.9); }
-    100% { opacity: 0.95; transform: translateY(-5px) scale(1.15); }
-}
+.sp2 { top: 44px; right: 34px; }
+.sp3 { top: 68px; left: 68px; }
+.sp4 { top: 24px; right: 54px; }
 
 .note-slip {
     position: absolute;
@@ -1024,114 +894,13 @@ input,
     will-change: transform;
 }
 
-.s1 { bottom: 14px; left: 16px; transform: rotate(-18deg); animation: slipBob1 3.2s ease-in-out infinite; }
-.s2 { bottom: 15px; right: 18px; transform: rotate(22deg); animation: slipBob2 3.5s ease-in-out infinite; }
-.s3 { bottom: 42px; left: 52px; transform: rotate(10deg); animation: slipBob3 3.1s ease-in-out infinite; }
-.s4 { bottom: 68px; left: 20px; transform: rotate(-26deg); animation: slipBob1 3.8s ease-in-out infinite reverse; }
-.s5 { bottom: 64px; right: 22px; transform: rotate(16deg); animation: slipBob2 3.4s ease-in-out infinite reverse; }
-.s6 { bottom: 94px; left: 48px; transform: rotate(-12deg); animation: slipBob3 3.6s ease-in-out infinite; }
-.s7 { bottom: 38px; left: 14px; transform: rotate(28deg); animation: slipBob2 2.9s ease-in-out infinite; }
-
-@keyframes slipBob1 {
-    0%, 100% { transform: translateY(0) rotate(-18deg); }
-    50% { transform: translateY(-3px) rotate(-14deg); }
-}
-
-@keyframes slipBob2 {
-    0%, 100% { transform: translateY(0) rotate(22deg); }
-    50% { transform: translateY(-3px) rotate(18deg); }
-}
-
-@keyframes slipBob3 {
-    0%, 100% { transform: translateY(0) rotate(10deg); }
-    50% { transform: translateY(-4px) rotate(14deg); }
-}
-
-/* Animasi Goyangan Botol + Kertas Melompat Hidup di Dalam Jar saat Shake */
-.jar.shaking {
-    animation: jarShake 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97);
-}
-
-.jar.shaking .s1 { animation: noteToss1 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
-.jar.shaking .s2 { animation: noteToss2 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
-.jar.shaking .s3 { animation: noteToss3 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
-.jar.shaking .s4 { animation: noteToss4 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
-.jar.shaking .s5 { animation: noteToss5 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
-.jar.shaking .s6 { animation: noteToss6 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
-.jar.shaking .s7 { animation: noteToss7 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
-.jar.shaking .jar-sparkle { animation: sparkleBurstInside 0.8s ease-out; }
-
-@keyframes jarShake {
-    0%, 100% { transform: rotate(0deg); }
-    15% { transform: rotate(-12deg) translateX(-5px); }
-    30% { transform: rotate(12deg) translateX(5px); }
-    45% { transform: rotate(-10deg) translateX(-4px); }
-    60% { transform: rotate(9deg) translateX(4px); }
-    75% { transform: rotate(-5deg); }
-    90% { transform: rotate(3deg); }
-}
-
-@keyframes noteToss1 {
-    0% { transform: translate(0, 0) rotate(-18deg); }
-    30% { transform: translate(16px, -68px) rotate(-145deg); }
-    60% { transform: translate(-6px, -28px) rotate(-65deg); }
-    82% { transform: translate(4px, -8px) rotate(-25deg); }
-    100% { transform: translate(0, 0) rotate(-18deg); }
-}
-
-@keyframes noteToss2 {
-    0% { transform: translate(0, 0) rotate(22deg); }
-    28% { transform: translate(-18px, -74px) rotate(160deg); }
-    58% { transform: translate(8px, -32px) rotate(75deg); }
-    80% { transform: translate(-3px, -10px) rotate(30deg); }
-    100% { transform: translate(0, 0) rotate(22deg); }
-}
-
-@keyframes noteToss3 {
-    0% { transform: translate(0, 0) rotate(10deg); }
-    32% { transform: translate(-12px, -82px) rotate(-120deg); }
-    62% { transform: translate(14px, -36px) rotate(55deg); }
-    84% { transform: translate(-4px, -9px) rotate(16deg); }
-    100% { transform: translate(0, 0) rotate(10deg); }
-}
-
-@keyframes noteToss4 {
-    0% { transform: translate(0, 0) rotate(-26deg); }
-    25% { transform: translate(24px, -58px) rotate(110deg); }
-    55% { transform: translate(6px, -24px) rotate(-50deg); }
-    80% { transform: translate(2px, -6px) rotate(-32deg); }
-    100% { transform: translate(0, 0) rotate(-26deg); }
-}
-
-@keyframes noteToss5 {
-    0% { transform: translate(0, 0) rotate(16deg); }
-    27% { transform: translate(-22px, -62px) rotate(-135deg); }
-    57% { transform: translate(-4px, -26px) rotate(48deg); }
-    82% { transform: translate(-2px, -7px) rotate(22deg); }
-    100% { transform: translate(0, 0) rotate(16deg); }
-}
-
-@keyframes noteToss6 {
-    0% { transform: translate(0, 0) rotate(-12deg); }
-    30% { transform: translate(14px, -48px) rotate(140deg); }
-    60% { transform: translate(-10px, -20px) rotate(-40deg); }
-    85% { transform: translate(3px, -5px) rotate(-18deg); }
-    100% { transform: translate(0, 0) rotate(-12deg); }
-}
-
-@keyframes noteToss7 {
-    0% { transform: translate(0, 0) rotate(28deg); }
-    33% { transform: translate(20px, -72px) rotate(-110deg); }
-    64% { transform: translate(4px, -30px) rotate(65deg); }
-    85% { transform: translate(2px, -8px) rotate(34deg); }
-    100% { transform: translate(0, 0) rotate(28deg); }
-}
-
-@keyframes sparkleBurstInside {
-    0% { transform: scale(1) translateY(0); opacity: 0.7; }
-    40% { transform: scale(1.7) translateY(-28px); opacity: 1; }
-    100% { transform: scale(1) translateY(0); opacity: 0.75; }
-}
+.s1 { bottom: 14px; left: 16px; transform: rotate(-18deg); }
+.s2 { bottom: 15px; right: 18px; transform: rotate(22deg); }
+.s3 { bottom: 42px; left: 52px; transform: rotate(10deg); }
+.s4 { bottom: 68px; left: 20px; transform: rotate(-26deg); }
+.s5 { bottom: 64px; right: 22px; transform: rotate(16deg); }
+.s6 { bottom: 94px; left: 48px; transform: rotate(-12deg); }
+.s7 { bottom: 38px; left: 14px; transform: rotate(28deg); }
 
 .btn-glass-pink {
     background: linear-gradient(135deg, rgba(255, 110, 175, 0.38), rgba(217, 70, 134, 0.48));
@@ -1143,13 +912,12 @@ input,
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 6px 20px rgba(255, 110, 175, 0.3);
-    transition: all 0.25s ease;
+    transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 
 .btn-glass-pink:hover {
     background: linear-gradient(135deg, rgba(255, 110, 175, 0.58), rgba(217, 70, 134, 0.68));
     box-shadow: 0 0 24px rgba(255, 110, 175, 0.55);
-    transform: translateY(-2px);
 }
 
 .btn-glass-pink:disabled {
@@ -1186,7 +954,7 @@ input,
     border-radius: 999px;
     font-size: 0.88rem;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .opt-btn:hover {
@@ -1199,7 +967,6 @@ input,
     color: #ffffff;
     border-color: #ffc2de;
     font-weight: 700;
-    transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 110, 175, 0.45);
 }
 
@@ -1222,12 +989,6 @@ input,
 
 .opt-panel.show {
     display: block;
-    animation: fadeSlideUp 0.45s ease;
-}
-
-@keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .opt-panel h3 {
@@ -1242,7 +1003,7 @@ input,
     margin-bottom: 14px;
 }
 
-/* Buket Bunga Aset Gambar + Efek 3D & Animasi (Opsi 1) */
+/* Buket Bunga & 5 Bunga Bertebaran */
 .bouquet-box {
     position: relative;
     width: 265px;
@@ -1263,12 +1024,6 @@ input,
     background: radial-gradient(circle, rgba(255, 126, 179, 0.34) 0%, rgba(255, 209, 102, 0.14) 48%, transparent 72%);
     z-index: 1;
     pointer-events: none;
-    animation: bouquetAuraPulse 3.4s ease-in-out infinite alternate;
-}
-
-@keyframes bouquetAuraPulse {
-    0% { transform: scale(0.92); opacity: 0.65; }
-    100% { transform: scale(1.12); opacity: 1; }
 }
 
 .bouquet-3d-wrap {
@@ -1282,42 +1037,23 @@ input,
     transform-origin: bottom center;
     transform-style: preserve-3d;
     transition: transform 0.25s ease-out;
-    animation: bouquetFloat3D 4s ease-in-out infinite;
     overflow: hidden;
     border-radius: 24px;
-}
-
-@keyframes bouquetFloat3D {
-    0%, 100% { transform: translateY(0px) rotate(-2.2deg) scale(1); }
-    50% { transform: translateY(-7px) rotate(2.2deg) scale(1.025); }
+    will-change: transform;
 }
 
 .bouquet-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter:
-        drop-shadow(0 16px 24px rgba(0, 0, 0, 0.62))
-        drop-shadow(0 0 18px rgba(255, 148, 194, 0.36));
-    transition: filter 0.3s ease;
+    filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.62)) drop-shadow(0 0 18px rgba(255, 148, 194, 0.36));
     pointer-events: none;
-}
-
-.bouquet-box:hover .bouquet-img {
-    filter:
-        drop-shadow(0 20px 28px rgba(0, 0, 0, 0.68))
-        drop-shadow(0 0 26px rgba(255, 166, 206, 0.58));
 }
 
 .bouquet-shine {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        115deg,
-        transparent 30%,
-        rgba(255, 255, 255, 0.24) 50%,
-        transparent 70%
-    );
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.24) 50%, transparent 70%);
     transform: translateX(-130%);
     pointer-events: none;
     animation: bouquetSheen 5.2s ease-in-out infinite;
@@ -1328,28 +1064,6 @@ input,
     85%, 100% { transform: translateX(130%); }
 }
 
-.bouquet-box.blooming .bouquet-3d-wrap {
-    animation: bouquetPop3D 0.68s cubic-bezier(0.22, 1, 0.36, 1), bouquetFloat3D 4s ease-in-out infinite 0.68s;
-}
-
-.bouquet-box.blooming .bouquet-aura {
-    animation: auraBurstFlash 0.65s ease-out, bouquetAuraPulse 3.4s ease-in-out infinite alternate 0.65s;
-}
-
-@keyframes bouquetPop3D {
-    0% { transform: scale(1) translateY(0); }
-    35% { transform: scale(1.15) translateY(-10px) rotate(3deg); }
-    65% { transform: scale(0.96) translateY(2px) rotate(-2deg); }
-    100% { transform: scale(1) translateY(0); }
-}
-
-@keyframes auraBurstFlash {
-    0% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.42); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.75; }
-}
-
-/* Layer bunga bertebaran dari tengah ke luar menggunakan 5 gambar flower */
 .flower-burst-layer {
     position: absolute;
     top: 48%;
@@ -1364,18 +1078,9 @@ input,
     position: absolute;
     top: 0;
     left: 0;
-    line-height: 1;
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(0.15) rotate(0deg);
-    transition:
-        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.45s ease-in 0.8s;
+    margin-left: -30px;
+    margin-top: -30px;
     will-change: transform, opacity;
-}
-
-.burst-flower.scatter {
-    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(var(--sc)) rotate(var(--rot));
-    opacity: 0;
 }
 
 .burst-flower-img {
@@ -1385,7 +1090,7 @@ input,
     pointer-events: none;
 }
 
-/* 3 Things I Admire (Opsi 2) */
+/* 3 Things I Admire */
 .admire-list {
     display: flex;
     flex-direction: column;
@@ -1415,7 +1120,7 @@ input,
     line-height: 1.55;
 }
 
-/* Kue Tingkat Putih & Cupcake Pita Pink (Opsi 3) */
+/* Kue Tingkat Putih & Cupcake Pita Pink */
 .cake-box {
     margin: 10px auto 8px;
     width: 100%;
@@ -1424,11 +1129,6 @@ input,
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: transform 0.25s ease;
-}
-
-.cake-box:hover {
-    transform: scale(1.03);
 }
 
 .coquette-cake-svg {
@@ -1451,20 +1151,9 @@ input,
     animation: flicker 0.55s infinite alternate;
 }
 
-.flame-glow {
-    transform-origin: center;
-    transform-box: fill-box;
-    animation: glowPulse 0.9s infinite alternate;
-}
-
 @keyframes flicker {
     from { transform: scale(0.95) rotate(-4deg); }
     to { transform: scale(1.1) rotate(4deg); }
-}
-
-@keyframes glowPulse {
-    from { opacity: 0.45; transform: scale(0.92); }
-    to { opacity: 0.95; transform: scale(1.15); }
 }
 
 .wish-status {
@@ -1494,7 +1183,6 @@ input,
     font-size: 0.86rem;
     resize: none;
     outline: none;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .wish-form textarea::placeholder {
@@ -1528,12 +1216,6 @@ input,
 
 .modal.show {
     display: flex;
-    animation: fadeInModal 0.25s ease;
-}
-
-@keyframes fadeInModal {
-    from { opacity: 0; transform: scale(0.92); }
-    to { opacity: 1; transform: scale(1); }
 }
 
 .modal-card {
@@ -1542,6 +1224,7 @@ input,
     padding: 30px 24px 26px;
     border-radius: 20px;
     text-align: center;
+    will-change: transform, opacity;
 }
 
 .modal-x {
@@ -1576,7 +1259,7 @@ input,
 }
 
 /* =========================================
-   7. MINI PLAYER BERGAYA RETRO GLASS + TOMBOL GAMBAR PLAY/PAUSE
+   7. MINI PLAYER RETRO GLASS
    ========================================= */
 .mini-player {
     position: fixed;
@@ -1595,17 +1278,12 @@ input,
     border: 1px solid rgba(255, 158, 203, 0.25);
     z-index: 180;
     overflow: hidden;
-    will-change: transform, opacity;
-
     opacity: 0;
-    transform: translate3d(0, 30px, 0);
     pointer-events: none;
-    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .mini-player.show-player {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
     pointer-events: auto;
 }
 
@@ -1623,7 +1301,6 @@ input,
     height: 10px;
     background-color: #ff5f56;
     border-radius: 50%;
-    display: inline-block;
     box-shadow: 0 0 8px rgba(255, 95, 86, 0.6);
 }
 
@@ -1682,7 +1359,6 @@ input,
     border: none;
     font-size: 0.85rem;
     cursor: pointer;
-    line-height: 1;
     padding: 2px;
 }
 
@@ -1693,13 +1369,11 @@ input,
     height: 4px;
     background: rgba(255, 182, 214, 0.28);
     border-radius: 999px;
-    outline: none;
     cursor: pointer;
 }
 
 .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    appearance: none;
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -1707,11 +1381,6 @@ input,
     border: 1.5px solid #ffffff;
     box-shadow: 0 0 8px rgba(255, 126, 179, 0.7);
     cursor: pointer;
-    transition: transform 0.15s ease;
-}
-
-.volume-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.18);
 }
 
 .volume-slider::-moz-range-thumb {
@@ -1734,12 +1403,6 @@ input,
     font-weight: 700;
     cursor: pointer;
     flex-shrink: 0;
-    transition: all 0.2s ease;
-}
-
-.btn-speed:hover {
-    background: rgba(255, 126, 179, 0.35);
-    color: #ffffff;
 }
 
 .player-actions {
@@ -1748,7 +1411,6 @@ input,
     gap: 5px;
 }
 
-/* Tombol Play/Pause tanpa border bercahaya & ukuran lebih besar */
 .btn-circle-play {
     width: 54px;
     height: 54px;
@@ -1761,15 +1423,6 @@ input,
     justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
-    transition: transform 0.18s ease;
-}
-
-.btn-circle-play:hover {
-    transform: scale(1.1);
-}
-
-.btn-circle-play.is-playing {
-    transform: scale(1.03);
 }
 
 .player-state-img {
@@ -1790,16 +1443,10 @@ input,
     justify-content: center;
     cursor: pointer;
     padding: 4px;
-    transition: color 0.2s ease, transform 0.15s ease;
-}
-
-.btn-next-track svg {
-    display: block;
 }
 
 .btn-next-track:hover {
     color: #ffffff;
-    transform: scale(1.1);
 }
 
 .player-progress-wrap {
@@ -1810,10 +1457,6 @@ input,
     height: 4px;
     background: rgba(255, 255, 255, 0.1);
     cursor: pointer;
-}
-
-.player-progress-wrap:hover {
-    height: 6px;
 }
 
 .player-progress-bar {
@@ -1832,77 +1475,26 @@ input,
 }
 
 /* =========================================
-   8. RESPONSIVITAS LAYAR SMARTPHONE & TABLET
+   8. RESPONSIVITAS SMARTPHONE & TABLET
    ========================================= */
 @media (max-width: 680px) {
-    .jar-stage {
-        gap: 8px;
-    }
-
-    .jar-side-wing {
-        width: 132px;
-    }
-
-    .jar-side-photo {
-        width: 126px;
-        height: 175px;
-    }
-
-    .wing-glow {
-        width: 120px;
-        height: 120px;
-    }
-
-    .wing-note-tag {
-        font-size: 0.78rem;
-        padding: 2px 7px;
-        margin-bottom: -6px;
-    }
-
-    .wing-mini-pill {
-        font-size: 0.58rem;
-        padding: 2px 7px;
-        margin-top: -6px;
-    }
-
-    .tag-left, .pill-right {
-        margin-left: 0;
-    }
-
-    .tag-right, .pill-left {
-        margin-right: 0;
-    }
-
-    .wing-deco {
-        font-size: 0.9rem;
-    }
-
-    .jar {
-        width: 118px;
-    }
-
-    .jar-glass {
-        width: 114px;
-        height: 160px;
-    }
-
-    .note-slip {
-        width: 28px;
-        height: 22px;
-        font-size: 0.7rem;
-    }
+    .jar-stage { gap: 8px; }
+    .jar-side-wing { width: 132px; }
+    .jar-side-photo { width: 126px; height: 175px; }
+    .wing-glow { width: 120px; height: 120px; }
+    .wing-note-tag { font-size: 0.78rem; padding: 2px 7px; margin-bottom: -6px; }
+    .wing-mini-pill { font-size: 0.58rem; padding: 2px 7px; margin-top: -6px; }
+    .tag-left, .pill-right { margin-left: 0; }
+    .tag-right, .pill-left { margin-right: 0; }
+    .wing-deco { font-size: 0.9rem; }
+    .jar { width: 118px; }
+    .jar-glass { width: 114px; height: 160px; }
+    .note-slip { width: 28px; height: 22px; font-size: 0.7rem; }
 }
 
 @media (max-width: 480px) {
-    .main-title {
-        font-size: 1.95rem;
-    }
-
-    .header-cutout-img {
-        width: 128px;
-        height: 128px;
-    }
-
+    .main-title { font-size: 1.95rem; }
+    .header-cutout-img { width: 128px; height: 128px; }
     .real-paper-sheet {
         background-image:
             linear-gradient(90deg, transparent 24px, rgba(214, 108, 122, 0.32) 24px, rgba(214, 108, 122, 0.32) 25px, transparent 25px),
@@ -1911,42 +1503,14 @@ input,
         background-position: 0 0, 0 5px, 0 0;
         padding: 32px 16px 24px 34px;
     }
-
-    .paper-text {
-        font-size: 0.91rem;
-    }
-
-    .closing-handwriting {
-        font-size: 1.48rem;
-    }
-
-    .paper-fold-controls {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .jar-stage {
-        gap: 4px;
-    }
-
-    .jar-side-wing {
-        width: 116px;
-    }
-
-    .jar-side-photo {
-        width: 112px;
-        height: 158px;
-    }
-
-    .jar {
-        width: 104px;
-    }
-
-    .jar-glass {
-        width: 100px;
-        height: 146px;
-    }
-
+    .paper-text { font-size: 0.91rem; }
+    .closing-handwriting { font-size: 1.48rem; }
+    .paper-fold-controls { flex-direction: column; align-items: stretch; }
+    .jar-stage { gap: 4px; }
+    .jar-side-wing { width: 116px; }
+    .jar-side-photo { width: 112px; height: 158px; }
+    .jar { width: 104px; }
+    .jar-glass { width: 100px; height: 146px; }
     .mini-player {
         bottom: 12px;
         right: 8px;
@@ -1955,38 +1519,11 @@ input,
         padding: 5px 10px 7px 7px;
         gap: 5px;
     }
-
-    .mini-player.minimized {
-        left: auto;
-        right: 12px;
-    }
-
-    .player-cover {
-        width: 32px;
-        height: 32px;
-        font-size: 1rem;
-    }
-
-    .player-info {
-        min-width: 52px;
-        max-width: 78px;
-    }
-
-    .volume-slider {
-        width: 36px;
-    }
-
-    .btn-speed {
-        padding: 3px 5px;
-        font-size: 0.68rem;
-    }
-
-    .btn-circle-play {
-        width: 46px;
-        height: 46px;
-    }
-
-    .options-area {
-        padding-bottom: 135px;
-    }
+    .mini-player.minimized { left: auto; right: 12px; }
+    .player-cover { width: 32px; height: 32px; font-size: 1rem; }
+    .player-info { min-width: 52px; max-width: 78px; }
+    .volume-slider { width: 36px; }
+    .btn-speed { padding: 3px 5px; font-size: 0.68rem; }
+    .btn-circle-play { width: 46px; height: 46px; }
+    .options-area { padding-bottom: 135px; }
 }
