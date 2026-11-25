@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Georgia', sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -15,6 +16,52 @@ body {
     color: #f8f2f6;
     overflow-x: hidden;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* HILANGKAN SOROTAN BIRU & SELEKSI OTOMATIS PADA ELEMEN INTERAKTIF HP */
+button,
+a,
+[onclick],
+.envelope-card,
+.wax-envelope,
+.paper-fold,
+.fold-crease-bar,
+.btn-paper-nav,
+.jar,
+.btn-glass-pink,
+.opt-btn,
+.bouquet-box,
+.cake-box,
+.modal,
+.modal-x,
+.mini-player,
+.player-window-controls,
+.btn-volume-icon,
+.btn-speed,
+.btn-circle-play,
+.btn-next-track,
+.player-progress-wrap {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    outline: none;
+}
+
+button:focus,
+button:active,
+[onclick]:focus,
+[onclick]:active {
+    outline: none;
+}
+
+textarea,
+input,
+.paper-text,
+.admire-card p {
+    -webkit-user-select: text;
+    user-select: text;
 }
 
 /* KANVAS KUNANG-KUNANG MALAM */
@@ -357,6 +404,7 @@ body {
     border-radius: 999px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
 }
 
@@ -364,8 +412,24 @@ body {
     font-size: 2.5rem;
 }
 
+.avatar-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: block;
+    object-fit: cover;
+}
+
 .balloon {
     font-size: 1.15rem;
+    animation: floatBalloon 3s ease-in-out infinite;
+}
+
+.badge-sparkle {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
     animation: floatBalloon 3s ease-in-out infinite;
 }
 
@@ -505,7 +569,6 @@ body {
     padding: 0 8px;
     border-radius: 4px;
     cursor: pointer;
-    user-select: none;
     transition: background-color 0.2s ease;
 }
 
@@ -913,8 +976,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
 }
 
 .bouquet-svg {
@@ -987,6 +1048,12 @@ body {
     opacity: 0;
 }
 
+.burst-flower-img {
+    display: block;
+    object-fit: contain;
+    pointer-events: none;
+}
+
 /* 3 Things I Admire (Opsi 2) */
 .admire-list {
     display: flex;
@@ -1026,8 +1093,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
     transition: transform 0.25s ease;
 }
 
@@ -1247,7 +1312,15 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 1.15rem;
+    overflow: hidden;
     flex-shrink: 0;
+}
+
+.player-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .player-info {
