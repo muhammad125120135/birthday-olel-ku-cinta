@@ -93,7 +93,7 @@
     <!-- 2. KONTEN UTAMA -->
     <main id="main-content" class="main-content">
 
-        <!-- Bagian 1: Hero & Kertas Tulis Lipat Realistis -->
+        <!-- Bagian 1: Hero & Kertas Tulis Lipat 3D Realistis -->
         <section class="night-section">
             <div class="header-area">
                 <div class="header-cutout-badge hero-stagger">
@@ -117,6 +117,7 @@
 
                     <div id="accordion-letter" class="accordion-letter">
                         <div class="paper-fold is-open" data-fold="1">
+                            <div class="fold-shadow-veil"></div>
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 01</span>
                                 <span class="crease-action">Bagian Pembuka</span>
@@ -127,6 +128,7 @@
                         </div>
 
                         <div class="paper-fold is-next-folded" data-fold="2" onclick="handleFoldClick(2, event)">
+                            <div class="fold-shadow-veil"></div>
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 02</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
@@ -139,6 +141,7 @@
                         </div>
 
                         <div class="paper-fold is-stacked-folded" data-fold="3" onclick="handleFoldClick(3, event)">
+                            <div class="fold-shadow-veil"></div>
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 03</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
@@ -151,6 +154,7 @@
                         </div>
 
                         <div class="paper-fold is-stacked-folded" data-fold="4" onclick="handleFoldClick(4, event)">
+                            <div class="fold-shadow-veil"></div>
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 04</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
@@ -163,6 +167,7 @@
                         </div>
 
                         <div class="paper-fold is-stacked-folded" data-fold="5" onclick="handleFoldClick(5, event)">
+                            <div class="fold-shadow-veil"></div>
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 05</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
@@ -175,6 +180,7 @@
                         </div>
 
                         <div class="paper-fold is-stacked-folded" data-fold="6" onclick="handleFoldClick(6, event)">
+                            <div class="fold-shadow-veil"></div>
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 06</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
@@ -187,6 +193,7 @@
                         </div>
 
                         <div class="paper-fold is-stacked-folded" data-fold="7" onclick="handleFoldClick(7, event)">
+                            <div class="fold-shadow-veil"></div>
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 07</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
@@ -199,6 +206,7 @@
                         </div>
 
                         <div class="paper-fold is-stacked-folded" data-fold="8" onclick="handleFoldClick(8, event)">
+                            <div class="fold-shadow-veil"></div>
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 08</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
@@ -211,6 +219,7 @@
                         </div>
 
                         <div class="paper-fold is-stacked-folded final-fold" data-fold="9" onclick="handleFoldClick(9, event)">
+                            <div class="fold-shadow-veil"></div>
                             <div class="fold-crease-bar">
                                 <span class="crease-label">Lipatan 09 • Penutup</span>
                                 <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan terakhir ↓">Ketuk untuk membuka lipatan terakhir ↓</span>
@@ -245,7 +254,7 @@
 
         <div class="neon-divider"></div>
 
-        <!-- Bagian 2: Glass Jar Little Notes + Foto & Dekorasi Kiri & Kanan -->
+        <!-- Bagian 2: Glass Jar Little Notes + Foto & Dekorasi Kiri & Kanan (Diperbesar + Low-FPS) -->
         <section id="jar-section" class="night-section jar-area">
             <div class="jar-wrapper motion-section">
                 <span class="section-tag motion-item">MEMORIES & WISHES</span>
@@ -325,7 +334,7 @@
 
                 <div class="option-display glass-card interactive-glass motion-item" data-tilt="true">
 
-                    <!-- Opsi 1: Buket Bunga Aset Gambar + Efek 3D & Animasi -->
+                    <!-- Opsi 1: Buket Bunga Aset Gambar (Diperbesar + Low-FPS Idle + 3D Burst) -->
                     <div id="opt-content-1" class="opt-panel show">
                         <h3>A Special Bouquet For You 💐</h3>
                         <p class="opt-desc">Tap the bouquet to burst flowers & sparkle!</p>
@@ -572,6 +581,7 @@
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const SPRING_SNAPPY = { type: "spring", stiffness: 360, damping: 24 };
         const SPRING_BOUNCY = { type: "spring", stiffness: 280, damping: 18 };
+        const SPRING_PAPER = { type: "spring", stiffness: 210, damping: 19, mass: 1.05 };
 
         function motionPlay(target, keyframes, options) {
             if (!target || prefersReducedMotion) return;
@@ -580,6 +590,18 @@
             } catch (_) {
                 // shortcut: fallback silently if Web Animations API rejects an unsupported property on older mobile browsers
             }
+        }
+
+        function applyLowFpsMotion(selector, frames, duration = 1.55, delayOffset = 0) {
+            if (prefersReducedMotion) return;
+            document.querySelectorAll(selector).forEach((el, idx) => {
+                motionPlay(el, frames, {
+                    duration,
+                    delay: delayOffset + idx * 0.25,
+                    repeat: Infinity,
+                    ease: "steps(1, end)"
+                });
+            });
         }
 
         /* ==========================================
@@ -606,29 +628,72 @@
         });
 
         /* ==========================================
-           1. MOTION: SCROLL PROGRESS, INVIEW & GESTURES
+           1. MOTION: SCROLL, LOW-FPS CUTOUTS & GESTURES
            ========================================== */
         if (!prefersReducedMotion) {
-            // Progres bar scroll di puncak layar
             scroll(animate("#scroll-progress", { scaleX: [0, 1] }, { ease: "linear" }));
 
-            // Parallax halus pada foto header & sayap kiri-kanan jar saat scroll
+            // Parallax scroll pada container wrapper (tidak bentrok dengan animasi low-FPS pada img di dalamnya)
             scroll(
-                animate(".header-cutout-img", { y: [-8, 16], rotate: [-2, 3] }, { ease: "linear" }),
+                animate(".header-cutout-badge", { y: [-6, 14] }, { ease: "linear" }),
                 { target: document.querySelector(".header-area"), offset: ["start end", "end start"] }
             );
 
             scroll(
-                animate(".left-wing .jar-side-photo", { y: [14, -14], rotate: [-4, -1] }, { ease: "linear" }),
+                animate(".left-wing", { y: [18, -18] }, { ease: "linear" }),
                 { target: document.getElementById("jar-section"), offset: ["start end", "end start"] }
             );
 
             scroll(
-                animate(".right-wing .jar-side-photo", { y: [14, -14], rotate: [4, 1] }, { ease: "linear" }),
+                animate(".right-wing", { y: [18, -18] }, { ease: "linear" }),
                 { target: document.getElementById("jar-section"), offset: ["start end", "end start"] }
             );
 
-            // Entrance animasi amplop pembuka
+            // Low-FPS stop-motion cutout animation untuk header, foto samping jar, dan bouquet
+            applyLowFpsMotion(
+                ".header-cutout-img",
+                {
+                    rotate: [-3.2, 3.6, -2.2, 2.8, -3.2],
+                    y: [0, -7, -2, -9, 0],
+                    scale: [1, 1.03, 0.99, 1.025, 1]
+                },
+                1.5
+            );
+
+            applyLowFpsMotion(
+                ".left-wing .jar-side-photo",
+                {
+                    rotate: [-4.5, -0.8, -5.5, -1.8, -4.5],
+                    y: [0, -9, -2, -11, 0],
+                    scale: [1, 1.035, 1.005, 1.04, 1]
+                },
+                1.45,
+                0
+            );
+
+            applyLowFpsMotion(
+                ".right-wing .jar-side-photo",
+                {
+                    rotate: [4.5, 1, 5.5, 2, 4.5],
+                    y: [-2, -11, 0, -9, -2],
+                    scale: [1.02, 0.99, 1.04, 1.01, 1.02]
+                },
+                1.45,
+                0.32
+            );
+
+            applyLowFpsMotion(
+                ".bouquet-img",
+                {
+                    rotate: [-2.4, 2.6, -1.6, 3, -2.4],
+                    y: [0, -6, -1, -7, 0],
+                    scale: [1, 1.025, 0.995, 1.02, 1]
+                },
+                1.6,
+                0.15
+            );
+
+            // Entrance amplop pembuka
             motionPlay("#envelope-card", { opacity: [0, 1], y: [26, 0], scale: [0.94, 1] }, SPRING_BOUNCY);
 
             hover("#envelope-card", (el) => {
@@ -636,9 +701,9 @@
                 return () => motionPlay(el, { y: 0, scale: 1 }, SPRING_SNAPPY);
             });
 
-            // Tactile spring press pada seluruh tombol interaktif
+            // Tactile spring press pada seluruh tombol
             press(".btn-glass-pink, .opt-btn, .btn-paper-nav, .btn-circle-play, .btn-speed", (el) => {
-                motionPlay(el, { scale: 0.94 }, { type: "spring", stiffness: 520, damping: 24 });
+                motionPlay(el, { scale: 0.93 }, { type: "spring", stiffness: 520, damping: 24 });
                 return () => motionPlay(el, { scale: 1 }, SPRING_SNAPPY);
             });
 
@@ -650,7 +715,7 @@
                     { opacity: [0, 1], y: [28, 0], scale: [0.97, 1] },
                     { duration: 0.55, delay: stagger(0.08), ease: [0.22, 1, 0.36, 1] }
                 );
-            }, { amount: 0.16 });
+            }, { amount: 0.14 });
         }
 
         /* ==========================================
@@ -758,7 +823,7 @@
                 const rect = bouquetBoxEl.getBoundingClientRect();
                 const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
                 const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-                bouquet3dWrap.style.transform = `perspective(700px) rotateX(${(-ny * 10).toFixed(1)}deg) rotateY(${(nx * 12).toFixed(1)}deg) translateY(-4px)`;
+                bouquet3dWrap.style.transform = `perspective(750px) rotateX(${(-ny * 10).toFixed(1)}deg) rotateY(${(nx * 12).toFixed(1)}deg) translateY(-4px)`;
             });
 
             bouquetBoxEl.addEventListener("mouseleave", () => {
@@ -806,7 +871,7 @@
         function updatePlayButtonUI(isPlaying) {
             playPauseBtn.innerHTML = isPlaying ? PAUSE_ICON_HTML : PLAY_ICON_HTML;
             playPauseBtn.classList.toggle("is-playing", isPlaying);
-            motionPlay(playPauseBtn, { scale: [0.88, 1.06, 1] }, SPRING_SNAPPY);
+            motionPlay(playPauseBtn, { scale: [0.86, 1.08, 1] }, SPRING_SNAPPY);
         }
 
         bgMusic.addEventListener("play", () => updatePlayButtonUI(true));
@@ -920,13 +985,17 @@
         });
 
         /* ==========================================
-           5. AMPLOP PEMBUKA & LIPATAN SURAT
+           5. AMPLOP PEMBUKA & LIPATAN KERTAS 3D
            ========================================== */
         let isEnvelopeOpened = false;
         const TOTAL_FOLDS = 9;
         let openFoldCount = 1;
+        let previousFoldCount = 1;
 
         function updateFoldsUI(scrollToNewFold = false) {
+            const isUnfolding = openFoldCount > previousFoldCount;
+            const isFoldingBack = openFoldCount < previousFoldCount;
+
             document.querySelectorAll(".paper-fold").forEach((foldEl) => {
                 const foldNum = parseInt(foldEl.dataset.fold, 10);
                 const actionSpan = foldEl.querySelector(".crease-action");
@@ -958,12 +1027,56 @@
             }
 
             const activeFold = document.querySelector(`.paper-fold[data-fold="${openFoldCount}"]`);
-            if (activeFold) {
-                motionPlay(activeFold.querySelector(".fold-content"), { opacity: [0.4, 1], y: [-6, 0] }, { duration: 0.4, ease: [0.22, 1, 0.36, 1] });
-                if (scrollToNewFold) {
-                    setTimeout(() => activeFold.scrollIntoView({ behavior: "smooth", block: "nearest" }), 160);
+            const nextFold = document.querySelector(`.paper-fold[data-fold="${openFoldCount + 1}"]`);
+
+            if (isUnfolding && activeFold) {
+                // Animasi lipatan 3D mengayun terbuka dari engsel lipatan kertas
+                motionPlay(
+                    activeFold,
+                    {
+                        rotateX: [-76, 5, -1.5, 0],
+                        scaleY: [0.88, 1.01, 1],
+                        opacity: [0.35, 1, 1, 1]
+                    },
+                    SPRING_PAPER
+                );
+
+                // Bayangan lipatan memudar seiring kertas terbuka rata
+                motionPlay(
+                    activeFold.querySelector(".fold-shadow-veil"),
+                    { opacity: [0.85, 0.25, 0] },
+                    { duration: 0.65, ease: [0.22, 1, 0.36, 1] }
+                );
+
+                // Teks di dalam lipatan ikut tenang setelah kertas terbuka
+                motionPlay(
+                    activeFold.querySelector(".fold-content"),
+                    { opacity: [0.15, 1], y: [-10, 0] },
+                    { duration: 0.48, delay: 0.08, ease: [0.22, 1, 0.36, 1] }
+                );
+
+                // Lipatan berikutnya yang kini berada paling atas memantul lembut
+                if (nextFold) {
+                    motionPlay(
+                        nextFold,
+                        { rotateX: [-28, -11, -16], y: [-4, 1, 0] },
+                        SPRING_SNAPPY
+                    );
                 }
+            } else if (isFoldingBack && nextFold) {
+                // Saat dilipat kembali ke atas, flap yang terlipat terangkat secara 3D
+                motionPlay(
+                    nextFold,
+                    { rotateX: [42, -20, -16], scaleY: [1.06, 0.98, 1] },
+                    SPRING_SNAPPY
+                );
             }
+
+            if (activeFold && scrollToNewFold) {
+                setTimeout(() => activeFold.scrollIntoView({ behavior: "smooth", block: "nearest" }), 180);
+            }
+
+            previousFoldCount = openFoldCount;
         }
 
         updateFoldsUI(false);
@@ -1033,7 +1146,6 @@
         function pickNote() {
             forceCloseModal();
 
-            // Goyangan botol jar berbasis Motion keyframes
             motionPlay(
                 "#jar",
                 {
@@ -1043,7 +1155,6 @@
                 { duration: 0.65, ease: "easeInOut" }
             );
 
-            // Ketujuh kertas kecil di dalam jar melompat & berputar dengan stagger
             document.querySelectorAll(".note-slip").forEach((slip, idx) => {
                 const jumpY = -(52 + (idx % 3) * 16);
                 const driftX = (idx % 2 === 0 ? 1 : -1) * (12 + (idx % 4) * 4);
@@ -1110,7 +1221,7 @@
 
             motionPlay(
                 "#bouquet-3d-wrap",
-                { scale: [1, 1.15, 0.96, 1], y: [0, -12, 2, 0], rotate: [0, 4, -2, 0] },
+                { scale: [1, 1.14, 0.96, 1], y: [0, -14, 2, 0], rotate: [0, 4, -2, 0] },
                 SPRING_BOUNCY
             );
             motionPlay("#bouquet-aura", { scale: [1, 1.45, 1], opacity: [0.8, 1, 0.75] }, { duration: 0.65 });
@@ -1127,14 +1238,14 @@
                 flowerImg.src = BURST_FLOWER_IMAGES[i % BURST_FLOWER_IMAGES.length];
                 flowerImg.alt = "";
                 flowerImg.className = "burst-flower-img";
-                const sizePx = 52 + Math.floor(Math.random() * 20);
+                const sizePx = 58 + Math.floor(Math.random() * 22);
                 flowerImg.style.width = `${sizePx}px`;
                 flowerImg.style.height = `${sizePx}px`;
                 particle.appendChild(flowerImg);
                 burstLayer.appendChild(particle);
 
                 const angle = (i / totalParticles) * Math.PI * 2 + (Math.random() - 0.5) * 0.35;
-                const distance = 95 + Math.random() * 75;
+                const distance = 110 + Math.random() * 85;
                 const tx = Math.cos(angle) * distance;
                 const ty = Math.sin(angle) * distance;
                 const rot = (Math.random() - 0.5) * 420;
