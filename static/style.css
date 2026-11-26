@@ -316,7 +316,7 @@ input,
     opacity: 0;
     position: relative;
     z-index: 3;
-    transition: opacity 0.85s ease 0.15s;
+    transition: opacity 0.65s ease;
 }
 
 .main-content.visible {
@@ -1563,4 +1563,14 @@ input,
     .btn-speed { padding: 3px 5px; font-size: 0.68rem; }
     .btn-circle-play { width: 60px; height: 60px; }
     .options-area { padding-bottom: 145px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-stagger {
+        opacity: 1;
+        transform: none;
+    }
+    .mini-player.show-player {
+        transform: none;
+    }
 }
