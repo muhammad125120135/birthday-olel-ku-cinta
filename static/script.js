@@ -140,7 +140,7 @@ if (!prefersReducedMotion) {
 }
 
 /* ==========================================
-   2. KUNANG-KUNANG MALAM (CANVAS)
+   2. LATAR BELAKANG ASCII KUNANG-KUNANG & KELOPAK (CANVAS)
    ========================================== */
 const canvas = document.getElementById("fireflies-canvas");
 const ctx = canvas.getContext("2d", { alpha: true });
@@ -151,16 +151,24 @@ function createGlowSprite(r, g, b) {
     sprite.height = 32;
     const sCtx = sprite.getContext("2d");
     const grad = sCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
-    grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 1)`);
-    grad.addColorStop(0.35, `rgba(${r}, ${g}, ${b}, 0.4)`);
+    grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.85)`);
+    grad.addColorStop(0.4, `rgba(${r}, ${g}, ${b}, 0.28)`);
     grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
     sCtx.fillStyle = grad;
     sCtx.fillRect(0, 0, 32, 32);
     return sprite;
 }
 
-const pinkSprite = createGlowSprite(255, 130, 190);
-const goldSprite = createGlowSprite(255, 228, 150);
+const ASCII_PALETTES = [
+    { color: "#ff94c2", sprite: createGlowSprite(255, 130, 190) }, // Pink neon lembut
+    { color: "#ffd97d", sprite: createGlowSprite(255, 220, 130) }, // Emas hangat
+    { color: "#d8b4fe", sprite: createGlowSprite(192, 132, 252) }  // Ungu lavender
+];
+
+// Karakter ASCII yang berubah mengikuti tingkat terang kunang-kunang
+const ASCII_RAMP = [".", ":", "+", "*", "#", "@"];
+const ASCII_ACCENTS = ["✦", "✿", "♥", "*"];
+const WAVE_CHARS = [" ", ".", "·", ":", "+", "*"];
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -169,36 +177,82 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas, { passive: true });
 resizeCanvas();
 
-const fireflies = Array.from({ length: 34 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    size: Math.random() * 14 + 10,
-    vx: (Math.random() - 0.5) * 0.42,
-    vy: (Math.random() - 0.5) * 0.42 - 0.1,
-    alpha: Math.random(),
-    va: Math.random() * 0.012 + 0.004,
-    growing: Math.random() > 0.5,
-    sprite: Math.random() > 0.45 ? pinkSprite : goldSprite
-}));
+const asciiFireflies = Array.from({ length: 42 }, () => {
+    const palette = ASCII_PALETTES[Math.floor(Math.random() * ASCII_PALETTES.length)];
+    return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.floor(Math.random() * 7) + 12,
+        vx: (Math.random() - 0.5) * 0.45,
+        vy: (Math.random() - 0.5) * 0.35 - 0.14,
+        alpha: Math.random(),
+        va: Math.random() * 0.012 + 0.004,
+        growing: Math.random() > 0.5,
+        isAccent: Math.random() < 0.25,
+        accentChar: ASCII_ACCENTS[Math.floor(Math.random() * ASCII_ACCENTS.length)],
+        color: palette.color,
+        sprite: palette.sprite
+    };
+});
+
+let asciiWaveTime = 0;
 
 function animateFireflies() {
     if (!document.hidden) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (const f of fireflies) {
-            f.x += f.vx;
+        asciiWaveTime += 0.018;
+
+        // 1. Lapisan Grid Gelombang ASCII Halus di Latar Belakang
+        const gridStep = 34;
+        ctx.font = '12px "Courier New", monospace';
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        for (let gx = gridStep / 2; gx < canvas.width; gx += gridStep) {
+            for (let gy = gridStep / 2; gy < canvas.height; gy += gridStep) {
+                const wave =
+                    Math.sin(gx * 0.008 + asciiWaveTime) +
+                    Math.cos(gy * 0.008 - asciiWaveTime * 0.8);
+                const norm = (wave + 2) / 4;
+                const charIdx = Math.floor(norm * WAVE_CHARS.length);
+                const ch = WAVE_CHARS[charIdx];
+                if (!ch || ch === " ") continue;
+
+                ctx.globalAlpha = 0.06 + norm * 0.14;
+                ctx.fillStyle = norm > 0.62 ? "#ff94c2" : "#b983ff";
+                ctx.fillText(ch, gx, gy);
+            }
+        }
+
+        // 2. Kunang-kunang & Kelopak ASCII Berwarna yang Melayang
+        for (const f of asciiFireflies) {
+            f.x += f.vx + Math.sin(asciiWaveTime + f.y * 0.01) * 0.15;
             f.y += f.vy;
             f.alpha += f.growing ? f.va : -f.va;
-            if (f.alpha >= 0.88) f.growing = false;
-            if (f.alpha <= 0.12) f.growing = true;
+            if (f.alpha >= 0.95) f.growing = false;
+            if (f.alpha <= 0.14) f.growing = true;
 
-            if (f.x < -20) f.x = canvas.width + 20;
-            if (f.x > canvas.width + 20) f.x = -20;
-            if (f.y < -20) f.y = canvas.height + 20;
-            if (f.y > canvas.height + 20) f.y = -20;
+            if (f.x < -24) f.x = canvas.width + 24;
+            if (f.x > canvas.width + 24) f.x = -24;
+            if (f.y < -24) f.y = canvas.height + 24;
+            if (f.y > canvas.height + 24) f.y = -24;
+
+            // Cahaya halo lembut di belakang karakter
+            const glowSize = f.size * 2.1;
+            ctx.globalAlpha = f.alpha * 0.45;
+            ctx.drawImage(f.sprite, f.x - glowSize / 2, f.y - glowSize / 2, glowSize, glowSize);
+
+            // Pilih karakter ASCII berdasarkan intensitas cahaya saat ini
+            const rampIdx = Math.min(ASCII_RAMP.length - 1, Math.floor(f.alpha * ASCII_RAMP.length));
+            const char = f.isAccent && f.alpha > 0.55 ? f.accentChar : ASCII_RAMP[rampIdx];
 
             ctx.globalAlpha = f.alpha;
-            ctx.drawImage(f.sprite, f.x - f.size / 2, f.y - f.size / 2, f.size, f.size);
+            ctx.font = `bold ${f.size}px "Courier New", monospace`;
+            ctx.fillStyle = f.color;
+            ctx.fillText(char, f.x, f.y);
         }
+
+        ctx.globalAlpha = 1;
     }
     requestAnimationFrame(animateFireflies);
 }
