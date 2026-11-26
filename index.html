@@ -2,448 +2,570 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#140c18">
-    <title>Happy 19th Birthday, Lowfy! 🎂✨</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 19th Birthday, Lowfy!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dancing+Script:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="static/style.css">
-
-    <!-- Critical Guard: Hilangkan kilatan & seleksi warna biru saat tap/klik -->
-    <style>
-        *, *::before, *::after {
-            -webkit-tap-highlight-color: transparent !important;
-        }
-        button, a, [onclick], .jar, .envelope-card, .bouquet-box, .cake-box, .mini-player, .scrapbook-page, .opt-btn {
-            -webkit-tap-highlight-color: transparent !important;
-            -webkit-user-select: none;
-            user-select: none;
-            outline: none;
-        }
-        button:focus, button:focus-visible, input:focus, textarea:focus, [onclick]:focus {
-            outline: none !important;
-        }
-        ::selection {
-            background: rgba(255, 143, 177, 0.32);
-            color: #fff5f8;
-        }
-    </style>
 </head>
 <body>
+
     <!-- Indikator Progres Scroll Atas -->
     <div id="scroll-progress" class="scroll-progress-bar"></div>
 
-    <!-- Kanvas Latar Belakang ASCII Kunang-Kunang -->
+    <!-- Kanvas Kunang-Kunang Malam -->
     <canvas id="fireflies-canvas"></canvas>
 
-    <!-- Kanvas Kembang Api ASCII dari Glass Jar -->
-    <canvas id="jar-fountain-canvas" class="jar-fountain-canvas"></canvas>
-
-    <!-- Cahaya Ambient Lembut -->
+    <!-- Cahaya Ambient Malam -->
     <div class="ambient-orb orb-1"></div>
     <div class="ambient-orb orb-2"></div>
 
-    <!-- =========================================
-         0. AMPLOP PEMBUKA
-         ========================================= -->
+    <!-- Pemutar Audio Latar -->
+    <audio id="bg-music" preload="auto"></audio>
+
+    <!-- MINI PLAYER BERGAYA RETRO GLASS -->
+    <div id="mini-player" class="mini-player">
+        <div class="player-window-controls" onclick="toggleMinimizePlayer()" title="Kecilkan / Perbesar Player">
+            <span class="dot-red"></span>
+            <span class="grip-dots">⋮⋮</span>
+        </div>
+
+        <div id="player-cover" class="player-cover">🌸</div>
+
+        <div class="player-info">
+            <div id="player-title" class="player-title">24/7</div>
+            <div id="player-artist" class="player-artist">Romaria</div>
+        </div>
+
+        <div class="player-volume" title="Atur Volume Musik">
+            <button type="button" id="volume-btn" class="btn-volume-icon" onclick="toggleMute(event)" title="Mute / Unmute">🔊</button>
+            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.7" oninput="changeVolume(this.value)">
+        </div>
+
+        <button type="button" id="speed-btn" class="btn-speed" onclick="cycleSpeed(event)" title="Ubah Kecepatan Lagu">1x</button>
+
+        <div class="player-actions">
+            <button type="button" id="play-pause-btn" class="btn-circle-play" onclick="toggleMusic(event)" title="Play / Pause">
+                <img src="static/tombol play.png" onerror="this.onerror=null;this.src='static/play.png';" alt="Play" class="player-state-img">
+            </button>
+            <button type="button" class="btn-next-track" onclick="nextTrack(event)" title="Ganti Lagu Berikutnya">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="4,5 15,12 4,19"></polygon>
+                    <rect x="17" y="5" width="3" height="14" rx="1"></rect>
+                </svg>
+            </button>
+        </div>
+
+        <div class="player-progress-wrap" onclick="seekTrack(event)" title="Klik untuk menggeser durasi lagu">
+            <div id="player-progress-bar" class="player-progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- 1. LAYAR AMPLOP PEMBUKA -->
     <div id="envelope-overlay" class="envelope-overlay">
         <div id="envelope-card" class="envelope-card" onclick="openGift(event)">
-            <p class="sub-label">
-                A Special Delivery<br>
-                <span>for Lowfy's 19th Birthday</span>
-            </p>
+            <p class="sub-label">i have something<br><span>for you.</span></p>
 
-            <div class="wax-envelope">
+            <div id="wax-envelope" class="wax-envelope">
                 <div class="env-back"></div>
+
                 <div id="env-letter-peek" class="env-letter-peek">
-                    <span class="peek-tag">12.12.2026</span>
-                    <div class="peek-title">For My Favorite Person</div>
+                    <span class="peek-tag">12 . 12 . 2026</span>
+                    <p class="peek-title">For Lowfy ♥</p>
                     <div class="peek-lines"></div>
                 </div>
+
                 <div class="env-front-left"></div>
                 <div class="env-front-right"></div>
                 <div class="env-front-bottom"></div>
                 <div id="env-flap-top" class="env-flap-top"></div>
+
                 <div id="wax-seal" class="wax-seal">
                     <div class="wax-seal-inner">♥</div>
                 </div>
             </div>
 
-            <p class="tap-hint">Tap the wax seal to open your letter ✨</p>
+            <p class="tap-hint">tap the wax seal<br>to open</p>
         </div>
     </div>
 
-    <!-- =========================================
-         KONTEN UTAMA
-         ========================================= -->
+    <!-- 2. KONTEN UTAMA -->
     <main id="main-content" class="main-content">
 
-        <!-- BAGIAN 1: HERO & BUKU SCRAPBOOK DIGITAL 2 HALAMAN -->
-        <section class="night-section hero-book-section">
-            <div class="header-area hero-stagger">
-                <div class="header-cutout-badge">
-                    <span class="balloon b1" aria-hidden="true">🎈</span>
-                    <div class="header-photo-frame">
-                        <img
-                            id="header-portrait-img"
-                            src="static/foto_utama.png"
-                            alt="Lowfy"
-                            class="header-cutout-img"
-                            draggable="false"
-                            onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='static/di samping kiri jar.png';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}"
-                        >
-                        <div class="header-photo-fallback" style="display:none;" aria-hidden="true">🌸</div>
-                    </div>
-                    <span class="balloon b2" aria-hidden="true">✨</span>
+        <!-- Bagian 1: Hero & Kertas Tulis Lipat 3D Realistis -->
+        <section class="night-section">
+            <div class="header-area">
+                <div class="header-cutout-badge hero-stagger">
+                    <span class="balloon b1">✨</span>
+                    <img src="static/untuk header.png" alt="Lowfy Birthday" class="header-cutout-img">
+                    <span class="balloon b2">🌙</span>
                 </div>
-
-                <div class="title-stack">
-                    <span class="edition-badge">19TH CHAPTER • 12.12.2026</span>
-                    <h1 class="main-title">HAPPY 19TH<br>BIRTHDAY, LOWFY!</h1>
+                <div class="title-stack hero-stagger">
+                    <span class="edition-badge">19TH EDITION • 12.12.2026</span>
+                    <h1 class="main-title">HAPPY 19TH<br>BIRTHDAY!</h1>
                 </div>
             </div>
 
-            <!-- Buku Scrapbook Digital Terbuka -->
-            <div class="scrapbook-wrapper hero-stagger">
-                <div id="scrapbook-book" class="scrapbook-cover open-book">
-                    <!-- Jilid Tulang Sampul Kiri -->
-                    <div class="scrapbook-spine" aria-hidden="true">
-                        <div class="spine-stitch"></div>
-                        <span class="spine-ring"></span>
-                        <span class="spine-ring"></span>
-                        <span class="spine-ring"></span>
-                        <span class="spine-ring"></span>
+            <div id="letter-paper" class="real-paper-wrapper hero-stagger">
+                <div class="real-paper-sheet">
+                    <div class="paper-washi-tape"></div>
+                    <div class="paper-top-meta">
+                        <span>Bandar Lampung, 12 Desember 2026</span>
+                        <span id="fold-counter-badge" class="fold-counter-badge">Lipatan 1 / 9</span>
                     </div>
 
-                    <!-- Panggung Buku Terbuka -->
-                    <div id="scrapbook-stage" class="scrapbook-stage two-page-stage">
-
-                        <!-- HALAMAN KIRI -->
-                        <article id="scrapbook-left-page" class="scrapbook-page left-page theme-cream" aria-label="Halaman Kiri Scrapbook">
-                            <div id="sb-left-tape" class="sb-washi-tape tape-gold"></div>
-                            <div id="sb-left-bookmark" class="sb-page-bookmark" aria-hidden="true">
-                                <span id="sb-left-bm-num">00</span>
+                    <div id="accordion-letter" class="accordion-letter">
+                        <div class="paper-fold is-open" data-fold="1">
+                            <div class="fold-shadow-veil"></div>
+                            <div class="fold-crease-bar">
+                                <span class="crease-label">Lipatan 01</span>
+                                <span class="crease-action">Bagian Pembuka</span>
                             </div>
-
-                            <div class="sb-page-header">
-                                <span id="sb-left-stamp" class="sb-location-stamp">19th Keepsake</span>
-                                <span id="sb-left-pill" class="sb-page-pill">Sampul Dalam</span>
-                            </div>
-
-                            <div class="sb-sticker-row">
-                                <span id="sb-left-chapter" class="sb-chapter-tag">CHAPTER 00 • PROLOGUE</span>
-                                <span id="sb-left-sticker" class="sb-sticker-badge">🎀 For Olel</span>
-                            </div>
-
-                            <div id="sb-left-body" class="sb-page-body is-centered-card">
-                                <div class="left-cover-dedication">
-                                    <span class="dedication-emblem">✿ 12 • 12 • 2026 ✿</span>
-                                    <p class="dedication-quote">"Every page here holds a piece of how grateful I am for you, Lowfy."</p>
-                                    <span class="dedication-sub">— Written with love by Iki</span>
-                                </div>
-                            </div>
-
-                            <div class="sb-page-footer">
-                                <span id="sb-left-doodle" class="sb-doodle-note">♥ open scrapbook ♥</span>
-                                <span id="sb-left-hint" class="sb-swipe-hint">halaman kiri</span>
-                            </div>
-                        </article>
-
-                        <!-- JILID / LIPATAN TENGAH BUKU TERBUKA -->
-                        <div id="scrapbook-center-spine" class="scrapbook-center-spine" aria-hidden="true">
-                            <div class="center-gutter-shadow"></div>
-                            <span class="center-thread"></span>
-                            <span class="center-thread"></span>
-                            <span class="center-thread"></span>
-                        </div>
-
-                        <!-- HALAMAN KANAN -->
-                        <article id="scrapbook-active-page" class="scrapbook-page right-page theme-blush" aria-live="polite">
-                            <div id="sb-tape-top" class="sb-washi-tape tape-pink"></div>
-                            <div id="sb-right-bookmark" class="sb-page-bookmark" aria-hidden="true">
-                                <span id="sb-right-bm-num">01</span>
-                            </div>
-
-                            <div class="sb-page-header">
-                                <span class="sb-location-stamp">Bandar Lampung • 12.12.2026</span>
-                                <span id="sb-page-pill" class="sb-page-pill">Hal. 1 / 12</span>
-                            </div>
-
-                            <div class="sb-sticker-row">
-                                <span id="sb-chapter-tag" class="sb-chapter-tag">CHAPTER 01 • OPENING</span>
-                                <span id="sb-sticker-badge" class="sb-sticker-badge">💌 For Lowfy</span>
-                            </div>
-
-                            <div id="sb-page-body" class="sb-page-body is-centered-card">
+                            <div class="fold-content">
                                 <p class="paper-text greeting-highlight">HAIII SAYANG QU YANG SANGAT SANGAT CANTIK DAN LUCU.</p>
                             </div>
+                        </div>
 
-                            <div class="sb-page-footer">
-                                <span id="sb-doodle-note" class="sb-doodle-note">✦ chapter 01 ✦</span>
-                                <span id="sb-swipe-hint" class="sb-swipe-hint">geser / tap →</span>
+                        <div class="paper-fold is-next-folded" data-fold="2" onclick="handleFoldClick(2, event)">
+                            <div class="fold-shadow-veil"></div>
+                            <div class="fold-crease-bar">
+                                <span class="crease-label">Lipatan 02</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
                             </div>
-
-                            <div class="sb-corner-curl" aria-hidden="true"></div>
-                        </article>
-
-                        <!-- LEMBAR LIPAT 3D SAAT MEMBALIK HALAMAN -->
-                        <div id="scrapbook-flip-leaf" class="scrapbook-flip-leaf" aria-hidden="true">
-                            <div id="flip-leaf-front" class="flip-leaf-front theme-blush">
-                                <div id="flip-leaf-content" class="flip-leaf-inner"></div>
-                                <div id="flip-crease-shadow" class="flip-crease-shadow"></div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    HAPPY BIRTHDAY LOWFY! Hari ini, tepatnya di tanggal 12 Desember 2026, kamu uda menyentuh umur 19 tahun looo.. waktu beneran jalan kaya mobil racing aja. Nggak ada rasanya yaa.. sekarang kamu uda nyentuh umur 19, dan itu hampir 20 yaa.. WOW.. beneran uda masuk dalam fase baru di mana kamu uda pelan-pelan mulai menghadapi dunia yang bener-bener jauh lebih luas dari yang kemarin-kemarin.
+                                </p>
                             </div>
-                            <div class="flip-leaf-back">
-                                <div id="flip-back-content" class="flip-back-inner">
-                                    <div class="flip-back-pattern">
-                                        <span>LOWFY • 19TH</span>
-                                        <p>Turning the page... ♥</p>
-                                    </div>
+                        </div>
+
+                        <div class="paper-fold is-stacked-folded" data-fold="3" onclick="handleFoldClick(3, event)">
+                            <div class="fold-shadow-veil"></div>
+                            <div class="fold-crease-bar">
+                                <span class="crease-label">Lipatan 03</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Kalo boleh jujur, akhir-akhir ini aku sering banget kepikiran sama kamu. Kaya berat banget nggak sih jalanin hari-hari kamu sekarang? terutama kamu sekarang uda masuk dan mulai adaptasi di kehidupan perkuliahan ini? Aku tau kok kalo dunia kuliah itu nggak semudah yang di bayangin. Yang pasti banyak banget hal-hal baru yang mungkin bikin kamu kaget, dari tugas-tugas yang selalu datang tanpa lampu merah, jadwal yang lumayan padat, atau ada beberapa momen di mana kamu kaya ngerasa capek banget mulai dari fisik atau pikiran kamu. Juga kadang mungkin ada hari di mana kamu ngerasa riwueh banget, pengen ngeluh, bahkan kaya kamu mungkin ngerasa meragukan diri kamu sendiri.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="paper-fold is-stacked-folded" data-fold="4" onclick="handleFoldClick(4, event)">
+                            <div class="fold-shadow-veil"></div>
+                            <div class="fold-crease-bar">
+                                <span class="crease-label">Lipatan 04</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Setiap kali kamu ngerasain hari kamu berat, iki cuma mau kamu ingat satu hal sayang.. kamu nggak sendirian. Iki selalu berharap supaya kamu selalu punya kesabaran dan kesehatan buat jalanin semuanya badai yang datang, yang pastinya bareng sama iki. Iki pasti bakal selalu temani hari-hari kamu.. enggak cuman di hari-hari di mana kamu lagi senang atau bahagia, tapi juga di hari-hari kamu dimana lagi capek-capeknya, sedih, atau kamu butuh tempat buat bersandar. Iki bakal selalu terus ada di sisi kamu, dengerin semua cerita kamu tentang apapun itu, dan jalanin semuanya sama-sama sampai tahun-tahun selanjutnya.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="paper-fold is-stacked-folded" data-fold="5" onclick="handleFoldClick(5, event)">
+                            <div class="fold-shadow-veil"></div>
+                            <div class="fold-crease-bar">
+                                <span class="crease-label">Lipatan 05</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Intinya, iki beneran bangga banget sama kamu, olel. Bangga karena kamu sendiri uda mau berusaha sejauh ini, bangga karena kamu tetap bertahan meskipun kadang rasanya pasti cape dan lelah banget di kamu nya, dan bangga bisa punya pasangan sehebat, sekuat, dan secantik kamu di kondisi apapun.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="paper-fold is-stacked-folded" data-fold="6" onclick="handleFoldClick(6, event)">
+                            <div class="fold-shadow-veil"></div>
+                            <div class="fold-crease-bar">
+                                <span class="crease-label">Lipatan 06</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Di umur kamu yang uda menyentuh 19 tahun ini, aku selalu doain yang terbaik buat kamu. Semoga apa pun yang kamu mau, semua impian yang diam-diam kamu simpan di dalam hati dan pikiran kamu, dan segala rencana baik yang sedang kamu susun bisa satu per satu tercapai dengan bertahap. Semoga semesta selalu berpihak sama kamu, dan segala hal baik dari orang-orang yang ada di sekitar kamu selalu membawakan hal-hal baik, energi yang positif, dan menyenangkan buat kamu.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="paper-fold is-stacked-folded" data-fold="7" onclick="handleFoldClick(7, event)">
+                            <div class="fold-shadow-veil"></div>
+                            <div class="fold-crease-bar">
+                                <span class="crease-label">Lipatan 07</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Dan... kalo nanti kamu ketemu sama hari yang rasanya bener-bener buruk atau apes banget, hari di mana semuanya bakal terasa berat banget dan kamu nggak menemukan satu pun hal baik yang ada, jangan pernah kepikiran buat pendam itu sendirian okeyy? Kamu punya tempat pulang yang banyak termasuk aku (harus aku). Walau kamu nggak menemukan hal baiknya, aku bakal kasih kamu seluruh dunia buat peluk kamu se erat-eratnya sampai semua rasa cape dan sedih kamu hilang.. sampai kamu balik merasa aman dan nyaman lagi..
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="paper-fold is-stacked-folded" data-fold="8" onclick="handleFoldClick(8, event)">
+                            <div class="fold-shadow-veil"></div>
+                            <div class="fold-crease-bar">
+                                <span class="crease-label">Lipatan 08</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <p class="paper-text">
+                                    Selamat ulang tahun yang ke-19 ya andiyashafa ku cinta. Aku bener-bener terima kasih uda lahir di dunia ini, terima kasih uda bertahan sampai hari ini sampai detik ini, juga terima kasih sudah kasih kesempatan buat iki jadi bagian dari perjalanan hidup kamu.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="paper-fold is-stacked-folded final-fold" data-fold="9" onclick="handleFoldClick(9, event)">
+                            <div class="fold-shadow-veil"></div>
+                            <div class="fold-crease-bar">
+                                <span class="crease-label">Lipatan 09 • Penutup</span>
+                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan terakhir ↓">Ketuk untuk membuka lipatan terakhir ↓</span>
+                            </div>
+                            <div class="fold-content">
+                                <div class="closing-handwriting-box">
+                                    <p class="closing-handwriting">
+                                        Once again, happy 19th birthday, lowfy.<br>
+                                        I love you so much, today, tomorrow, and always. ♥
+                                    </p>
+                                    <span class="signature-flourish">— Yours, Iki</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Penanda Buku Pink -->
-                    <div id="scrapbook-pink-tabs" class="scrapbook-pink-tabs" role="tablist" aria-label="Penanda Halaman Scrapbook"></div>
-
-                    <!-- Tumpukan Ketebalan Kertas Sisi Kanan -->
-                    <div id="scrapbook-edge-stack" class="scrapbook-edge-stack" aria-hidden="true"></div>
-                </div>
-
-                <!-- Navigasi Bawah Buku -->
-                <div class="scrapbook-nav-bar">
-                    <button type="button" id="btn-prev-page" class="btn-sb-nav" onclick="flipPrevPage()" disabled>← Kiri</button>
-                    <div id="scrapbook-dots" class="scrapbook-dots" role="tablist" aria-label="Pilih Halaman"></div>
-                    <button type="button" id="btn-next-page" class="btn-sb-nav primary" onclick="flipNextPage()">Kanan →</button>
+                    <div class="paper-fold-controls">
+                        <button type="button" id="btn-prev-fold" class="btn-paper-nav" onclick="foldPrev()" disabled>
+                            ↑ Lipat Sebelumnya
+                        </button>
+                        <button type="button" id="btn-next-fold" class="btn-paper-nav primary" onclick="unfoldNext()">
+                            Buka Lipatan 2 ↓
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="scroll-indicator hero-stagger">Scroll down for more surprises ↓</div>
+            <div class="scroll-indicator">
+                <span>scroll down ↓</span>
+            </div>
         </section>
 
         <div class="neon-divider"></div>
 
-        <!-- =========================================
-             BAGIAN 2: GLASS JAR & ASCII ART (KIRI-KANAN TETAP AKTIF DI MOBILE)
-             ========================================= -->
-        <section id="jar-section" class="night-section jar-area motion-section">
-            <div class="jar-wrapper">
-                <span class="section-tag motion-item">MEMORY JAR</span>
-                <h2 class="jar-title motion-item">Jar of Little Reminders</h2>
-                <p class="jar-sub motion-item">Tap the jar to shake out a glowing note just for you ✨</p>
+        <!-- Bagian 2: Glass Jar Little Notes + Foto & Dekorasi Kiri & Kanan -->
+        <section id="jar-section" class="night-section jar-area">
+            <div class="jar-wrapper motion-section">
+                <span class="section-tag motion-item">MEMORIES & WISHES</span>
+                <h2 class="jar-title motion-item">Little notes, just for you</h2>
+                <p class="jar-sub motion-item">give it a little shake, or tap them one by one</p>
 
-                <div class="jar-stage motion-item" data-mobile-layout="row">
-                    <!-- Sayap Kiri -->
-                    <div class="jar-side-wing left-wing">
+                <div class="jar-stage">
+                    <!-- Sisi Kiri Jar -->
+                    <div class="jar-side-wing left-wing motion-item">
                         <div class="wing-glow"></div>
+                        <span class="wing-deco d1">✦</span>
+                        <span class="wing-deco d2">🐾</span>
                         <div class="wing-note-tag tag-left">
                             <span class="wing-tape"></span>
-                            my favorite smile
+                            sweet memories ♥
                         </div>
-                        <canvas id="ascii-jar-left-canvas" class="jar-side-ascii-canvas"></canvas>
-                        <div class="wing-mini-pill pill-left">
-                            <canvas class="wing-ascii-pill-canvas" data-text="PURE MAGIC"></canvas>
-                        </div>
-                        <span class="wing-deco d1" aria-hidden="true">✦</span>
-                        <span class="wing-deco d2" aria-hidden="true">♥</span>
-                        <span class="wing-deco d3" aria-hidden="true">✿</span>
+                        <img src="static/di samping kiri jar.png" alt="Lowfy Left" class="jar-side-photo">
+                        <div class="wing-mini-pill pill-left">★ little moments</div>
+                        <span class="wing-deco d3">✿</span>
                     </div>
 
-                    <!-- Toples Kaca Tengah -->
-                    <div class="jar-center-col">
-                        <div id="jar" class="jar" role="button" tabindex="0" aria-label="Shake Memory Jar" onclick="pickNote()">
-                            <div id="jar-lid" class="jar-lid"></div>
+                    <!-- Tengah: Botol Jar -->
+                    <div class="jar-center-col motion-item">
+                        <div id="jar" class="jar" onclick="pickNote()">
+                            <div class="jar-lid"></div>
                             <div class="jar-neck"></div>
                             <div class="jar-glass">
-                                <canvas id="jar-interior-canvas" width="152" height="202"></canvas>
+                                <span class="jar-sparkle sp1">✦</span>
+                                <span class="jar-sparkle sp2">•</span>
+                                <span class="jar-sparkle sp3">✦</span>
+                                <span class="jar-sparkle sp4">•</span>
+
+                                <div class="note-slip s1">♥</div>
+                                <div class="note-slip s2">★</div>
+                                <div class="note-slip s3">✿</div>
+                                <div class="note-slip s4">✦</div>
+                                <div class="note-slip s5">♥</div>
+                                <div class="note-slip s6">♪</div>
+                                <div class="note-slip s7">★</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Sayap Kanan -->
-                    <div class="jar-side-wing right-wing">
+                    <!-- Sisi Kanan Jar -->
+                    <div class="jar-side-wing right-wing motion-item">
                         <div class="wing-glow"></div>
+                        <span class="wing-deco d1">✨</span>
+                        <span class="wing-deco d2">🌷</span>
                         <div class="wing-note-tag tag-right">
                             <span class="wing-tape"></span>
-                            always shining
+                            19 & glowing ✨
                         </div>
-                        <canvas id="ascii-jar-right-canvas" class="jar-side-ascii-canvas"></canvas>
-                        <div class="wing-mini-pill pill-right">
-                            <canvas class="wing-ascii-pill-canvas" data-text="SO PROUD"></canvas>
-                        </div>
-                        <span class="wing-deco d1" aria-hidden="true">✦</span>
-                        <span class="wing-deco d2" aria-hidden="true">♥</span>
-                        <span class="wing-deco d3" aria-hidden="true">✿</span>
+                        <img src="static/di samping kanan jar.png" alt="Lowfy Right" class="jar-side-photo">
+                        <div class="wing-mini-pill pill-right">♥ always smiling</div>
+                        <span class="wing-deco d3">♥</span>
                     </div>
                 </div>
 
-                <button type="button" class="btn-glass-pink motion-item" onclick="pickNote()">Shake & Pick a Note ✨</button>
+                <button type="button" class="btn-glass-pink motion-item" onclick="pickNote()">Shake it! ✨</button>
             </div>
         </section>
 
         <div class="neon-divider"></div>
 
-        <!-- =========================================
-             BAGIAN 3: 3 OPSI INTERAKTIF
-             ========================================= -->
-        <section id="options-section" class="night-section options-area motion-section">
-            <div class="options-wrapper">
-                <span class="section-tag motion-item">SPECIAL SURPRISES</span>
-                <h2 class="options-title motion-item">Pick Your Birthday Treat</h2>
-                <p class="options-sub motion-item">Choose one of the three little gifts below 🎁</p>
+        <!-- Bagian 3: AREA 3 OPSI INTERAKTIF -->
+        <section id="options-section" class="night-section options-area">
+            <div class="options-wrapper motion-section">
+                <span class="section-tag motion-item">INTERACTIVE SURPRISES</span>
+                <h2 class="options-title motion-item">One more thing... ✨</h2>
+                <p class="options-sub motion-item">tap one of these three little surprises below</p>
 
                 <div class="options-buttons motion-item">
-                    <button type="button" class="opt-btn active" onclick="selectOption(1, this)">💐 3D Bouquet</button>
-                    <button type="button" class="opt-btn" onclick="selectOption(2, this)">💌 Why I Admire You</button>
+                    <button type="button" class="opt-btn active" onclick="selectOption(1, this)">💐 Flower Bouquet</button>
+                    <button type="button" class="opt-btn" onclick="selectOption(2, this)">🌙 3 Things I Admire</button>
                     <button type="button" class="opt-btn" onclick="selectOption(3, this)">🎂 Make a Wish</button>
                 </div>
 
                 <div class="option-display glass-card interactive-glass motion-item" data-tilt="true">
-                    <!-- OPSI 1: BUKET BUNGA 3D MATH ASCII -->
-                    <div id="opt-content-1" class="opt-panel show">
-                        <h3>A Never-Fading 3D Bouquet</h3>
-                        <p class="opt-desc">Tap the bouquet to make it bloom & send warm hugs 🌸</p>
 
-                        <div class="bouquet-box" id="bouquet-box" onclick="bloomBouquet(event)">
-                            <div class="bouquet-aura" id="bouquet-aura"></div>
-                            <div class="bouquet-3d-wrap" id="bouquet-3d-wrap">
-                                <canvas id="ascii-bouquet-canvas" width="380" height="380"></canvas>
-                            </div>
-                            <div class="flower-burst-layer" id="flower-burst-layer"></div>
+                    <!-- Opsi 1: Buket Bunga Aset Gambar -->
+                    <div id="opt-content-1" class="opt-panel show">
+                        <h3>A Special Bouquet For You 💐</h3>
+                        <p class="opt-desc">Tap the bouquet to burst flowers & sparkle!</p>
+
+                        <div id="bouquet-box" class="bouquet-box" onclick="bloomBouquet(event)">
+                            <div id="bouquet-aura" class="bouquet-aura"></div>
+                            <div id="flower-burst-layer" class="flower-burst-layer"></div>
+
+                        <div id="bouquet-3d-wrap" class="bouquet-3d-wrap">
+                                <canvas id="ascii-bouquet-canvas" width="315" height="315"></canvas>
+                            </div>                        
                         </div>
 
-                        <p id="bouquet-msg" class="wish-status">Tap the flowers above ✨</p>
+                        <p id="bouquet-msg" class="wish-status">Flowers that never wilt, just like my wishes for you 🌸</p>
                     </div>
 
-                    <!-- OPSI 2: HAL YANG DIKAGUMI -->
+                    <!-- Opsi 2: 3 Hal yang Dikagumi -->
                     <div id="opt-content-2" class="opt-panel">
-                        <h3>Little Things I Admire About You</h3>
-                        <p class="opt-desc">Just a few reminders of how wonderful you truly are 🌷</p>
-
+                        <h3>3 Things I Admire About You 🌙</h3>
                         <div class="admire-list">
                             <div class="admire-card">
-                                <strong>01. Your Resilience</strong>
-                                <p>Cara kamu tetap bertahan dan melangkah maju meski hari-hari kuliah terasa padat dan melelahkan.</p>
+                                <strong>01. Your Warmth</strong>
+                                <p>Cara kamu bikin suasana di sekitarmu terasa lebih nyaman dan nggak kaku.</p>
                             </div>
                             <div class="admire-card">
-                                <strong>02. Your Warm Heart</strong>
-                                <p>Perhatian kecilmu dan ketulusanmu selalu bikin orang-orang di sekitarmu merasa nyaman dan dihargai.</p>
+                                <strong>02. Your Resilience</strong>
+                                <p>Meskipun lagi capek, kamu tetap berusaha jalanin hari-hari sebaik mungkin.</p>
                             </div>
                             <div class="admire-card">
-                                <strong>03. Your Smile & Energy</strong>
-                                <p>Senyum dan tawa random kamu selalu berhasil jadi alasan terbaik untuk memperbaiki suasana hati.</p>
-                            </div>
-                            <div class="admire-card">
-                                <strong>04. Being Unapologetically You</strong>
-                                <p>Kamu nggak perlu jadi orang lain—versi dirimu yang sekarang sudah lebih dari cukup dan sangat berharga.</p>
+                                <strong>03. Simply Being You</strong>
+                                <p>Nggak perlu pura-pura jadi orang lain, versi asli kamu sudah sangat berharga.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- OPSI 3: KUE ULANG TAHUN 3D MATH ASCII & FORM WISH -->
+                    <!-- Opsi 3: Kue Tingkat Putih & Cupcake Pita Pink -->
                     <div id="opt-content-3" class="opt-panel">
-                        <h3>Make Your 19th Birthday Wish</h3>
-                        <p class="opt-desc">Tap the 3D cake to blow out the candles, then send your wish ✨</p>
+                        <h3>Close your eyes & make a wish 🎂</h3>
+                        <p class="opt-desc">Tiup lilinnya dengan klik kue di bawah, lalu tulis harapanmu!</p>
 
-                        <div class="cake-box" id="cake-box" onclick="blowCandle(event)">
-                            <div class="cake-aura" id="cake-aura"></div>
-                            <div class="cake-3d-wrap" id="cake-3d-wrap">
-                                <canvas id="ascii-cake-canvas" width="380" height="380"></canvas>
-                            </div>
-                            <div class="cake-sparkle-layer" id="cake-sparkle-layer"></div>
+                        <div id="cake-box" class="cake-box" onclick="blowCandle()" title="Klik untuk meniup lilin">
+                            <svg class="coquette-cake-svg" viewBox="0 0 320 245" width="285" height="218">
+                                <defs>
+                                    <filter id="cake-shadow" x="-10%" y="-10%" width="120%" height="125%">
+                                        <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.42"/>
+                                    </filter>
+                                    <linearGradient id="cake-ivory" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#f3e6d3"/>
+                                        <stop offset="28%" stop-color="#fffaf2"/>
+                                        <stop offset="75%" stop-color="#fcf4e6"/>
+                                        <stop offset="100%" stop-color="#ead9c0"/>
+                                    </linearGradient>
+                                    <linearGradient id="cupcake-wrapper" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#e36d96"/>
+                                        <stop offset="50%" stop-color="#f794b8"/>
+                                        <stop offset="100%" stop-color="#d95b87"/>
+                                    </linearGradient>
+                                </defs>
+
+                                <ellipse cx="160" cy="212" rx="142" ry="22" fill="#2a1936" stroke="rgba(255, 182, 214, 0.45)" stroke-width="1.5"/>
+                                <ellipse cx="160" cy="209" rx="132" ry="17" fill="rgba(255, 248, 240, 0.1)" stroke="rgba(255, 214, 232, 0.3)" stroke-width="1"/>
+
+                                <g transform="translate(56, 166) scale(0.84)">
+                                    <polygon points="-18,8 18,8 13,30 -13,30" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1"/>
+                                    <line x1="-9" y1="8" x2="-6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <line x1="0" y1="8" x2="0" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <line x1="9" y1="8" x2="6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <ellipse cx="0" cy="8" rx="19" ry="5" fill="#e6be8a"/>
+                                    <ellipse cx="0" cy="3" rx="18" ry="7" fill="#ffb8d4"/>
+                                    <ellipse cx="0" cy="-3" rx="13" ry="6" fill="#ff9ec9"/>
+                                    <ellipse cx="0" cy="-8" rx="8" ry="4.5" fill="#ffcce0"/>
+                                    <path d="M0,-12 C-10,-20 -16,-12 -8,-8 C-4,-6 -1,-9 0,-12 Z" fill="#ff6ea6"/>
+                                    <path d="M0,-12 C10,-20 16,-12 8,-8 C4,-6 1,-9 0,-12 Z" fill="#ff6ea6"/>
+                                    <circle cx="0" cy="-11" r="2.5" fill="#ff9ec9"/>
+                                </g>
+
+                                <g transform="translate(264, 166) scale(0.84)">
+                                    <polygon points="-18,8 18,8 13,30 -13,30" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1"/>
+                                    <line x1="-9" y1="8" x2="-6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <line x1="0" y1="8" x2="0" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <line x1="9" y1="8" x2="6" y2="30" stroke="#c94b78" stroke-width="0.9" opacity="0.6"/>
+                                    <ellipse cx="0" cy="8" rx="19" ry="5" fill="#e6be8a"/>
+                                    <ellipse cx="0" cy="3" rx="18" ry="7" fill="#ffb8d4"/>
+                                    <ellipse cx="0" cy="-3" rx="13" ry="6" fill="#ff9ec9"/>
+                                    <ellipse cx="0" cy="-8" rx="8" ry="4.5" fill="#ffcce0"/>
+                                    <path d="M0,-12 C-10,-20 -16,-12 -8,-8 C-4,-6 -1,-9 0,-12 Z" fill="#ff6ea6"/>
+                                    <path d="M0,-12 C10,-20 16,-12 8,-8 C4,-6 1,-9 0,-12 Z" fill="#ff6ea6"/>
+                                    <circle cx="0" cy="-11" r="2.5" fill="#ff9ec9"/>
+                                </g>
+
+                                <g filter="url(#cake-shadow)">
+                                    <path d="M84,132 L84,192 A76,15 0 0,0 236,192 L236,132 Z" fill="url(#cake-ivory)" stroke="#d9c3a5" stroke-width="1.2"/>
+                                    <ellipse cx="160" cy="132" rx="76" ry="15" fill="#fffaf2" stroke="#dcc7aa" stroke-width="1.2"/>
+                                    <path d="M86,154 Q110,170 135,156 Q160,172 185,156 Q210,170 234,154" fill="none" stroke="#c9a982" stroke-width="1.5"/>
+                                    <path d="M86,158 Q110,174 135,160 Q160,176 185,160 Q210,174 234,158" fill="none" stroke="#dfC5a3" stroke-width="1"/>
+                                    <path d="M85,192 Q160,210 235,192" fill="none" stroke="#d4b58e" stroke-width="3" stroke-dasharray="5 3" stroke-linecap="round"/>
+                                    <path d="M85,133 Q160,150 235,133" fill="none" stroke="#d4b58e" stroke-width="2.6" stroke-dasharray="4 3" stroke-linecap="round"/>
+
+                                    <g transform="translate(89, 138)">
+                                        <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-4,18 -5,32 M1,2 Q2,18 1,34" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <g transform="translate(135, 145)">
+                                        <path d="M0,0 C-8,-6 -11,1 -3,3 Z M0,0 C8,-6 11,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-3,20 -4,36 M1,2 Q3,20 3,38" stroke="#b82542" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <g transform="translate(185, 145)">
+                                        <path d="M0,0 C-8,-6 -11,1 -3,3 Z M0,0 C8,-6 11,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-3,20 -3,38 M1,2 Q3,20 4,36" stroke="#b82542" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <g transform="translate(231, 138)">
+                                        <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-2,18 -1,34 M1,2 Q4,18 5,32" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    </g>
+
+                                    <path d="M106,80 L106,130 A54,11 0 0,0 214,130 L214,80 Z" fill="url(#cake-ivory)" stroke="#d9c3a5" stroke-width="1.2"/>
+                                    <ellipse cx="160" cy="80" rx="54" ry="11" fill="#fffcf7" stroke="#dcc7aa" stroke-width="1.2"/>
+                                    <path d="M107,102 Q133,115 160,104 Q187,115 213,102" fill="none" stroke="#c9a982" stroke-width="1.4"/>
+                                    <path d="M107,81 Q160,94 213,81" fill="none" stroke="#d4b58e" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/>
+
+                                    <path d="M120,76 C118,73 114,75 120,79 C126,75 122,73 120,76 Z" fill="#b82542"/>
+                                    <path d="M200,76 C198,73 194,75 200,79 C206,75 202,73 200,76 Z" fill="#b82542"/>
+
+                                    <g transform="translate(122, 87)">
+                                        <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-3,18 -3,32 M1,2 Q2,18 2,33" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <g transform="translate(160, 90)">
+                                        <path d="M0,0 C-8,-6 -11,1 -3,3 Z M0,0 C8,-6 11,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-2,20 -2,35 M1,2 Q2,20 2,35" stroke="#b82542" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    <g transform="translate(198, 87)">
+                                        <path d="M0,0 C-7,-5 -10,1 -3,3 Z M0,0 C7,-5 10,1 3,3 Z" fill="#b82542"/>
+                                        <path d="M-1,2 Q-2,18 -2,33 M1,2 Q3,18 3,32" stroke="#b82542" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    </g>
+
+                                    <rect x="135" y="55" width="4" height="22" rx="1.5" transform="rotate(-5 137 77)" fill="#b82542"/>
+                                    <line x1="135" y1="62" x2="139" y2="60" stroke="#fff5f7" stroke-width="1.2"/>
+                                    <line x1="135" y1="69" x2="139" y2="67" stroke="#fff5f7" stroke-width="1.2"/>
+
+                                    <rect x="158" y="48" width="4.5" height="29" rx="1.5" fill="#b82542"/>
+                                    <line x1="158" y1="56" x2="162.5" y2="54" stroke="#fff5f7" stroke-width="1.3"/>
+                                    <line x1="158" y1="64" x2="162.5" y2="62" stroke="#fff5f7" stroke-width="1.3"/>
+                                    <path d="M160,74 C154,70 152,75 158,76 Z M160,74 C166,70 168,75 162,76 Z" fill="#9e1c36"/>
+
+                                    <rect x="181" y="55" width="4" height="22" rx="1.5" transform="rotate(5 183 77)" fill="#b82542"/>
+                                    <line x1="181" y1="62" x2="185" y2="60" stroke="#fff5f7" stroke-width="1.2"/>
+                                    <line x1="181" y1="69" x2="185" y2="67" stroke="#fff5f7" stroke-width="1.2"/>
+
+                                    <g id="flame" class="candle-flames">
+                                        <g transform="translate(160.2, 41)">
+                                            <ellipse class="flame-glow" cx="0" cy="0" rx="8" ry="11" fill="rgba(255, 209, 102, 0.35)"/>
+                                            <path class="flame-core" d="M0,-8 C4,-2 4,4 0,6 C-4,4 -4,-2 0,-8 Z" fill="#ffbe0b"/>
+                                            <path d="M0,-4 C2,-1 2,2 0,4 C-2,2 -2,-1 0,-4 Z" fill="#fff8d6"/>
+                                        </g>
+                                        <g transform="translate(136, 48)">
+                                            <ellipse class="flame-glow" cx="0" cy="0" rx="6.5" ry="9" fill="rgba(255, 209, 102, 0.3)"/>
+                                            <path class="flame-core" d="M0,-6.5 C3,-1.5 3,3.5 0,5 C-3,3.5 -3,-1.5 0,-6.5 Z" fill="#ffbe0b"/>
+                                            <path d="M0,-3 C1.5,-0.5 1.5,2 0,3.5 C-1.5,2 -1.5,-0.5 0,-3 Z" fill="#fff8d6"/>
+                                        </g>
+                                        <g transform="translate(184, 48)">
+                                            <ellipse class="flame-glow" cx="0" cy="0" rx="6.5" ry="9" fill="rgba(255, 209, 102, 0.3)"/>
+                                            <path class="flame-core" d="M0,-6.5 C3,-1.5 3,3.5 0,5 C-3,3.5 -3,-1.5 0,-6.5 Z" fill="#ffbe0b"/>
+                                            <path d="M0,-3 C1.5,-0.5 1.5,2 0,3.5 C-1.5,2 -1.5,-0.5 0,-3 Z" fill="#fff8d6"/>
+                                        </g>
+                                    </g>
+                                </g>
+
+                                <g transform="translate(74, 194)" filter="url(#cake-shadow)">
+                                    <polygon points="-19,8 19,8 14,32 -14,32" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1.1"/>
+                                    <line x1="-10" y1="8" x2="-7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <line x1="0" y1="8" x2="0" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <line x1="10" y1="8" x2="7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <ellipse cx="0" cy="8" rx="20" ry="5.5" fill="#e6be8a"/>
+                                    <ellipse cx="0" cy="3" rx="19" ry="7.5" fill="#ffc2da"/>
+                                    <ellipse cx="0" cy="-3" rx="14" ry="6.5" fill="#ffa3c8"/>
+                                    <ellipse cx="0" cy="-9" rx="8.5" ry="4.5" fill="#ffd6e7"/>
+                                    <circle cx="-8" cy="2" r="1.2" fill="#ffffff"/>
+                                    <circle cx="7" cy="3" r="1.2" fill="#ffffff"/>
+                                    <circle cx="2" cy="-3" r="1.1" fill="#ffffff"/>
+                                    <path d="M0,-13 C-11,-22 -18,-13 -9,-8 C-4,-6 -1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
+                                    <path d="M0,-13 C11,-22 18,-13 9,-8 C4,-6 1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
+                                    <path d="M-2,-10 L-8,-3 M2,-10 L8,-3" stroke="#ff66a1" stroke-width="2" stroke-linecap="round"/>
+                                    <circle cx="0" cy="-12" r="2.8" fill="#ffb3d4"/>
+                                </g>
+
+                                <g transform="translate(246, 194)" filter="url(#cake-shadow)">
+                                    <polygon points="-19,8 19,8 14,32 -14,32" fill="url(#cupcake-wrapper)" stroke="#c94b78" stroke-width="1.1"/>
+                                    <line x1="-10" y1="8" x2="-7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <line x1="0" y1="8" x2="0" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <line x1="10" y1="8" x2="7" y2="32" stroke="#c94b78" stroke-width="1" opacity="0.65"/>
+                                    <ellipse cx="0" cy="8" rx="20" ry="5.5" fill="#e6be8a"/>
+                                    <ellipse cx="0" cy="3" rx="19" ry="7.5" fill="#ffc2da"/>
+                                    <ellipse cx="0" cy="-3" rx="14" ry="6.5" fill="#ffa3c8"/>
+                                    <ellipse cx="0" cy="-9" rx="8.5" ry="4.5" fill="#ffd6e7"/>
+                                    <circle cx="-7" cy="3" r="1.2" fill="#ffffff"/>
+                                    <circle cx="8" cy="2" r="1.2" fill="#ffffff"/>
+                                    <circle cx="-2" cy="-3" r="1.1" fill="#ffffff"/>
+                                    <path d="M0,-13 C-11,-22 -18,-13 -9,-8 C-4,-6 -1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
+                                    <path d="M0,-13 C11,-22 18,-13 9,-8 C4,-6 1,-9 0,-13 Z" fill="#ff66a1" stroke="#ff9ec9" stroke-width="0.6"/>
+                                    <path d="M-2,-10 L-8,-3 M2,-10 L8,-3" stroke="#ff66a1" stroke-width="2" stroke-linecap="round"/>
+                                    <circle cx="0" cy="-12" r="2.8" fill="#ffb3d4"/>
+                                </g>
+                            </svg>
                         </div>
-
-                        <p id="wish-status" class="wish-status">Tap the cake to blow out the candles ✨</p>
+                        <p id="wish-status" class="wish-status">Tap the candle to blow it out ✨</p>
 
                         <div class="wish-form">
-                            <textarea id="wish-input" rows="3" placeholder="Tulis harapan atau doa ulang tahunmu di sini... ✨"></textarea>
-                            <button type="button" id="btn-send-wish" class="btn-glass-pink" onclick="sendWishToEmail()">Send My Wish 💌</button>
+                            <textarea id="wish-input" rows="3" placeholder="Tulis semua harapan mu sayanggg!!!"></textarea>
+                            <button type="button" id="btn-send-wish" class="btn-glass-pink" onclick="sendWishToEmail()">
+                                Send My Wish 💌
+                            </button>
                             <p id="send-feedback" class="send-feedback"></p>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- =========================================
-         POPUP MODAL NOTE DARI JAR
-         ========================================= -->
+    <!-- POPUP MODAL NOTE -->
     <div id="modal" class="modal" onclick="closeModal(event)">
-        <div class="modal-stage-wrap">
-            <div id="modal-bloom-aura" class="modal-bloom-aura"></div>
-            <div id="modal-card" class="modal-card glass-card">
-                <button type="button" class="modal-x" onclick="forceCloseModal()" aria-label="Close modal">✕</button>
-                <div class="modal-icon">✦ LITTLE REMINDER ✦</div>
-                <h3 id="note-title">Title</h3>
-                <p id="note-text">Message text</p>
-                <button type="button" class="btn-glass-pink" onclick="forceCloseModal()">Keep in Heart ♥</button>
-            </div>
+        <div id="modal-card" class="modal-card glass-card">
+            <button type="button" class="modal-x" onclick="forceCloseModal()">✕</button>
+            <div class="modal-icon">✦</div>
+            <h3 id="note-title">Laughter</h3>
+            <p id="note-text">Isi pesan...</p>
+            <button type="button" class="btn-glass-pink" onclick="pickNote()">Shake again!</button>
         </div>
-    </div>
-
-    <!-- =========================================
-         MINI MUSIC PLAYER (DENGAN ANIMASI BUKA-TUTUP & IKON PAUSE SVG)
-         ========================================= -->
-    <div id="mini-player" class="mini-player is-expanded" data-state="expanded">
-        <button
-            type="button"
-            id="player-toggle-btn"
-            class="player-window-controls"
-            onclick="toggleMinimizePlayer(event)"
-            aria-expanded="true"
-            aria-controls="player-collapsible-body"
-            title="Minimize / Expand Player"
-        >
-            <span class="dot-red"></span>
-            <span class="grip-dots">⋮⋮</span>
-            <svg class="player-toggle-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-        </button>
-
-        <div id="player-cover" class="player-cover" onclick="if(document.getElementById('mini-player').classList.contains('minimized')) toggleMinimizePlayer(event)">🌸</div>
-
-        <!-- Wrapper Konten yang Dapat Terbuka / Tertutup Halus -->
-        <div id="player-collapsible-body" class="player-collapsible-body">
-            <div class="player-collapsible-inner">
-                <div class="player-info">
-                    <span id="player-title" class="player-title">24/7</span>
-                    <span id="player-artist" class="player-artist">Romaria</span>
-                </div>
-
-                <div class="player-volume">
-                    <button type="button" id="volume-btn" class="btn-volume-icon" onclick="toggleMute(event)" title="Mute / Unmute">🔊</button>
-                    <input id="volume-slider" class="volume-slider" type="range" min="0" max="1" step="0.05" value="0.7" oninput="changeVolume(this.value)">
-                </div>
-
-                <button type="button" id="speed-btn" class="btn-speed" onclick="cycleSpeed(event)" title="Playback Speed">1x</button>
-
-                <div class="player-actions">
-                    <button type="button" id="play-pause-btn" class="btn-circle-play" onclick="toggleMusic(event)" title="Play / Pause" aria-label="Play or Pause">
-                        <svg class="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M8 5.14v14l11-7-11-7z"/>
-                        </svg>
-                        <svg class="icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <rect x="6" y="4" width="4" height="16" rx="1.5"/>
-                            <rect x="14" y="4" width="4" height="16" rx="1.5"/>
-                        </svg>
-                    </button>
-                    <button type="button" class="btn-next-track" onclick="nextTrack(event)" title="Next Song" aria-label="Next Song">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="player-progress-wrap" onclick="seekTrack(event)">
-                    <div id="player-progress-bar" class="player-progress-bar"></div>
-                </div>
-            </div>
-        </div>
-
-        <audio id="bg-music" preload="metadata"></audio>
     </div>
 
     <script type="module" src="static/script.js"></script>
