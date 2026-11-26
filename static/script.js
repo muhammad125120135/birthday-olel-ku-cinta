@@ -114,17 +114,6 @@ if (!prefersReducedMotion) {
         0.7
     );
 
-    applySmoothFloat(
-        ".bouquet-img",
-        {
-            rotate: [-1.8, 2.2],
-            y: [0, -8],
-            scale: [1, 1.02]
-        },
-        4.8,
-        0.3
-    );
-
     // Entrance & hover amplop pembuka
     motionPlay("#envelope-card", { opacity: [0, 1], y: [24, 0], scale: [0.95, 1] }, { duration: 0.75, ease: EASE_SILKY });
 
@@ -852,10 +841,116 @@ function bloomBouquet(event) {
     }
 }
 
+function initAsciiBouquet() {
+    const canvas = document.getElementById("ascii-bouquet-canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    const DENSITY = " .:-=+*#%@";
+    const COLS = 66;
+    const ROWS = 66;
+    const cellW = canvas.width / COLS;
+    const cellH = canvas.height / ROWS;
+
+    const img = new Image();
+    img.src = "static/bouquet.png";
+
+    img.onload = () => {
+        const offCanvas = document.createElement("canvas");
+        offCanvas.width = COLS;
+        offCanvas.height = ROWS;
+        const offCtx = offCanvas.getContext("2d");
+        offCtx.drawImage(img, 0, 0, COLS, ROWS);
+
+        const pixels = offCtx.getImageData(0, 0, COLS, ROWS).data;
+        const cells = [];
+
+        for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+                const i = (y * COLS + x) * 4;
+                const r = pixels[i];
+                const g = pixels[i + 1];
+                const b = pixels[i + 2];
+                const a = pixels[i + 3];
+
+                if (a < 40) continue;
+
+                const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                const charIdx = Math.min(DENSITY.length - 1, Math.floor(lum * DENSITY.length));
+                const char = DENSITY[charIdx];
+                if (char === " ") continue;
+
+                cells.push({
+                    x,
+                    y,
+                    normY: 1 - y / ROWS,
+                    char,
+                    color: `rgb(${Math.min(255, r + 25)}, ${Math.min(255, g + 20)}, ${Math.min(255, b + 25)})`
+                });
+            }
+        }
+
+        let bloomProgress = 0;
+        let hasStarted = false;
+        let time = 0;
+
+        const optionsSection = document.getElementById("options-section");
+        if (optionsSection) {
+            inView(optionsSection, () => {
+                if (!hasStarted) {
+                    hasStarted = true;
+                    bloomProgress = 0;
+                }
+            }, { amount: 0.25 });
+        } else {
+            hasStarted = true;
+        }
+
+        function renderAsciiFrame() {
+            const panel = document.getElementById("opt-content-1");
+            if (!document.hidden && panel && panel.classList.contains("show")) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = `bold ${Math.ceil(cellH)}px "Courier New", monospace`;
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+
+                if (hasStarted && bloomProgress < 1) {
+                    bloomProgress = Math.min(1, bloomProgress + 0.015);
+                }
+                time += 0.035;
+
+                for (const c of cells) {
+                    if (c.normY > bloomProgress) continue;
+
+                    const sway = Math.sin(time + c.y * 0.12) * (c.normY * 2.4);
+                    const px = c.x * cellW + cellW / 2 + sway;
+                    const py = c.y * cellH + cellH / 2;
+
+                    ctx.fillStyle = c.color;
+                    ctx.fillText(c.char, px, py);
+                }
+            }
+            requestAnimationFrame(renderAsciiFrame);
+        }
+
+        const box = document.getElementById("bouquet-box");
+        if (box) {
+            box.addEventListener("click", () => {
+                hasStarted = true;
+                bloomProgress = 0.15;
+            });
+        }
+
+        requestAnimationFrame(renderAsciiFrame);
+    };
+}
+
+initAsciiBouquet();
+
 function blowCandle() {
     const flame = document.getElementById("flame");
     const status = document.getElementById("wish-status");
-
+    
     motionPlay("#cake-box", { scale: [1, 0.96, 1.025, 1] }, SPRING_SNAPPY);
 
     if (!flame.classList.contains("blown")) {

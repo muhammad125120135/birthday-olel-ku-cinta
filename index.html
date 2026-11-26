@@ -343,15 +343,9 @@
                             <div id="bouquet-aura" class="bouquet-aura"></div>
                             <div id="flower-burst-layer" class="flower-burst-layer"></div>
 
-                            <div id="bouquet-3d-wrap" class="bouquet-3d-wrap">
-                                <img
-                                    src="static/bouquet.png"
-                                    data-fallbacks="static/bouqwet.png,static/bouquet.jpg,static/bouqwet.jpg,static/bouquet.jpeg,static/bouquet.webp,static/buket.png"
-                                    onerror="const list=(this.dataset.fallbacks||'').split(',').filter(Boolean); if(list.length){this.src=list.shift(); this.dataset.fallbacks=list.join(',');} else {this.onerror=null;}"
-                                    alt="Flower Bouquet"
-                                    class="bouquet-img">
-                                <div class="bouquet-shine"></div>
-                            </div>
+                        <div id="bouquet-3d-wrap" class="bouquet-3d-wrap">
+                                <canvas id="ascii-bouquet-canvas" width="315" height="315"></canvas>
+                            </div>                        
                         </div>
 
                         <p id="bouquet-msg" class="wish-status">Flowers that never wilt, just like my wishes for you 🌸</p>
