@@ -79,7 +79,7 @@ input,
     z-index: 0;
     opacity: 0.42;
     will-change: transform;
-    animation: orbDrift 16s ease-in-out infinite alternate;
+    animation: orbDrift 18s ease-in-out infinite alternate;
 }
 
 .orb-1 {
@@ -139,7 +139,7 @@ input,
     justify-content: center;
     z-index: 100;
     will-change: transform, opacity;
-    transition: transform 1.1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.9s ease;
+    transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.85s ease;
 }
 
 .envelope-overlay.opened {
@@ -199,7 +199,7 @@ input,
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     z-index: 2;
     transform: translateY(-14px);
-    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+    will-change: transform;
 }
 
 .peek-tag {
@@ -264,7 +264,7 @@ input,
     border-radius: 12px 12px 0 0;
     transform-origin: top center;
     z-index: 5;
-    transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.15s, z-index 0s linear 0.35s;
+    will-change: transform;
 }
 
 .wax-seal {
@@ -295,21 +295,12 @@ input,
     justify-content: center;
 }
 
-.wax-envelope.unsealed .env-flap-top {
-    transform: rotateX(180deg);
-    z-index: 1;
-}
-
-.wax-envelope.unsealed .env-letter-peek {
-    transform: translateY(-82px);
-}
-
 .tap-hint {
     margin-top: 26px;
     font-size: 0.82rem;
     letter-spacing: 0.8px;
     color: #ffb8d8;
-    animation: pulseFade 1.8s ease-in-out infinite;
+    animation: pulseFade 2.2s ease-in-out infinite;
 }
 
 @keyframes pulseFade {
@@ -324,7 +315,7 @@ input,
     opacity: 0;
     position: relative;
     z-index: 3;
-    transition: opacity 0.8s ease 0.2s;
+    transition: opacity 0.85s ease 0.15s;
 }
 
 .main-content.visible {
@@ -381,10 +372,10 @@ input,
 
 .balloon {
     font-size: 1.5rem;
-    animation: gentleFloat 3s ease-in-out infinite alternate;
+    animation: gentleFloat 3.4s ease-in-out infinite alternate;
 }
 
-.b2 { animation-delay: 1s; }
+.b2 { animation-delay: 1.2s; }
 
 @keyframes gentleFloat {
     from { transform: translateY(0); }
@@ -499,6 +490,7 @@ input,
     z-index: 5;
     transform-origin: top center;
     transform-style: preserve-3d;
+    backface-visibility: hidden;
     will-change: transform, opacity;
 }
 
@@ -507,9 +499,9 @@ input,
     inset: 0;
     background: linear-gradient(
         180deg,
-        rgba(88, 60, 32, 0.28) 0%,
-        rgba(88, 60, 32, 0.08) 24px,
-        transparent 64px
+        rgba(88, 60, 32, 0.26) 0%,
+        rgba(88, 60, 32, 0.08) 28px,
+        transparent 70px
     );
     opacity: 0;
     pointer-events: none;
@@ -528,6 +520,7 @@ input,
     padding: 0 8px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.25s ease;
 }
 
 .crease-label {
@@ -566,13 +559,12 @@ input,
 .paper-fold.is-open .fold-content {
     position: relative;
     z-index: 3;
-    max-height: 1200px;
     padding: 0 4px 32px;
 }
 
 .paper-fold.is-next-folded {
     z-index: 10;
-    transform: perspective(1000px) rotateX(-16deg);
+    transform: perspective(1000px) rotateX(-15deg);
     margin: 7px 0 5px;
     background: linear-gradient(180deg, #e7d5b7 0%, #f9f1e1 46%, #dfcca9 100%);
     border: 1px solid #c6b08c;
@@ -583,11 +575,11 @@ input,
         0 2px 4px rgba(74, 52, 30, 0.16),
         inset 0 1px 4px rgba(255, 255, 255, 0.8);
     cursor: pointer;
-    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease;
 }
 
 .paper-fold.is-next-folded:hover {
-    transform: perspective(1000px) rotateX(-6deg) translateY(-2px);
+    transform: perspective(1000px) rotateX(-5deg) translateY(-2px);
     background: linear-gradient(180deg, #efe1c8 0%, #fff8eb 48%, #e8d5b4 100%);
 }
 
@@ -598,7 +590,7 @@ input,
 .paper-fold.is-next-folded .fold-content,
 .paper-fold.is-stacked-folded .fold-crease-bar,
 .paper-fold.is-stacked-folded .fold-content {
-    max-height: 0;
+    height: 0;
     opacity: 0;
     overflow: hidden;
     pointer-events: none;
@@ -606,7 +598,7 @@ input,
 
 .paper-fold.is-stacked-folded {
     z-index: 8;
-    transform: perspective(1000px) rotateX(-30deg);
+    transform: perspective(1000px) rotateX(-28deg);
     height: 11px;
     margin-top: -1px;
     background: linear-gradient(180deg, #e4d4b7 0%, #f3e7d1 45%, #c7b28e 100%);
@@ -675,6 +667,7 @@ input,
     font-size: 0.78rem;
     font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.25s ease, opacity 0.25s ease;
 }
 
 .btn-paper-nav:disabled {
@@ -694,11 +687,11 @@ input,
     font-size: 0.85rem;
     color: #ffb8d8;
     opacity: 0.8;
-    animation: gentleFloat 1.5s ease-in-out infinite alternate;
+    animation: gentleFloat 1.8s ease-in-out infinite alternate;
 }
 
 /* =========================================
-   4. BAGIAN 2: GLASS JAR + FOTO KIRI & KANAN (DIPERBESAR)
+   4. BAGIAN 2: GLASS JAR + FOTO KIRI & KANAN
    ========================================= */
 .jar-area {
     text-align: center;
@@ -1035,7 +1028,7 @@ input,
     margin-bottom: 14px;
 }
 
-/* Buket Bunga (Diperbesar) & 5 Bunga Bertebaran */
+/* Buket Bunga & 5 Bunga Bertebaran */
 .bouquet-box {
     position: relative;
     width: 345px;
@@ -1068,7 +1061,7 @@ input,
     justify-content: center;
     transform-origin: bottom center;
     transform-style: preserve-3d;
-    transition: transform 0.25s ease-out;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     overflow: hidden;
     border-radius: 26px;
     will-change: transform;
@@ -1171,7 +1164,7 @@ input,
 }
 
 .candle-flames {
-    transition: opacity 0.35s ease;
+    transition: opacity 0.4s ease;
 }
 
 .candle-flames.blown {
@@ -1181,7 +1174,7 @@ input,
 .flame-core {
     transform-origin: center bottom;
     transform-box: fill-box;
-    animation: flicker 0.55s infinite alternate;
+    animation: flicker 0.65s ease-in-out infinite alternate;
 }
 
 @keyframes flicker {
@@ -1216,6 +1209,7 @@ input,
     font-size: 0.86rem;
     resize: none;
     outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .wish-form textarea::placeholder {
@@ -1292,7 +1286,7 @@ input,
 }
 
 /* =========================================
-   7. MINI PLAYER RETRO GLASS (TOMBOL DIPERBESAR)
+   7. MINI PLAYER RETRO GLASS
    ========================================= */
 .mini-player {
     position: fixed;
@@ -1496,7 +1490,7 @@ input,
     height: 100%;
     width: 0%;
     background: linear-gradient(90deg, #ff7eb3, #ffd166);
-    transition: width 0.15s linear;
+    transition: width 0.2s linear;
 }
 
 .mini-player.minimized .player-info,

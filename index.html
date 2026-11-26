@@ -70,7 +70,7 @@
             <div id="wax-envelope" class="wax-envelope">
                 <div class="env-back"></div>
 
-                <div class="env-letter-peek">
+                <div id="env-letter-peek" class="env-letter-peek">
                     <span class="peek-tag">12 . 12 . 2026</span>
                     <p class="peek-title">For Lowfy ♥</p>
                     <div class="peek-lines"></div>
@@ -79,7 +79,7 @@
                 <div class="env-front-left"></div>
                 <div class="env-front-right"></div>
                 <div class="env-front-bottom"></div>
-                <div class="env-flap-top"></div>
+                <div id="env-flap-top" class="env-flap-top"></div>
 
                 <div id="wax-seal" class="wax-seal">
                     <div class="wax-seal-inner">♥</div>
@@ -254,7 +254,7 @@
 
         <div class="neon-divider"></div>
 
-        <!-- Bagian 2: Glass Jar Little Notes + Foto & Dekorasi Kiri & Kanan (Diperbesar + Low-FPS) -->
+        <!-- Bagian 2: Glass Jar Little Notes + Foto & Dekorasi Kiri & Kanan -->
         <section id="jar-section" class="night-section jar-area">
             <div class="jar-wrapper motion-section">
                 <span class="section-tag motion-item">MEMORIES & WISHES</span>
@@ -334,7 +334,7 @@
 
                 <div class="option-display glass-card interactive-glass motion-item" data-tilt="true">
 
-                    <!-- Opsi 1: Buket Bunga Aset Gambar (Diperbesar + Low-FPS Idle + 3D Burst) -->
+                    <!-- Opsi 1: Buket Bunga Aset Gambar -->
                     <div id="opt-content-1" class="opt-panel show">
                         <h3>A Special Bouquet For You 💐</h3>
                         <p class="opt-desc">Tap the bouquet to burst flowers & sparkle!</p>
@@ -579,27 +579,34 @@
 
         const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const SPRING_SNAPPY = { type: "spring", stiffness: 360, damping: 24 };
-        const SPRING_BOUNCY = { type: "spring", stiffness: 280, damping: 18 };
-        const SPRING_PAPER = { type: "spring", stiffness: 210, damping: 19, mass: 1.05 };
+        const EASE_SILKY = [0.22, 1, 0.36, 1];
+        const EASE_FOLD_CLOSE = [0.32, 0, 0.2, 1];
+        const SPRING_SNAPPY = { type: "spring", stiffness: 340, damping: 26 };
+        const SPRING_BOUNCY = { type: "spring", stiffness: 250, damping: 20 };
 
         function motionPlay(target, keyframes, options) {
-            if (!target || prefersReducedMotion) return;
+            if (!target || prefersReducedMotion) return null;
             try {
                 return animate(target, keyframes, options);
             } catch (_) {
-                // shortcut: fallback silently if Web Animations API rejects an unsupported property on older mobile browsers
+                return null;
             }
         }
 
-        function applyLowFpsMotion(selector, frames, duration = 1.55, delayOffset = 0) {
+        function cancelActiveAnimations(el) {
+            if (!el || typeof el.getAnimations !== "function") return;
+            el.getAnimations().forEach((anim) => anim.cancel());
+        }
+
+        function applySmoothFloat(selector, frames, duration = 4.4, delayOffset = 0) {
             if (prefersReducedMotion) return;
             document.querySelectorAll(selector).forEach((el, idx) => {
                 motionPlay(el, frames, {
                     duration,
-                    delay: delayOffset + idx * 0.25,
+                    delay: delayOffset + idx * 0.4,
                     repeat: Infinity,
-                    ease: "steps(1, end)"
+                    repeatType: "mirror",
+                    ease: "easeInOut"
                 });
             });
         }
@@ -628,12 +635,11 @@
         });
 
         /* ==========================================
-           1. MOTION: SCROLL, LOW-FPS CUTOUTS & GESTURES
+           1. MOTION: SCROLL, SILKY FLOAT & GESTURES
            ========================================== */
         if (!prefersReducedMotion) {
             scroll(animate("#scroll-progress", { scaleX: [0, 1] }, { ease: "linear" }));
 
-            // Parallax scroll pada container wrapper (tidak bentrok dengan animasi low-FPS pada img di dalamnya)
             scroll(
                 animate(".header-cutout-badge", { y: [-6, 14] }, { ease: "linear" }),
                 { target: document.querySelector(".header-area"), offset: ["start end", "end start"] }
@@ -649,61 +655,62 @@
                 { target: document.getElementById("jar-section"), offset: ["start end", "end start"] }
             );
 
-            // Low-FPS stop-motion cutout animation untuk header, foto samping jar, dan bouquet
-            applyLowFpsMotion(
+            // Animasi mengambang 60/120fps yang super halus untuk setiap aset gambar
+            applySmoothFloat(
                 ".header-cutout-img",
                 {
-                    rotate: [-3.2, 3.6, -2.2, 2.8, -3.2],
-                    y: [0, -7, -2, -9, 0],
-                    scale: [1, 1.03, 0.99, 1.025, 1]
+                    rotate: [-2.2, 2.5],
+                    y: [0, -9],
+                    scale: [1, 1.025]
                 },
-                1.5
-            );
-
-            applyLowFpsMotion(
-                ".left-wing .jar-side-photo",
-                {
-                    rotate: [-4.5, -0.8, -5.5, -1.8, -4.5],
-                    y: [0, -9, -2, -11, 0],
-                    scale: [1, 1.035, 1.005, 1.04, 1]
-                },
-                1.45,
+                4.2,
                 0
             );
 
-            applyLowFpsMotion(
+            applySmoothFloat(
+                ".left-wing .jar-side-photo",
+                {
+                    rotate: [-3.2, 1.2],
+                    y: [0, -11],
+                    scale: [1, 1.028]
+                },
+                4.6,
+                0
+            );
+
+            applySmoothFloat(
                 ".right-wing .jar-side-photo",
                 {
-                    rotate: [4.5, 1, 5.5, 2, 4.5],
-                    y: [-2, -11, 0, -9, -2],
-                    scale: [1.02, 0.99, 1.04, 1.01, 1.02]
+                    rotate: [3.2, -1.2],
+                    y: [0, -11],
+                    scale: [1, 1.028]
                 },
-                1.45,
-                0.32
+                4.6,
+                0.7
             );
 
-            applyLowFpsMotion(
+            applySmoothFloat(
                 ".bouquet-img",
                 {
-                    rotate: [-2.4, 2.6, -1.6, 3, -2.4],
-                    y: [0, -6, -1, -7, 0],
-                    scale: [1, 1.025, 0.995, 1.02, 1]
+                    rotate: [-1.8, 2.2],
+                    y: [0, -8],
+                    scale: [1, 1.02]
                 },
-                1.6,
-                0.15
+                4.8,
+                0.3
             );
 
-            // Entrance amplop pembuka
-            motionPlay("#envelope-card", { opacity: [0, 1], y: [26, 0], scale: [0.94, 1] }, SPRING_BOUNCY);
+            // Entrance & hover amplop pembuka
+            motionPlay("#envelope-card", { opacity: [0, 1], y: [24, 0], scale: [0.95, 1] }, { duration: 0.75, ease: EASE_SILKY });
 
             hover("#envelope-card", (el) => {
-                motionPlay(el, { y: -6, scale: 1.02 }, SPRING_SNAPPY);
+                motionPlay(el, { y: -7, scale: 1.025 }, SPRING_SNAPPY);
                 return () => motionPlay(el, { y: 0, scale: 1 }, SPRING_SNAPPY);
             });
 
             // Tactile spring press pada seluruh tombol
             press(".btn-glass-pink, .opt-btn, .btn-paper-nav, .btn-circle-play, .btn-speed", (el) => {
-                motionPlay(el, { scale: 0.93 }, { type: "spring", stiffness: 520, damping: 24 });
+                motionPlay(el, { scale: 0.94 }, { type: "spring", stiffness: 480, damping: 26 });
                 return () => motionPlay(el, { scale: 1 }, SPRING_SNAPPY);
             });
 
@@ -712,8 +719,8 @@
                 const items = section.querySelectorAll(".motion-item");
                 motionPlay(
                     items,
-                    { opacity: [0, 1], y: [28, 0], scale: [0.97, 1] },
-                    { duration: 0.55, delay: stagger(0.08), ease: [0.22, 1, 0.36, 1] }
+                    { opacity: [0, 1], y: [24, 0], scale: [0.98, 1] },
+                    { duration: 0.65, delay: stagger(0.08), ease: EASE_SILKY }
                 );
             }, { amount: 0.14 });
         }
@@ -801,8 +808,8 @@
                     card.style.setProperty("--mouse-y", `${y}px`);
 
                     if (allowTilt) {
-                        const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -1.8;
-                        const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 1.8;
+                        const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -1.6;
+                        const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 1.6;
                         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                     }
                     ticking = false;
@@ -811,7 +818,8 @@
 
             if (allowTilt) {
                 card.addEventListener("mouseleave", () => {
-                    card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
+                    motionPlay(card, { rotateX: 0, rotateY: 0 }, { duration: 0.45, ease: EASE_SILKY });
+                    card.style.transform = "";
                 });
             }
         });
@@ -823,7 +831,7 @@
                 const rect = bouquetBoxEl.getBoundingClientRect();
                 const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
                 const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-                bouquet3dWrap.style.transform = `perspective(750px) rotateX(${(-ny * 10).toFixed(1)}deg) rotateY(${(nx * 12).toFixed(1)}deg) translateY(-4px)`;
+                bouquet3dWrap.style.transform = `perspective(750px) rotateX(${(-ny * 9).toFixed(1)}deg) rotateY(${(nx * 11).toFixed(1)}deg) translateY(-4px)`;
             });
 
             bouquetBoxEl.addEventListener("mouseleave", () => {
@@ -871,7 +879,7 @@
         function updatePlayButtonUI(isPlaying) {
             playPauseBtn.innerHTML = isPlaying ? PAUSE_ICON_HTML : PLAY_ICON_HTML;
             playPauseBtn.classList.toggle("is-playing", isPlaying);
-            motionPlay(playPauseBtn, { scale: [0.86, 1.08, 1] }, SPRING_SNAPPY);
+            motionPlay(playPauseBtn, { scale: [0.88, 1.06, 1] }, SPRING_SNAPPY);
         }
 
         bgMusic.addEventListener("play", () => updatePlayButtonUI(true));
@@ -923,7 +931,7 @@
 
             const progressBar = document.getElementById("player-progress-bar");
             if (progressBar) progressBar.style.width = "0%";
-            motionPlay(playerCover, { scale: [0.82, 1.1, 1], rotate: [-12, 6, 0] }, SPRING_BOUNCY);
+            motionPlay(playerCover, { scale: [0.85, 1.08, 1], rotate: [-10, 4, 0] }, SPRING_BOUNCY);
         }
 
         setTrackSource(currentTrackIndex);
@@ -985,134 +993,264 @@
         });
 
         /* ==========================================
-           5. AMPLOP PEMBUKA & LIPATAN KERTAS 3D
+           5. AMPLOP PEMBUKA & ANIMASI BUKA-TUTUP KERTAS
            ========================================== */
         let isEnvelopeOpened = false;
         const TOTAL_FOLDS = 9;
         let openFoldCount = 1;
-        let previousFoldCount = 1;
 
-        function updateFoldsUI(scrollToNewFold = false) {
-            const isUnfolding = openFoldCount > previousFoldCount;
-            const isFoldingBack = openFoldCount < previousFoldCount;
+        function setFoldStateClasses(foldEl, foldNum, currentOpenCount) {
+            const actionSpan = foldEl.querySelector(".crease-action");
+            foldEl.classList.remove("is-open", "is-next-folded", "is-stacked-folded");
 
-            document.querySelectorAll(".paper-fold").forEach((foldEl) => {
-                const foldNum = parseInt(foldEl.dataset.fold, 10);
-                const actionSpan = foldEl.querySelector(".crease-action");
+            if (foldNum <= currentOpenCount) {
+                foldEl.classList.add("is-open");
+                if (actionSpan?.dataset.openText) actionSpan.innerText = actionSpan.dataset.openText;
+            } else if (foldNum === currentOpenCount + 1) {
+                foldEl.classList.add("is-next-folded");
+                if (actionSpan?.dataset.closedText) actionSpan.innerText = actionSpan.dataset.closedText;
+            } else {
+                foldEl.classList.add("is-stacked-folded");
+                if (actionSpan?.dataset.closedText) actionSpan.innerText = actionSpan.dataset.closedText;
+            }
+        }
 
-                foldEl.classList.remove("is-open", "is-next-folded", "is-stacked-folded");
-
-                if (foldNum <= openFoldCount) {
-                    foldEl.classList.add("is-open");
-                    if (actionSpan?.dataset.openText) actionSpan.innerText = actionSpan.dataset.openText;
-                } else if (foldNum === openFoldCount + 1) {
-                    foldEl.classList.add("is-next-folded");
-                    if (actionSpan?.dataset.closedText) actionSpan.innerText = actionSpan.dataset.closedText;
-                } else {
-                    foldEl.classList.add("is-stacked-folded");
-                    if (actionSpan?.dataset.closedText) actionSpan.innerText = actionSpan.dataset.closedText;
-                }
-            });
-
+        function updateFoldControlsUI(currentOpenCount) {
             const badge = document.getElementById("fold-counter-badge");
-            if (badge) badge.innerText = `Lipatan ${openFoldCount} / ${TOTAL_FOLDS}`;
+            if (badge) badge.innerText = `Lipatan ${currentOpenCount} / ${TOTAL_FOLDS}`;
 
             const prevBtn = document.getElementById("btn-prev-fold");
             const nextBtn = document.getElementById("btn-next-fold");
-            if (prevBtn) prevBtn.disabled = openFoldCount <= 1;
+            if (prevBtn) prevBtn.disabled = currentOpenCount <= 1;
             if (nextBtn) {
-                nextBtn.innerText = openFoldCount < TOTAL_FOLDS
-                    ? `Buka Lipatan ${openFoldCount + 1} ↓`
+                nextBtn.innerText = currentOpenCount < TOTAL_FOLDS
+                    ? `Buka Lipatan ${currentOpenCount + 1} ↓`
                     : "Lipat Kembali dari Awal ↺";
             }
-
-            const activeFold = document.querySelector(`.paper-fold[data-fold="${openFoldCount}"]`);
-            const nextFold = document.querySelector(`.paper-fold[data-fold="${openFoldCount + 1}"]`);
-
-            if (isUnfolding && activeFold) {
-                // Animasi lipatan 3D mengayun terbuka dari engsel lipatan kertas
-                motionPlay(
-                    activeFold,
-                    {
-                        rotateX: [-76, 5, -1.5, 0],
-                        scaleY: [0.88, 1.01, 1],
-                        opacity: [0.35, 1, 1, 1]
-                    },
-                    SPRING_PAPER
-                );
-
-                // Bayangan lipatan memudar seiring kertas terbuka rata
-                motionPlay(
-                    activeFold.querySelector(".fold-shadow-veil"),
-                    { opacity: [0.85, 0.25, 0] },
-                    { duration: 0.65, ease: [0.22, 1, 0.36, 1] }
-                );
-
-                // Teks di dalam lipatan ikut tenang setelah kertas terbuka
-                motionPlay(
-                    activeFold.querySelector(".fold-content"),
-                    { opacity: [0.15, 1], y: [-10, 0] },
-                    { duration: 0.48, delay: 0.08, ease: [0.22, 1, 0.36, 1] }
-                );
-
-                // Lipatan berikutnya yang kini berada paling atas memantul lembut
-                if (nextFold) {
-                    motionPlay(
-                        nextFold,
-                        { rotateX: [-28, -11, -16], y: [-4, 1, 0] },
-                        SPRING_SNAPPY
-                    );
-                }
-            } else if (isFoldingBack && nextFold) {
-                // Saat dilipat kembali ke atas, flap yang terlipat terangkat secara 3D
-                motionPlay(
-                    nextFold,
-                    { rotateX: [42, -20, -16], scaleY: [1.06, 0.98, 1] },
-                    SPRING_SNAPPY
-                );
-            }
-
-            if (activeFold && scrollToNewFold) {
-                setTimeout(() => activeFold.scrollIntoView({ behavior: "smooth", block: "nearest" }), 180);
-            }
-
-            previousFoldCount = openFoldCount;
         }
 
-        updateFoldsUI(false);
+        function animateOpenFold(foldEl, delaySec = 0) {
+            const content = foldEl.querySelector(".fold-content");
+            const shadow = foldEl.querySelector(".fold-shadow-veil");
+            if (!content) return;
+
+            cancelActiveAnimations(foldEl);
+            cancelActiveAnimations(content);
+            cancelActiveAnimations(shadow);
+
+            const startHeight = content.getBoundingClientRect().height;
+            content.style.height = "auto";
+            content.style.overflow = "hidden";
+            const targetHeight = content.scrollHeight;
+
+            if (prefersReducedMotion) {
+                content.style.height = "auto";
+                content.style.overflow = "";
+                content.style.opacity = "";
+                return;
+            }
+
+            content.style.height = `${startHeight}px`;
+            content.style.opacity = startHeight > 4 ? "0.7" : "0";
+
+            const foldAnim = motionPlay(
+                foldEl,
+                {
+                    rotateX: [-74, 3, 0],
+                    scaleY: [0.94, 1.005, 1]
+                },
+                { duration: 0.65, delay: delaySec, ease: EASE_SILKY }
+            );
+
+            motionPlay(
+                shadow,
+                { opacity: [0.75, 0.2, 0] },
+                { duration: 0.65, delay: delaySec, ease: EASE_SILKY }
+            );
+
+            const contentAnim = motionPlay(
+                content,
+                {
+                    height: [`${startHeight}px`, `${targetHeight}px`],
+                    opacity: [startHeight > 4 ? 0.7 : 0, 1]
+                },
+                { duration: 0.58, delay: delaySec, ease: EASE_SILKY }
+            );
+
+            if (contentAnim && contentAnim.finished) {
+                contentAnim.finished.then(() => {
+                    if (foldEl.classList.contains("is-open")) {
+                        content.style.height = "auto";
+                        content.style.overflow = "";
+                        content.style.opacity = "";
+                        foldEl.style.transform = "";
+                    }
+                }).catch(() => {});
+            } else if (!foldAnim) {
+                content.style.height = "auto";
+                content.style.overflow = "";
+            }
+        }
+
+        function animateCloseFold(foldEl, foldNum, finalOpenCount, delaySec = 0) {
+            const content = foldEl.querySelector(".fold-content");
+            const shadow = foldEl.querySelector(".fold-shadow-veil");
+
+            if (!content || prefersReducedMotion) {
+                setFoldStateClasses(foldEl, foldNum, finalOpenCount);
+                return;
+            }
+
+            cancelActiveAnimations(foldEl);
+            cancelActiveAnimations(content);
+            cancelActiveAnimations(shadow);
+
+            // Pertahankan tampilan terbuka sementara animasi melipat berjalan
+            foldEl.classList.remove("is-next-folded", "is-stacked-folded");
+            foldEl.classList.add("is-open");
+
+            const startHeight = content.getBoundingClientRect().height || content.scrollHeight;
+            content.style.height = `${startHeight}px`;
+            content.style.overflow = "hidden";
+            content.style.opacity = "1";
+
+            motionPlay(
+                shadow,
+                { opacity: [0, 0.65, 0] },
+                { duration: 0.48, delay: delaySec, ease: EASE_FOLD_CLOSE }
+            );
+
+            motionPlay(
+                foldEl,
+                {
+                    rotateX: [0, -76],
+                    scaleY: [1, 0.94]
+                },
+                { duration: 0.48, delay: delaySec, ease: EASE_FOLD_CLOSE }
+            );
+
+            const closeAnim = motionPlay(
+                content,
+                {
+                    height: [`${startHeight}px`, "0px"],
+                    opacity: [1, 0]
+                },
+                { duration: 0.45, delay: delaySec, ease: EASE_FOLD_CLOSE }
+            );
+
+            if (closeAnim && closeAnim.finished) {
+                closeAnim.finished.then(() => {
+                    if (foldNum > openFoldCount) {
+                        content.style.height = "";
+                        content.style.overflow = "";
+                        content.style.opacity = "";
+                        foldEl.style.transform = "";
+                        setFoldStateClasses(foldEl, foldNum, openFoldCount);
+
+                        if (foldNum === openFoldCount + 1) {
+                            motionPlay(
+                                foldEl,
+                                { rotateX: [-26, -15], y: [-3, 0] },
+                                { duration: 0.35, ease: EASE_SILKY }
+                            );
+                        }
+                    }
+                }).catch(() => {});
+            } else {
+                setFoldStateClasses(foldEl, foldNum, finalOpenCount);
+            }
+        }
+
+        function setFoldCount(targetCount, scrollToNewFold = false) {
+            const clampedTarget = Math.max(1, Math.min(TOTAL_FOLDS, targetCount));
+            const prevCount = openFoldCount;
+            openFoldCount = clampedTarget;
+
+            updateFoldControlsUI(openFoldCount);
+
+            document.querySelectorAll(".paper-fold").forEach((foldEl) => {
+                const foldNum = parseInt(foldEl.dataset.fold, 10);
+
+                if (foldNum > prevCount && foldNum <= openFoldCount) {
+                    // Lipatan baru dibuka
+                    setFoldStateClasses(foldEl, foldNum, openFoldCount);
+                    animateOpenFold(foldEl, (foldNum - prevCount - 1) * 0.06);
+                } else if (foldNum <= prevCount && foldNum > openFoldCount) {
+                    // Lipatan yang sebelumnya terbuka ditutup kembali
+                    const reverseIdx = prevCount - foldNum;
+                    animateCloseFold(foldEl, foldNum, openFoldCount, reverseIdx * 0.045);
+                } else {
+                    setFoldStateClasses(foldEl, foldNum, openFoldCount);
+                }
+            });
+
+            if (scrollToNewFold) {
+                const targetFold = document.querySelector(`.paper-fold[data-fold="${openFoldCount}"]`);
+                if (targetFold) {
+                    setTimeout(() => {
+                        targetFold.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }, 180);
+                }
+            }
+        }
+
+        // Inisialisasi awal tanpa animasi
+        document.querySelectorAll(".paper-fold").forEach((foldEl) => {
+            setFoldStateClasses(foldEl, parseInt(foldEl.dataset.fold, 10), openFoldCount);
+        });
+        updateFoldControlsUI(openFoldCount);
 
         function openGift(event) {
             if (event) event.stopPropagation();
             if (isEnvelopeOpened) return;
             isEnvelopeOpened = true;
 
-            const waxEnvelope = document.getElementById("wax-envelope");
             const overlay = document.getElementById("envelope-overlay");
             const main = document.getElementById("main-content");
             const miniPlayer = document.getElementById("mini-player");
 
-            motionPlay("#wax-seal", { scale: [1, 1.35, 0], opacity: [1, 1, 0] }, { duration: 0.42 });
-            waxEnvelope.classList.add("unsealed");
             playCurrentTrackDirect(true);
 
+            motionPlay("#wax-seal", { scale: [1, 1.25, 0], opacity: [1, 1, 0] }, { duration: 0.42, ease: EASE_SILKY });
+            motionPlay("#env-flap-top", { rotateX: [0, 180] }, { duration: 0.7, delay: 0.14, ease: EASE_SILKY });
+
             setTimeout(() => {
-                overlay.classList.add("opened");
+                const flap = document.getElementById("env-flap-top");
+                if (flap) flap.style.zIndex = "1";
+                motionPlay("#env-letter-peek", { y: [-14, -84] }, { duration: 0.78, ease: EASE_SILKY });
+            }, 340);
+
+            setTimeout(() => {
+                const liftAnim = motionPlay(
+                    overlay,
+                    { y: ["0%", "-100%"], opacity: [1, 0] },
+                    { duration: 0.95, ease: [0.65, 0, 0.35, 1] }
+                );
+                if (liftAnim && liftAnim.finished) {
+                    liftAnim.finished.then(() => {
+                        overlay.style.pointerEvents = "none";
+                        overlay.style.display = "none";
+                    });
+                } else {
+                    overlay.classList.add("opened");
+                }
+
                 main.classList.add("visible");
                 miniPlayer.classList.add("show-player");
-                motionPlay(miniPlayer, { y: [40, 0], opacity: [0, 1] }, SPRING_BOUNCY);
-            }, 1100);
+                motionPlay(miniPlayer, { y: [32, 0], opacity: [0, 1] }, { duration: 0.65, ease: EASE_SILKY });
+            }, 1050);
 
             setTimeout(() => {
                 motionPlay(
                     ".hero-stagger",
-                    { opacity: [0, 1], y: [28, 0], scale: [0.96, 1] },
-                    { duration: 0.65, delay: stagger(0.12), ease: [0.22, 1, 0.36, 1] }
+                    { opacity: [0, 1], y: [26, 0], scale: [0.97, 1] },
+                    { duration: 0.75, delay: stagger(0.12), ease: EASE_SILKY }
                 );
-            }, 1350);
+            }, 1300);
         }
 
         /* ==========================================
-           6. GLASS JAR SHAKE (MOTION SPRING) & MODAL
+           6. GLASS JAR SHAKE & MODAL SMOOTH
            ========================================== */
         const NOTES_LIST = [
             { title: "Laughter", text: "Our best memories always start with a random laugh that lasts way too long." },
@@ -1144,51 +1282,74 @@
         }
 
         function pickNote() {
-            forceCloseModal();
+            const modal = document.getElementById("modal");
+            if (modal.classList.contains("show")) {
+                forceCloseModal();
+            }
 
             motionPlay(
                 "#jar",
                 {
-                    rotate: [0, -13, 13, -10, 9, -5, 3, 0],
-                    x: [0, -6, 6, -4, 4, -2, 0]
+                    rotate: [0, -11, 11, -8, 7, -3.5, 2, 0],
+                    x: [0, -5, 5, -3.5, 3.5, -1.5, 0]
                 },
-                { duration: 0.65, ease: "easeInOut" }
+                { duration: 0.72, ease: "easeInOut" }
             );
 
             document.querySelectorAll(".note-slip").forEach((slip, idx) => {
-                const jumpY = -(52 + (idx % 3) * 16);
-                const driftX = (idx % 2 === 0 ? 1 : -1) * (12 + (idx % 4) * 4);
-                const spin = (idx % 2 === 0 ? 1 : -1) * (115 + idx * 12);
+                const jumpY = -(50 + (idx % 3) * 15);
+                const driftX = (idx % 2 === 0 ? 1 : -1) * (11 + (idx % 4) * 4);
+                const spin = (idx % 2 === 0 ? 1 : -1) * (110 + idx * 12);
 
                 motionPlay(
                     slip,
                     {
-                        y: [0, jumpY, jumpY * 0.35, 0],
-                        x: [0, driftX, -driftX * 0.4, 0],
-                        rotate: [0, spin, -spin * 0.25, 0]
+                        y: [0, jumpY, jumpY * 0.32, 0],
+                        x: [0, driftX, -driftX * 0.35, 0],
+                        rotate: [0, spin, -spin * 0.2, 0]
                     },
-                    { duration: 0.85, delay: idx * 0.025, ease: [0.22, 1, 0.36, 1] }
+                    { duration: 0.9, delay: idx * 0.025, ease: EASE_SILKY }
                 );
             });
 
             motionPlay(
                 ".jar-sparkle",
-                { scale: [1, 1.85, 1], y: [0, -24, 0], opacity: [0.7, 1, 0.75] },
-                { duration: 0.75, delay: stagger(0.04) }
+                { scale: [1, 1.8, 1], y: [0, -22, 0], opacity: [0.7, 1, 0.75] },
+                { duration: 0.8, delay: stagger(0.04), ease: EASE_SILKY }
             );
 
             const data = getUniqueRandomNote();
             setTimeout(() => {
                 document.getElementById("note-title").innerText = data.title;
                 document.getElementById("note-text").innerText = data.text;
-                const modal = document.getElementById("modal");
                 modal.classList.add("show");
-                motionPlay("#modal-card", { opacity: [0, 1], scale: [0.85, 1.02, 1], y: [18, 0] }, SPRING_BOUNCY);
+                motionPlay(modal, { opacity: [0, 1] }, { duration: 0.28, ease: "easeOut" });
+                motionPlay("#modal-card", { opacity: [0, 1], scale: [0.9, 1.015, 1], y: [18, 0] }, SPRING_BOUNCY);
             }, 520);
         }
 
         function forceCloseModal() {
-            document.getElementById("modal").classList.remove("show");
+            const modal = document.getElementById("modal");
+            const card = document.getElementById("modal-card");
+            if (!modal.classList.contains("show")) return;
+
+            if (prefersReducedMotion) {
+                modal.classList.remove("show");
+                return;
+            }
+
+            motionPlay(card, { opacity: [1, 0], scale: [1, 0.92], y: [0, 12] }, { duration: 0.24, ease: EASE_FOLD_CLOSE });
+            const bgFade = motionPlay(modal, { opacity: [1, 0] }, { duration: 0.26, ease: "easeOut" });
+            if (bgFade && bgFade.finished) {
+                bgFade.finished.then(() => {
+                    modal.classList.remove("show");
+                    modal.style.opacity = "";
+                    card.style.opacity = "";
+                    card.style.transform = "";
+                });
+            } else {
+                modal.classList.remove("show");
+            }
         }
 
         /* ==========================================
@@ -1202,13 +1363,13 @@
             const activePanel = document.getElementById("opt-content-" + optionNumber);
             activePanel.classList.add("show");
 
-            motionPlay(activePanel, { opacity: [0, 1], y: [14, 0] }, { duration: 0.4, ease: [0.22, 1, 0.36, 1] });
+            motionPlay(activePanel, { opacity: [0, 1], y: [12, 0] }, { duration: 0.45, ease: EASE_SILKY });
 
             if (optionNumber === 2) {
                 motionPlay(
                     activePanel.querySelectorAll(".admire-card"),
-                    { opacity: [0, 1], x: [-16, 0] },
-                    { duration: 0.45, delay: stagger(0.09), ease: [0.22, 1, 0.36, 1] }
+                    { opacity: [0, 1], x: [-14, 0] },
+                    { duration: 0.48, delay: stagger(0.08), ease: EASE_SILKY }
                 );
             }
         }
@@ -1221,10 +1382,10 @@
 
             motionPlay(
                 "#bouquet-3d-wrap",
-                { scale: [1, 1.14, 0.96, 1], y: [0, -14, 2, 0], rotate: [0, 4, -2, 0] },
+                { scale: [1, 1.12, 0.97, 1], y: [0, -12, 2, 0], rotate: [0, 3.5, -1.8, 0] },
                 SPRING_BOUNCY
             );
-            motionPlay("#bouquet-aura", { scale: [1, 1.45, 1], opacity: [0.8, 1, 0.75] }, { duration: 0.65 });
+            motionPlay("#bouquet-aura", { scale: [1, 1.4, 1], opacity: [0.8, 1, 0.75] }, { duration: 0.7, ease: EASE_SILKY });
 
             msg.innerText = "Sending you endless happiness & warm hugs! 💐✨";
             if (!burstLayer) return;
@@ -1256,17 +1417,17 @@
                     {
                         x: [0, tx],
                         y: [0, ty],
-                        scale: [0.2, sc, sc * 0.9],
+                        scale: [0.25, sc, sc * 0.92],
                         rotate: [0, rot],
                         opacity: [1, 1, 0]
                     },
-                    { duration: 1.25, ease: [0.16, 1, 0.3, 1] }
+                    { duration: 1.35, ease: [0.16, 1, 0.3, 1] }
                 );
 
                 if (anim && anim.finished) {
                     anim.finished.then(() => particle.remove());
                 } else {
-                    setTimeout(() => particle.remove(), 1300);
+                    setTimeout(() => particle.remove(), 1400);
                 }
             }
         }
@@ -1275,7 +1436,7 @@
             const flame = document.getElementById("flame");
             const status = document.getElementById("wish-status");
 
-            motionPlay("#cake-box", { scale: [1, 0.96, 1.03, 1] }, SPRING_SNAPPY);
+            motionPlay("#cake-box", { scale: [1, 0.96, 1.025, 1] }, SPRING_SNAPPY);
 
             if (!flame.classList.contains("blown")) {
                 flame.classList.add("blown");
@@ -1284,7 +1445,7 @@
                 flame.classList.remove("blown");
                 status.innerText = "Tap the candle to blow it out ✨";
             }
-            motionPlay(status, { scale: [0.92, 1.04, 1], opacity: [0.6, 1] }, SPRING_SNAPPY);
+            motionPlay(status, { scale: [0.94, 1.03, 1], opacity: [0.6, 1] }, SPRING_SNAPPY);
         }
 
         async function sendWishToEmail() {
@@ -1388,26 +1549,24 @@
                 window.changeVolume(target);
             },
             toggleMinimizePlayer: () => {
-                document.getElementById("mini-player").classList.toggle("minimized");
+                const player = document.getElementById("mini-player");
+                player.classList.toggle("minimized");
+                motionPlay(player, { scale: [0.95, 1.02, 1] }, SPRING_SNAPPY);
             },
             unfoldNext: () => {
-                openFoldCount = openFoldCount < TOTAL_FOLDS ? openFoldCount + 1 : 1;
-                updateFoldsUI(true);
+                setFoldCount(openFoldCount < TOTAL_FOLDS ? openFoldCount + 1 : 1, true);
             },
             foldPrev: () => {
                 if (openFoldCount > 1) {
-                    openFoldCount--;
-                    updateFoldsUI(true);
+                    setFoldCount(openFoldCount - 1, true);
                 }
             },
             handleFoldClick: (foldNum, e) => {
                 if (e) e.stopPropagation();
                 if (foldNum > openFoldCount && openFoldCount < TOTAL_FOLDS) {
-                    openFoldCount++;
-                    updateFoldsUI(true);
-                } else if (foldNum > 1 && e?.target.closest(".fold-crease-bar")) {
-                    openFoldCount = foldNum - 1;
-                    updateFoldsUI(true);
+                    setFoldCount(openFoldCount + 1, true);
+                } else if (foldNum > 1 && foldNum <= openFoldCount && e?.target.closest(".fold-crease-bar")) {
+                    setFoldCount(foldNum - 1, true);
                 }
             },
             pickNote,
