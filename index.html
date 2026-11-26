@@ -1238,6 +1238,12 @@
                 main.classList.add("visible");
                 miniPlayer.classList.add("show-player");
                 motionPlay(miniPlayer, { y: [32, 0], opacity: [0, 1] }, { duration: 0.65, ease: EASE_SILKY });
+
+                motionPlay(
+                    ".hero-stagger",
+                    { opacity: [0, 1], y: [26, 0], scale: [0.97, 1] },
+                    { duration: 0.75, delay: stagger(0.12), ease: EASE_SILKY }
+                );
             }, 1050);
 
             setTimeout(() => {
