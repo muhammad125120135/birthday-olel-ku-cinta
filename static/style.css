@@ -61,7 +61,7 @@ input,
     box-shadow: 0 0 12px rgba(255, 126, 179, 0.75);
 }
 
-/* KANVAS KUNANG-KUNANG MALAM */
+/* KANVAS LATAR BELAKANG ASCII KUNANG-KUNANG */
 #fireflies-canvas {
     position: fixed;
     inset: 0;
@@ -1035,7 +1035,7 @@ input,
     margin-bottom: 14px;
 }
 
-/* Buket Bunga & 5 Bunga Bertebaran */
+/* Buket Bunga 3D Volumetrik ASCII & Bunga Bertebaran */
 .bouquet-box {
     position: relative;
     width: 345px;
@@ -1079,7 +1079,7 @@ input,
     height: 100%;
     display: block;
     pointer-events: none;
-    filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 14px rgba(255, 148, 194, 0.45));
+    filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 16px rgba(255, 126, 179, 0.48));
 }
 
 .flower-burst-layer {
