@@ -149,32 +149,54 @@ export function initFireflies() {
     window.addEventListener("resize", resizeCanvas, { passive: true });
     resizeCanvas();
 
-    // 1. Partikel Kunang-Kunang ASCII Bertebaran
-    const fireflyCount = window.innerWidth < 520 ? 28 : 44;
-    const fireflies = Array.from({ length: fireflyCount }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.45,
-        vy: (Math.random() - 0.5) * 0.42 - 0.12,
-        alpha: Math.random(),
-        va: Math.random() * 0.015 + 0.005,
-        growing: Math.random() > 0.5,
-        size: Math.floor(Math.random() * 6) + 9,
-        char: FIREFLY_CHARS[Math.floor(Math.random() * FIREFLY_CHARS.length)],
-        color: Math.random() > 0.45 ? "rgb(255, 148, 200)" : "rgb(255, 228, 150)",
-        glow: Math.random() > 0.45 ? "rgba(255, 126, 179, 0.75)" : "rgba(255, 215, 120, 0.75)"
-    }));
+    // Pelacakan Scroll untuk efek Parallax & dorongan partikel saat scroll atas/bawah
+    let lastScrollY = window.scrollY;
+    let smoothScrollY = window.scrollY;
+    let scrollImpulse = 0;
 
-    // 2. Bunga 3D Statis (Tidak Berputar) -> Mekar dari Dalam -> Melebar Keluar & Fade Out
+    window.addEventListener("scroll", () => {
+        const currentY = window.scrollY;
+        const delta = currentY - lastScrollY;
+        lastScrollY = currentY;
+        scrollImpulse = Math.max(-45, Math.min(45, scrollImpulse + delta * 0.35));
+    }, { passive: true });
+
+    // Helper pembungkus koordinat agar objek yang keluar layar saat di-scroll langsung muncul di sisi berlawanan
+    function wrapCoord(val, max, pad = 60) {
+        const span = max + pad * 2;
+        return ((((val + pad) % span) + span) % span) - pad;
+    }
+
+    // 1. Partikel Kunang-Kunang ASCII dengan kedalaman parallax berbeda
+    const fireflyCount = window.innerWidth < 520 ? 30 : 48;
+    const fireflies = Array.from({ length: fireflyCount }, () => {
+        const depth = 0.25 + Math.random() * 0.85; // faktor kecepatan gerak saat di-scroll
+        return {
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.45,
+            vy: (Math.random() - 0.5) * 0.42 - 0.12,
+            depth,
+            alpha: Math.random(),
+            va: Math.random() * 0.015 + 0.005,
+            growing: Math.random() > 0.5,
+            size: Math.round((Math.random() * 5 + 8) * (0.75 + depth * 0.35)),
+            char: FIREFLY_CHARS[Math.floor(Math.random() * FIREFLY_CHARS.length)],
+            color: Math.random() > 0.45 ? "rgb(255, 148, 200)" : "rgb(255, 228, 150)",
+            glow: Math.random() > 0.45 ? "rgba(255, 126, 179, 0.75)" : "rgba(255, 215, 120, 0.75)"
+        };
+    });
+
+    // 2. Bunga 3D Mekar dari Dalam -> Melebar Keluar -> Fade Out + Parallax Scroll
     function spawnFloatingFlower(staggerProgress = 0) {
         const species = SPECIES_LIST[Math.floor(Math.random() * SPECIES_LIST.length)];
-        const radius = window.innerWidth < 520 ? 40 : 58;
-        const margin = 95;
+        const radius = window.innerWidth < 520 ? 38 : 56;
+        const margin = 80;
         return {
             species,
             cx: margin + Math.random() * Math.max(120, canvas.width - margin * 2),
-            cy: margin + Math.random() * Math.max(120, canvas.height - margin * 2),
-            // Sudut menghadap ke depan (tidak berputar terus-menerus)
+            baseY: margin + Math.random() * Math.max(120, canvas.height - margin * 2),
+            parallaxFactor: 0.22 + Math.random() * 0.45, // ikut bergeser saat layar di-scroll
             rx: species === "tulip" ? 0.28 : -0.18,
             ry: (Math.random() - 0.5) * 0.35,
             rz: (Math.random() - 0.5) * 0.45,
@@ -195,23 +217,25 @@ export function initFireflies() {
         const dt = Math.min(0.05, (now - lastTime) / 1000);
         lastTime = now;
 
+        // Perhalus pergerakan scroll (lerp)
+        smoothScrollY += (lastScrollY - smoothScrollY) * 0.14;
+        scrollImpulse *= 0.9;
+
         if (!document.hidden) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
 
-            // Layer A: Kunang-kunang ASCII
+            // Layer A: Kunang-kunang ASCII bergerak bebas + responsif terhadap arah scroll
             for (const f of fireflies) {
-                f.x += f.vx;
-                f.y += f.vy;
+                f.x += f.vx + Math.sin(now * 0.001 + f.depth * 6) * 0.12;
+                f.y += f.vy - scrollImpulse * f.depth * 0.12;
                 f.alpha += f.growing ? f.va : -f.va;
                 if (f.alpha >= 0.92) f.growing = false;
                 if (f.alpha <= 0.14) f.growing = true;
 
-                if (f.x < -16) f.x = canvas.width + 16;
-                if (f.x > canvas.width + 16) f.x = -16;
-                if (f.y < -16) f.y = canvas.height + 16;
-                if (f.y > canvas.height + 16) f.y = -16;
+                const drawX = wrapCoord(f.x, canvas.width, 18);
+                const drawY = wrapCoord(f.y - smoothScrollY * f.depth * 0.45, canvas.height, 18);
 
                 ctx.save();
                 ctx.globalAlpha = f.alpha;
@@ -219,14 +243,15 @@ export function initFireflies() {
                 ctx.fillStyle = f.color;
                 ctx.shadowColor = f.glow;
                 ctx.shadowBlur = 8;
-                ctx.fillText(f.char, f.x, f.y);
+                ctx.fillText(f.char, drawX, drawY);
                 ctx.restore();
             }
 
-            // Layer B: Bunga Mekar dari Dalam -> Melebar Keluar -> Fade Out
+            // Layer B: Bunga Mekar dari Dalam -> Melebar Keluar -> Fade Out + Parallax Scroll
             for (let i = 0; i < bgFlowers.length; i++) {
                 const fl = bgFlowers[i];
                 fl.age += dt;
+                fl.baseY -= dt * 5; // melayang naik halus
 
                 const t = fl.age / fl.lifeSpan;
                 if (t >= 1) {
@@ -234,8 +259,9 @@ export function initFireflies() {
                     continue;
                 }
 
-                // 0.0 -> 0.45 : Mekar dari dalam pusat
-                // 0.45 -> 1.0 : Langsung melebar keluar + fade out
+                const drawCx = fl.cx + Math.sin(smoothScrollY * 0.003 + i) * 14;
+                const drawCy = wrapCoord(fl.baseY - smoothScrollY * fl.parallaxFactor, canvas.height, 85);
+
                 const bloomRatio = t < 0.45 ? 1 - Math.pow(1 - t / 0.45, 3) : 1;
                 const expandRatio = t > 0.45 ? (t - 0.45) / 0.55 : 0;
 
@@ -250,7 +276,6 @@ export function initFireflies() {
                 for (const pt of fl.points) {
                     if (pt.distNorm > bloomRatio * 1.06) continue;
 
-                    // Skala mekar dari dalam (0.15 -> 1.0) lalu melebar keluar (1.0 -> 1.65)
                     const baseScale = 0.15 + 0.85 * bloomRatio;
                     const outwardExpand = 1 + Math.pow(expandRatio, 1.35) * 0.65;
                     const drift = Math.pow(expandRatio, 1.4) * 18;
@@ -259,8 +284,10 @@ export function initFireflies() {
                     const y = pt.y * baseScale * outwardExpand + pt.vy * drift;
                     const z = pt.z * baseScale * outwardExpand + pt.vz * drift;
 
-                    const rot = rotate3D(x, y, z, fl.rx, fl.ry, fl.rz);
-                    const proj = project3D(rot.x, rot.y, rot.z, fl.cx, fl.cy, 340);
+                    // Sedikit miring dinamis mengikuti momentum scroll
+                    const dynamicTiltX = fl.rx + scrollImpulse * 0.004;
+                    const rot = rotate3D(x, y, z, dynamicTiltX, fl.ry, fl.rz);
+                    const proj = project3D(rot.x, rot.y, rot.z, drawCx, drawCy, 340);
 
                     const shadeIdx = Math.min(
                         ASCII_SHADES.length - 1,

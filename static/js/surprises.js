@@ -1,23 +1,24 @@
 // static/js/surprises.js
-import { motionPlay, inView, stagger, EASE_SILKY, SPRING_SNAPPY, SPRING_BOUNCY } from "./motion-utils.js";
+import { motionPlay, stagger, EASE_SILKY, SPRING_SNAPPY, SPRING_BOUNCY } from "./motion-utils.js";
 import { generateFlower3DPoints } from "./fireflies.js";
 
 const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
+const BASKET_TOP_Y = 24;
 let triggerBasketWilt = null;
+let triggerBasketReset = null;
 
 function build3DFlowerBasketModel() {
     const items = [];
     const ASCII_CHARS = " .:-=+*#%@";
 
     // 1. Keranjang Anyaman Rotan 3D (Woven Basket Body)
-    const basketTopY = 24;
     const basketBottomY = 86;
     const rows = 14;
     const cols = 42;
 
     for (let r = 0; r <= rows; r++) {
-        const u = r / rows; // 0 = bibir atas keranjang, 1 = dasar keranjang
-        const y = basketTopY + u * (basketBottomY - basketTopY);
+        const u = r / rows;
+        const y = BASKET_TOP_Y + u * (basketBottomY - BASKET_TOP_Y);
         const radiusX = 76 * (1 - u * 0.34);
         const radiusZ = 52 * (1 - u * 0.34);
 
@@ -61,15 +62,14 @@ function build3DFlowerBasketModel() {
         }
     }
 
-    // 2. Pegangan Keranjang Melengkung (Arch Handle) & Pita Pink di Puncak Pegangan
+    // 2. Pegangan Keranjang Melengkung (Arch Handle) & Pita Pink
     const handleSteps = 34;
     for (let i = 0; i <= handleSteps; i++) {
-        const t = i / handleSteps; // 0 -> 1 dari kiri ke kanan
-        const angle = Math.PI * (1 - t); // PI -> 0
+        const t = i / handleSteps;
+        const angle = Math.PI * (1 - t);
         const hx = Math.cos(angle) * 74;
-        const hy = basketTopY - Math.sin(angle) * 86;
+        const hy = BASKET_TOP_Y - Math.sin(angle) * 86;
 
-        // Ketebalan kepang pegangan (2 untai)
         for (const offset of [-2.2, 2.2]) {
             items.push({
                 x: hx,
@@ -87,7 +87,7 @@ function build3DFlowerBasketModel() {
     }
 
     // Pita Pink di Puncak Pegangan Keranjang
-    const bowCenterY = basketTopY - 86;
+    const bowCenterY = BASKET_TOP_Y - 86;
     for (let t = -1; t <= 1; t += 0.14) {
         const bx = t * 20;
         const by = bowCenterY + Math.sin(Math.abs(t) * Math.PI) * 7;
@@ -109,7 +109,7 @@ function build3DFlowerBasketModel() {
         for (let s = 0; s <= 5; s++) {
             const st = s / 5;
             const lx = Math.cos(la) * (76 + st * 14);
-            const ly = basketTopY + st * 14 + Math.sin(st * Math.PI) * -4;
+            const ly = BASKET_TOP_Y + st * 14 + Math.sin(st * Math.PI) * -4;
             const lz = Math.sin(la) * (52 + st * 10);
             items.push({
                 x: lx, y: ly, z: lz,
@@ -137,13 +137,12 @@ function build3DFlowerBasketModel() {
     ];
 
     basketFlowers.forEach((b, bIdx) => {
-        // Tangkai hijau masuk ke dalam keranjang
         const steps = 10;
         for (let s = 0; s <= steps; s++) {
             const st = s / steps;
             items.push({
                 x: b.ox * (1 - st * 0.35),
-                y: b.oy + (basketTopY + 14 - b.oy) * st,
+                y: b.oy + (BASKET_TOP_Y + 14 - b.oy) * st,
                 z: b.oz * (1 - st * 0.35),
                 part: "stem",
                 char: "|",
@@ -155,7 +154,6 @@ function build3DFlowerBasketModel() {
             });
         }
 
-        // Kepala bunga 3D
         const flowerPts = generateFlower3DPoints(b.type, b.scale);
         flowerPts.forEach((pt) => {
             const y1 = pt.y * Math.cos(b.tiltX) - pt.z * Math.sin(b.tiltX);
@@ -192,26 +190,51 @@ function initAsciiBouquet() {
     const cx = canvas.width / 2;
     const cy = canvas.height / 2 + 14;
 
-    let state = "blooming"; // "blooming" -> "idle" -> "wilting" -> "hidden" -> "blooming"
+    let state = "waiting"; // "waiting" -> "blooming" -> "idle" -> "wilting" -> "hidden"
     let stateProgress = 0;
-    let currentAngleRad = 0; // Memutar satu arah dari 0° sampai 30° (Math.PI / 6)
+    let currentAngleRad = 0;
+    let isVisibleOnScreen = false;
+    let wiltResetTimer = null;
     const MAX_ANGLE_RAD = (30 * Math.PI) / 180; // 30 derajat
+
+    triggerBasketReset = () => {
+        if (wiltResetTimer) {
+            clearTimeout(wiltResetTimer);
+            wiltResetTimer = null;
+        }
+        state = "blooming";
+        stateProgress = 0;
+        currentAngleRad = 0;
+    };
 
     triggerBasketWilt = () => {
         if (state === "wilting") return;
+        if (wiltResetTimer) {
+            clearTimeout(wiltResetTimer);
+            wiltResetTimer = null;
+        }
         state = "wilting";
         stateProgress = 0;
     };
 
-    const optionsSection = document.getElementById("options-section");
-    if (optionsSection) {
-        inView(optionsSection, () => {
-            if (state === "hidden") {
-                state = "blooming";
-                stateProgress = 0;
-                currentAngleRad = 0;
-            }
-        }, { amount: 0.25 });
+    // Gunakan IntersectionObserver agar rotasi 0° -> 30° & mekar baru jalan saat terlihat di layar HP/Desktop
+    const targetObserve = document.getElementById("bouquet-box") || canvas;
+    if ("IntersectionObserver" in window && targetObserve) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    isVisibleOnScreen = entry.isIntersecting;
+                    if (entry.isIntersecting && (state === "waiting" || state === "hidden")) {
+                        triggerBasketReset();
+                    }
+                });
+            },
+            { threshold: 0.2 }
+        );
+        observer.observe(targetObserve);
+    } else {
+        isVisibleOnScreen = true;
+        triggerBasketReset();
     }
 
     let lastTime = performance.now();
@@ -226,6 +249,11 @@ function initAsciiBouquet() {
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
 
+            // Pastikan jika panel dibuka manual, animasi langsung mulai
+            if (state === "waiting" && isVisibleOnScreen) {
+                triggerBasketReset();
+            }
+
             if (state === "blooming") {
                 stateProgress = Math.min(1, stateProgress + dt * 0.62);
                 if (stateProgress >= 1) state = "idle";
@@ -233,10 +261,8 @@ function initAsciiBouquet() {
                 stateProgress = Math.min(1, stateProgress + dt * 0.45);
                 if (stateProgress >= 1) {
                     state = "hidden";
-                    setTimeout(() => {
-                        state = "blooming";
-                        stateProgress = 0;
-                        currentAngleRad = 0;
+                    wiltResetTimer = setTimeout(() => {
+                        triggerBasketReset();
                         const msg = document.getElementById("bouquet-msg");
                         if (msg) msg.innerText = "A fresh flower basket bloomed again for you 🌸";
                     }, 900);
@@ -244,18 +270,17 @@ function initAsciiBouquet() {
             }
 
             // Memutar halus satu arah hingga berhenti di sudut 30 derajat (tidak bolak-balik)
-            if (state !== "hidden" && currentAngleRad < MAX_ANGLE_RAD) {
-                currentAngleRad = Math.min(MAX_ANGLE_RAD, currentAngleRad + dt * 0.28);
+            if ((state === "blooming" || state === "idle") && currentAngleRad < MAX_ANGLE_RAD) {
+                currentAngleRad = Math.min(MAX_ANGLE_RAD, currentAngleRad + dt * 0.26);
             }
 
-            if (state !== "hidden") {
+            if (state !== "waiting" && state !== "hidden") {
                 const bloomEase = state === "blooming" ? 1 - Math.pow(1 - stateProgress, 3) : 1;
                 const wiltT = state === "wilting" ? stateProgress : 0;
 
-                // Ease-out pada rotasi 0° -> 30°
                 const angleNorm = currentAngleRad / MAX_ANGLE_RAD;
                 const rotY = MAX_ANGLE_RAD * (1 - Math.pow(1 - angleNorm, 2));
-                const rotX = 0.22; // Sedikit menunduk agar isi keranjang terlihat jelas
+                const rotX = 0.22;
 
                 const projected = [];
 
@@ -269,7 +294,6 @@ function initAsciiBouquet() {
                     let char = item.char;
                     let color = item.color;
 
-                    // Transisi masuk: mekar mengembang dari dalam keranjang
                     if (state === "blooming") {
                         const grow = 0.22 + 0.78 * bloomEase;
                         x *= grow;
@@ -277,10 +301,10 @@ function initAsciiBouquet() {
                         z *= grow;
                     }
 
-                    // Transisi saat diklik: tangkai & daun layu menunduk, kelopak terurai & menghilang
+                    // Perbaikan: menggunakan konstanta BASKET_TOP_Y agar tidak error saat diklik
                     if (wiltT > 0) {
                         const droopAngle = wiltT * 0.78;
-                        const pivotY = basketTopY + 12;
+                        const pivotY = BASKET_TOP_Y + 12;
                         if (y < pivotY) {
                             const dy = y - pivotY;
                             y = pivotY + dy * Math.cos(droopAngle) + Math.abs(x) * wiltT * 0.28;
@@ -298,7 +322,6 @@ function initAsciiBouquet() {
                         alpha = Math.max(0, 1 - Math.pow(wiltT, 1.3));
                     }
 
-                    // Rotasi 3D + proyeksi perspektif
                     const y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
                     const z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
                     const x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
@@ -363,6 +386,11 @@ export const surpriseHandlers = {
         activePanel.classList.add("show");
 
         motionPlay(activePanel, { opacity: [0, 1], y: [12, 0] }, { duration: 0.45, ease: EASE_SILKY });
+
+        // Reset animasi mekar & rotasi 0° -> 30° saat tab Flower Bouquet dipilih kembali
+        if (optionNumber === 1 && typeof triggerBasketReset === "function") {
+            triggerBasketReset();
+        }
 
         if (optionNumber === 2) {
             motionPlay(activePanel.querySelectorAll(".admire-card"), { opacity: [0, 1], x: [-14, 0] }, { duration: 0.48, delay: stagger(0.08), ease: EASE_SILKY });
