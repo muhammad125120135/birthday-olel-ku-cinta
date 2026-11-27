@@ -1,99 +1,157 @@
+// static/js/surprises.js
 import { motionPlay, inView, stagger, EASE_SILKY, SPRING_SNAPPY, SPRING_BOUNCY } from "./motion-utils.js";
 import { generateFlower3DPoints } from "./fireflies.js";
 
 const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
-let triggerBouquetWilt = null;
+let triggerBasketWilt = null;
 
-function build3DBouquetModel() {
+function build3DFlowerBasketModel() {
     const items = [];
     const ASCII_CHARS = " .:-=+*#%@";
 
-    // 1. Kertas Pembungkus Buket (Kerucut & Lipatan Atas 3D)
-    for (let u = 0; u <= 1; u += 0.055) {
-        const y = 18 + u * 102;
-        const coneR = (1 - u * 0.78) * 58;
-        const flare = u < 0.25 ? Math.sin((0.25 - u) * Math.PI * 2) * 10 : 0;
+    // 1. Keranjang Anyaman Rotan 3D (Woven Basket Body)
+    const basketTopY = 24;
+    const basketBottomY = 86;
+    const rows = 14;
+    const cols = 42;
 
-        for (let a = 0; a < Math.PI * 2; a += 0.14) {
-            const backRim = Math.sin(a) < 0 && u < 0.25 ? -18 * (0.25 - u) * 4 : 0;
-            const r = coneR + flare + Math.sin(a * 5) * 2.5;
-            const x = Math.cos(a) * r;
-            const z = Math.sin(a) * r * 0.72;
+    for (let r = 0; r <= rows; r++) {
+        const u = r / rows; // 0 = bibir atas keranjang, 1 = dasar keranjang
+        const y = basketTopY + u * (basketBottomY - basketTopY);
+        const radiusX = 76 * (1 - u * 0.34);
+        const radiusZ = 52 * (1 - u * 0.34);
+
+        for (let c = 0; c < cols; c++) {
+            const a = (c / cols) * Math.PI * 2;
+            const isRim = r === 0 || r === 1;
+            const weave = (r + c) % 2 === 0;
 
             items.push({
-                x, y: y + backRim, z,
-                part: "wrap",
-                char: u < 0.08 ? "~" : ASCII_CHARS[Math.floor(4 + Math.cos(a) * 2)],
-                color: Math.sin(a) < 0 ? "rgb(235, 195, 212)" : "rgb(252, 232, 240)",
-                orderNorm: 0.15 + u * 0.2,
-                vx: (Math.random() - 0.5) * 1.4,
-                vy: 0.8 + Math.random() * 1.4,
-                vz: (Math.random() - 0.5) * 1.4
+                x: Math.cos(a) * (isRim ? radiusX + 4 : radiusX),
+                y,
+                z: Math.sin(a) * (isRim ? radiusZ + 3 : radiusZ),
+                part: "basket",
+                char: isRim ? "@" : (weave ? "#" : "="),
+                color: isRim
+                    ? "rgb(236, 186, 132)"
+                    : (weave ? "rgb(204, 148, 96)" : "rgb(168, 116, 72)"),
+                orderNorm: 0.08 + u * 0.22,
+                vx: Math.cos(a) * 0.7,
+                vy: 0.9 + Math.random() * 0.6,
+                vz: Math.sin(a) * 0.7
             });
         }
     }
 
-    // 2. Pita Pink di Leher Buket
-    const ribbonY = 82;
-    for (let a = 0; a < Math.PI * 2; a += 0.18) {
+    // Dasar keranjang
+    for (let ring = 0.2; ring <= 1; ring += 0.28) {
+        for (let a = 0; a < Math.PI * 2; a += 0.35) {
+            items.push({
+                x: Math.cos(a) * 48 * ring,
+                y: basketBottomY,
+                z: Math.sin(a) * 32 * ring,
+                part: "basket",
+                char: "+",
+                color: "rgb(155, 105, 64)",
+                orderNorm: 0.25,
+                vx: 0,
+                vy: 1.1,
+                vz: 0
+            });
+        }
+    }
+
+    // 2. Pegangan Keranjang Melengkung (Arch Handle) & Pita Pink di Puncak Pegangan
+    const handleSteps = 34;
+    for (let i = 0; i <= handleSteps; i++) {
+        const t = i / handleSteps; // 0 -> 1 dari kiri ke kanan
+        const angle = Math.PI * (1 - t); // PI -> 0
+        const hx = Math.cos(angle) * 74;
+        const hy = basketTopY - Math.sin(angle) * 86;
+
+        // Ketebalan kepang pegangan (2 untai)
+        for (const offset of [-2.2, 2.2]) {
+            items.push({
+                x: hx,
+                y: hy + offset,
+                z: offset * 0.8,
+                part: "handle",
+                char: i % 2 === 0 ? "#" : "~",
+                color: "rgb(224, 170, 116)",
+                orderNorm: 0.15 + Math.sin(t * Math.PI) * 0.2,
+                vx: Math.cos(angle) * 0.8,
+                vy: 0.8,
+                vz: (Math.random() - 0.5) * 0.8
+            });
+        }
+    }
+
+    // Pita Pink di Puncak Pegangan Keranjang
+    const bowCenterY = basketTopY - 86;
+    for (let t = -1; t <= 1; t += 0.14) {
+        const bx = t * 20;
+        const by = bowCenterY + Math.sin(Math.abs(t) * Math.PI) * 7;
         items.push({
-            x: Math.cos(a) * 26,
-            y: ribbonY,
-            z: Math.sin(a) * 20,
-            part: "ribbon",
-            char: "#",
-            color: "rgb(255, 105, 165)",
-            orderNorm: 0.25,
-            vx: Math.cos(a) * 1.5,
-            vy: 1.2,
-            vz: Math.sin(a) * 1.5
+            x: bx, y: by - 3, z: 4,
+            part: "ribbon", char: "@", color: "rgb(255, 118, 178)",
+            orderNorm: 0.32, vx: t * 1.4, vy: 1.0, vz: 0.9
+        });
+        items.push({
+            x: bx, y: by + 3, z: 4,
+            part: "ribbon", char: "*", color: "rgb(255, 85, 152)",
+            orderNorm: 0.32, vx: t * 1.4, vy: 1.2, vz: 0.9
         });
     }
 
-    // Simpul kupu-kupu pita depan
-    for (let t = -1; t <= 1; t += 0.12) {
-        const bowX = t * 24;
-        const bowY = ribbonY + Math.sin(Math.abs(t) * Math.PI) * 8;
-        items.push({
-            x: bowX, y: bowY - 4, z: 22,
-            part: "ribbon", char: "@", color: "rgb(255, 130, 185)",
-            orderNorm: 0.28, vx: t * 2, vy: 1.1, vz: 1.5
-        });
-        items.push({
-            x: bowX, y: bowY + 4, z: 22,
-            part: "ribbon", char: "*", color: "rgb(255, 90, 155)",
-            orderNorm: 0.28, vx: t * 2, vy: 1.3, vz: 1.5
-        });
-    }
+    // 3. Dedaunan Menjuntai di Tepi Bibir Keranjang
+    const leafAngles = [-2.6, -2.1, -1.55, -0.95, -0.4, 0.35, 0.95, 1.55, 2.15, 2.65];
+    leafAngles.forEach((la) => {
+        for (let s = 0; s <= 5; s++) {
+            const st = s / 5;
+            const lx = Math.cos(la) * (76 + st * 14);
+            const ly = basketTopY + st * 14 + Math.sin(st * Math.PI) * -4;
+            const lz = Math.sin(la) * (52 + st * 10);
+            items.push({
+                x: lx, y: ly, z: lz,
+                part: "leaf",
+                char: st > 0.7 ? "v" : "~",
+                color: "rgb(98, 198, 134)",
+                orderNorm: 0.28 + st * 0.12,
+                vx: Math.cos(la) * 1.1,
+                vy: 1.3,
+                vz: Math.sin(la) * 1.1
+            });
+        }
+    });
 
-    // 3. Susunan 7 Bunga 3D (Matahari, Tulip, Anggrek) + Tangkainya
-    const bouquetLayout = [
-        { type: "sunflower", ox: 0, oy: -48, oz: 8, scale: 36, tiltX: -0.25, tiltZ: 0 },
-        { type: "tulip", ox: -34, oy: -38, oz: 14, scale: 30, tiltX: -0.2, tiltZ: -0.35 },
-        { type: "tulip", ox: 34, oy: -38, oz: 14, scale: 30, tiltX: -0.2, tiltZ: 0.35 },
-        { type: "orchid", ox: -22, oy: -66, oz: -8, scale: 33, tiltX: -0.15, tiltZ: -0.2 },
-        { type: "orchid", ox: 22, oy: -66, oz: -8, scale: 33, tiltX: -0.15, tiltZ: 0.2 },
-        { type: "tulip", ox: -14, oy: -22, oz: 24, scale: 27, tiltX: -0.35, tiltZ: -0.15 },
-        { type: "orchid", ox: 15, oy: -24, oz: 22, scale: 28, tiltX: -0.35, tiltZ: 0.18 }
+    // 4. Rangkaian 8 Bunga 3D (Matahari, Tulip, Anggrek) di Dalam Keranjang
+    const basketFlowers = [
+        { type: "sunflower", ox: 0, oy: -20, oz: 6, scale: 34, tiltX: -0.22, tiltZ: 0 },
+        { type: "tulip", ox: -38, oy: -12, oz: 12, scale: 28, tiltX: -0.18, tiltZ: -0.35 },
+        { type: "tulip", ox: 38, oy: -12, oz: 12, scale: 28, tiltX: -0.18, tiltZ: 0.35 },
+        { type: "orchid", ox: -24, oy: -34, oz: -12, scale: 30, tiltX: -0.12, tiltZ: -0.2 },
+        { type: "orchid", ox: 24, oy: -34, oz: -12, scale: 30, tiltX: -0.12, tiltZ: 0.2 },
+        { type: "tulip", ox: -16, oy: 2, oz: 24, scale: 25, tiltX: -0.32, tiltZ: -0.15 },
+        { type: "orchid", ox: 17, oy: 0, oz: 22, scale: 26, tiltX: -0.32, tiltZ: 0.18 },
+        { type: "sunflower", ox: 0, oy: -36, oz: -16, scale: 27, tiltX: -0.1, tiltZ: 0.08 }
     ];
 
-    bouquetLayout.forEach((b, bIdx) => {
-        // Tangkai melengkung dari kepala bunga masuk ke ikatan pita
-        const steps = 16;
+    basketFlowers.forEach((b, bIdx) => {
+        // Tangkai hijau masuk ke dalam keranjang
+        const steps = 10;
         for (let s = 0; s <= steps; s++) {
             const st = s / steps;
-            const sx = b.ox * (1 - st * 0.85);
-            const sy = b.oy + (ribbonY - b.oy) * st;
-            const sz = b.oz * (1 - st * 0.85);
             items.push({
-                x: sx, y: sy, z: sz,
+                x: b.ox * (1 - st * 0.35),
+                y: b.oy + (basketTopY + 14 - b.oy) * st,
+                z: b.oz * (1 - st * 0.35),
                 part: "stem",
                 char: "|",
-                color: "rgb(110, 210, 145)",
-                orderNorm: 0.1 + st * 0.2,
-                vx: (Math.random() - 0.5) * 0.8,
-                vy: 1.0 + Math.random(),
-                vz: (Math.random() - 0.5) * 0.8
+                color: "rgb(108, 208, 142)",
+                orderNorm: 0.22 + st * 0.15,
+                vx: (Math.random() - 0.5) * 0.7,
+                vy: 1.0 + Math.random() * 0.8,
+                vz: (Math.random() - 0.5) * 0.7
             });
         }
 
@@ -110,16 +168,14 @@ function build3DBouquetModel() {
                 x: b.ox + x2,
                 y: b.oy + y2,
                 z: b.oz + z1,
-                headCenterY: b.oy,
                 part: "flower",
-                distNorm: pt.distNorm,
                 char: ASCII_CHARS[shadeIdx],
                 sparkChar: pt.sparkChar,
                 color: pt.color,
                 orderNorm: 0.35 + pt.distNorm * 0.65,
-                vx: pt.vx * 1.15 + (bIdx - 3) * 0.25,
-                vy: pt.vy * 1.1,
-                vz: pt.vz * 1.15
+                vx: pt.vx * 1.1 + (bIdx - 3.5) * 0.22,
+                vy: pt.vy * 1.05,
+                vz: pt.vz * 1.1
             });
         });
     });
@@ -132,15 +188,16 @@ function initAsciiBouquet() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    const model = build3DBouquetModel();
+    const model = build3DFlowerBasketModel();
     const cx = canvas.width / 2;
-    const cy = canvas.height / 2 + 12;
+    const cy = canvas.height / 2 + 14;
 
-    let state = "blooming";
+    let state = "blooming"; // "blooming" -> "idle" -> "wilting" -> "hidden" -> "blooming"
     let stateProgress = 0;
-    let time = 0;
+    let currentAngleRad = 0; // Memutar satu arah dari 0° sampai 30° (Math.PI / 6)
+    const MAX_ANGLE_RAD = (30 * Math.PI) / 180; // 30 derajat
 
-    triggerBouquetWilt = () => {
+    triggerBasketWilt = () => {
         if (state === "wilting") return;
         state = "wilting";
         stateProgress = 0;
@@ -152,13 +209,14 @@ function initAsciiBouquet() {
             if (state === "hidden") {
                 state = "blooming";
                 stateProgress = 0;
+                currentAngleRad = 0;
             }
         }, { amount: 0.25 });
     }
 
     let lastTime = performance.now();
 
-    function renderBouquetFrame(now) {
+    function renderBasketFrame(now) {
         const dt = Math.min(0.05, (now - lastTime) / 1000);
         lastTime = now;
 
@@ -167,7 +225,6 @@ function initAsciiBouquet() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            time += dt * 1.8;
 
             if (state === "blooming") {
                 stateProgress = Math.min(1, stateProgress + dt * 0.62);
@@ -179,17 +236,26 @@ function initAsciiBouquet() {
                     setTimeout(() => {
                         state = "blooming";
                         stateProgress = 0;
+                        currentAngleRad = 0;
                         const msg = document.getElementById("bouquet-msg");
-                        if (msg) msg.innerText = "A fresh bouquet bloomed again for you 🌸";
+                        if (msg) msg.innerText = "A fresh flower basket bloomed again for you 🌸";
                     }, 900);
                 }
+            }
+
+            // Memutar halus satu arah hingga berhenti di sudut 30 derajat (tidak bolak-balik)
+            if (state !== "hidden" && currentAngleRad < MAX_ANGLE_RAD) {
+                currentAngleRad = Math.min(MAX_ANGLE_RAD, currentAngleRad + dt * 0.28);
             }
 
             if (state !== "hidden") {
                 const bloomEase = state === "blooming" ? 1 - Math.pow(1 - stateProgress, 3) : 1;
                 const wiltT = state === "wilting" ? stateProgress : 0;
-                const rotY = Math.sin(time * 0.65) * 0.32;
-                const rotX = 0.14 + Math.cos(time * 0.5) * 0.06;
+
+                // Ease-out pada rotasi 0° -> 30°
+                const angleNorm = currentAngleRad / MAX_ANGLE_RAD;
+                const rotY = MAX_ANGLE_RAD * (1 - Math.pow(1 - angleNorm, 2));
+                const rotX = 0.22; // Sedikit menunduk agar isi keranjang terlihat jelas
 
                 const projected = [];
 
@@ -203,24 +269,28 @@ function initAsciiBouquet() {
                     let char = item.char;
                     let color = item.color;
 
+                    // Transisi masuk: mekar mengembang dari dalam keranjang
                     if (state === "blooming") {
-                        const grow = 0.25 + 0.75 * bloomEase;
+                        const grow = 0.22 + 0.78 * bloomEase;
                         x *= grow;
-                        y = 40 + (y - 40) * grow;
+                        y = 32 + (y - 32) * grow;
                         z *= grow;
                     }
 
+                    // Transisi saat diklik: tangkai & daun layu menunduk, kelopak terurai & menghilang
                     if (wiltT > 0) {
-                        const droopAngle = wiltT * 0.85;
-                        const pivotY = 82;
-                        const dy = y - pivotY;
-                        y = pivotY + dy * Math.cos(droopAngle) + Math.abs(x) * wiltT * 0.35;
-                        z += Math.abs(dy) * Math.sin(droopAngle) * 0.6;
+                        const droopAngle = wiltT * 0.78;
+                        const pivotY = basketTopY + 12;
+                        if (y < pivotY) {
+                            const dy = y - pivotY;
+                            y = pivotY + dy * Math.cos(droopAngle) + Math.abs(x) * wiltT * 0.28;
+                            z += Math.abs(dy) * Math.sin(droopAngle) * 0.55;
+                        }
 
                         if (item.part === "flower") {
-                            const disperse = Math.pow(wiltT, 1.25) * 58;
+                            const disperse = Math.pow(wiltT, 1.25) * 56;
                             x += item.vx * disperse;
-                            y += item.vy * disperse + 55 * wiltT * wiltT;
+                            y += item.vy * disperse + 52 * wiltT * wiltT;
                             z += item.vz * disperse;
                             if (wiltT > 0.25 && item.sparkChar) char = item.sparkChar;
                             color = `rgba(235, 175, 195, ${Math.max(0, 1 - wiltT * 1.25)})`;
@@ -228,12 +298,13 @@ function initAsciiBouquet() {
                         alpha = Math.max(0, 1 - Math.pow(wiltT, 1.3));
                     }
 
+                    // Rotasi 3D + proyeksi perspektif
                     const y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
                     const z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
                     const x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
                     const z2 = -x * Math.sin(rotY) + z1 * Math.cos(rotY);
 
-                    const fov = 340;
+                    const fov = 350;
                     const scale = fov / (fov + z2);
 
                     projected.push({
@@ -258,10 +329,10 @@ function initAsciiBouquet() {
                 }
             }
         }
-        requestAnimationFrame(renderBouquetFrame);
+        requestAnimationFrame(renderBasketFrame);
     }
 
-    requestAnimationFrame(renderBouquetFrame);
+    requestAnimationFrame(renderBasketFrame);
 }
 
 export function initSurprises() {
@@ -301,8 +372,8 @@ export const surpriseHandlers = {
         if (event) event.stopPropagation();
         const msg = document.getElementById("bouquet-msg");
 
-        if (typeof triggerBouquetWilt === "function") {
-            triggerBouquetWilt();
+        if (typeof triggerBasketWilt === "function") {
+            triggerBasketWilt();
         }
 
         motionPlay(

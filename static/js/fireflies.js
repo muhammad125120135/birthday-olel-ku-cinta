@@ -13,19 +13,15 @@ function project3D(x, y, z, cx, cy, fov = 320) {
 }
 
 function rotate3D(x, y, z, rx, ry, rz) {
-    // Rotasi X
     const y1 = y * Math.cos(rx) - z * Math.sin(rx);
     const z1 = y * Math.sin(rx) + z * Math.cos(rx);
-    // Rotasi Y
     const x2 = x * Math.cos(ry) + z1 * Math.sin(ry);
     const z2 = -x * Math.sin(ry) + z1 * Math.cos(ry);
-    // Rotasi Z
     const x3 = x2 * Math.cos(rz) - y1 * Math.sin(rz);
     const y3 = x2 * Math.sin(rz) + y1 * Math.cos(rz);
     return { x: x3, y: y3, z: z2 };
 }
 
-// Generator titik 3D parametrik untuk Tulip, Anggrek, dan Matahari
 export function generateFlower3DPoints(species, radius = 58) {
     const points = [];
 
@@ -56,7 +52,6 @@ export function generateFlower3DPoints(species, radius = 58) {
             }
         }
     } else if (species === "orchid") {
-        // 5 Kelopak utama + 1 bibir tengah (labellum)
         const petalConfigs = [
             { angle: -Math.PI / 2, len: 1.0, wid: 0.42, tilt: 0.25, isLip: false },
             { angle: -Math.PI / 2 + 1.15, len: 0.95, wid: 0.55, tilt: 0.15, isLip: false },
@@ -88,7 +83,7 @@ export function generateFlower3DPoints(species, radius = 58) {
             }
         });
     } else {
-        // Matahari (Sunflower): Inti spiral + 22 kelopak emas
+        // Matahari (Sunflower)
         const coreCount = 55;
         const goldenAngle = Math.PI * (3 - Math.sqrt(5));
         for (let i = 0; i < coreCount; i++) {
@@ -127,15 +122,14 @@ export function generateFlower3DPoints(species, radius = 58) {
         }
     }
 
-    // Vektor ledakan kembang api untuk setiap titik
     return points.map((pt) => {
         const len = Math.hypot(pt.x, pt.y, pt.z) || 1;
-        const burstSpeed = 1.6 + Math.random() * 2.4;
+        const spreadSpeed = 1.1 + Math.random() * 1.4;
         return {
             ...pt,
-            vx: (pt.x / len) * burstSpeed + (Math.random() - 0.5) * 0.9,
-            vy: (pt.y / len) * burstSpeed - 0.45 + (Math.random() - 0.5) * 0.9,
-            vz: (pt.z / len) * burstSpeed + (Math.random() - 0.5) * 0.9,
+            vx: (pt.x / len) * spreadSpeed,
+            vy: (pt.y / len) * spreadSpeed,
+            vz: (pt.z / len) * spreadSpeed,
             sparkChar: ["*", "✦", "+", "·", "✿"][Math.floor(Math.random() * 5)]
         };
     });
@@ -171,28 +165,28 @@ export function initFireflies() {
         glow: Math.random() > 0.45 ? "rgba(255, 126, 179, 0.75)" : "rgba(255, 215, 120, 0.75)"
     }));
 
-    // 2. Bunga 3D Math ASCII Mekar & Kembang Api
+    // 2. Bunga 3D Statis (Tidak Berputar) -> Mekar dari Dalam -> Melebar Keluar & Fade Out
     function spawnFloatingFlower(staggerProgress = 0) {
         const species = SPECIES_LIST[Math.floor(Math.random() * SPECIES_LIST.length)];
-        const radius = window.innerWidth < 520 ? 38 : 54;
-        const margin = 90;
+        const radius = window.innerWidth < 520 ? 40 : 58;
+        const margin = 95;
         return {
             species,
             cx: margin + Math.random() * Math.max(120, canvas.width - margin * 2),
             cy: margin + Math.random() * Math.max(120, canvas.height - margin * 2),
-            rx: (Math.random() - 0.5) * 0.7,
-            ry: Math.random() * Math.PI * 2,
-            rz: (Math.random() - 0.5) * 0.4,
-            vry: (Math.random() > 0.5 ? 1 : -1) * (0.008 + Math.random() * 0.008),
+            // Sudut menghadap ke depan (tidak berputar terus-menerus)
+            rx: species === "tulip" ? 0.28 : -0.18,
+            ry: (Math.random() - 0.5) * 0.35,
+            rz: (Math.random() - 0.5) * 0.45,
             age: staggerProgress,
-            lifeSpan: 7.5 + Math.random() * 2.5,
+            lifeSpan: 5.8 + Math.random() * 1.8,
             points: generateFlower3DPoints(species, radius)
         };
     }
 
     const totalBgFlowers = window.innerWidth < 520 ? 4 : 6;
     const bgFlowers = Array.from({ length: totalBgFlowers }, (_, idx) =>
-        spawnFloatingFlower((idx / totalBgFlowers) * 6.5)
+        spawnFloatingFlower((idx / totalBgFlowers) * 5.2)
     );
 
     let lastTime = performance.now();
@@ -206,7 +200,7 @@ export function initFireflies() {
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
 
-            // --- LAYER A: KUNANG-KUNANG ASCII BERTEBARAN ---
+            // Layer A: Kunang-kunang ASCII
             for (const f of fireflies) {
                 f.x += f.vx;
                 f.y += f.vy;
@@ -229,12 +223,10 @@ export function initFireflies() {
                 ctx.restore();
             }
 
-            // --- LAYER B: BUNGA 3D MATH ASCII MEKAR & KEMBANG API ---
+            // Layer B: Bunga Mekar dari Dalam -> Melebar Keluar -> Fade Out
             for (let i = 0; i < bgFlowers.length; i++) {
                 const fl = bgFlowers[i];
                 fl.age += dt;
-                fl.ry += fl.vry;
-                fl.cy -= dt * 6;
 
                 const t = fl.age / fl.lifeSpan;
                 if (t >= 1) {
@@ -242,32 +234,30 @@ export function initFireflies() {
                     continue;
                 }
 
-                const bloomRatio = t < 0.42
-                    ? 1 - Math.pow(1 - t / 0.42, 3)
-                    : 1;
-                const fireworkProgress = t > 0.62 ? (t - 0.62) / 0.38 : 0;
+                // 0.0 -> 0.45 : Mekar dari dalam pusat
+                // 0.45 -> 1.0 : Langsung melebar keluar + fade out
+                const bloomRatio = t < 0.45 ? 1 - Math.pow(1 - t / 0.45, 3) : 1;
+                const expandRatio = t > 0.45 ? (t - 0.45) / 0.55 : 0;
+
                 const globalAlpha = t < 0.12
-                    ? t / 0.12
-                    : fireworkProgress > 0
-                        ? Math.max(0, 1 - Math.pow(fireworkProgress, 1.35))
+                    ? (t / 0.12) * 0.85
+                    : expandRatio > 0
+                        ? Math.max(0, 0.85 * (1 - Math.pow(expandRatio, 1.25)))
                         : 0.85;
 
                 const rendered = [];
 
                 for (const pt of fl.points) {
-                    if (pt.distNorm > bloomRatio * 1.08) continue;
+                    if (pt.distNorm > bloomRatio * 1.06) continue;
 
-                    const localGrow = Math.min(1, bloomRatio * 1.15);
-                    let x = pt.x * localGrow;
-                    let y = pt.y * localGrow;
-                    let z = pt.z * localGrow;
+                    // Skala mekar dari dalam (0.15 -> 1.0) lalu melebar keluar (1.0 -> 1.65)
+                    const baseScale = 0.15 + 0.85 * bloomRatio;
+                    const outwardExpand = 1 + Math.pow(expandRatio, 1.35) * 0.65;
+                    const drift = Math.pow(expandRatio, 1.4) * 18;
 
-                    if (fireworkProgress > 0) {
-                        const burstT = fireworkProgress * 36;
-                        x += pt.vx * burstT;
-                        y += pt.vy * burstT + 0.5 * 22 * fireworkProgress * fireworkProgress;
-                        z += pt.vz * burstT;
-                    }
+                    const x = pt.x * baseScale * outwardExpand + pt.vx * drift;
+                    const y = pt.y * baseScale * outwardExpand + pt.vy * drift;
+                    const z = pt.z * baseScale * outwardExpand + pt.vz * drift;
 
                     const rot = rotate3D(x, y, z, fl.rx, fl.ry, fl.rz);
                     const proj = project3D(rot.x, rot.y, rot.z, fl.cx, fl.cy, 340);
@@ -276,7 +266,7 @@ export function initFireflies() {
                         ASCII_SHADES.length - 1,
                         Math.max(1, Math.floor(pt.lum * ASCII_SHADES.length))
                     );
-                    const char = fireworkProgress > 0.18 ? pt.sparkChar : ASCII_SHADES[shadeIdx];
+                    const char = expandRatio > 0.35 ? pt.sparkChar : ASCII_SHADES[shadeIdx];
 
                     rendered.push({
                         ...proj,
