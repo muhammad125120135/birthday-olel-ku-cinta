@@ -1,0 +1,178 @@
+.envelope-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(28, 15, 42, 0.96) 0%, rgba(8, 5, 16, 0.99) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    will-change: transform, opacity;
+}
+
+.envelope-overlay.opened {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.envelope-card {
+    text-align: center;
+    cursor: pointer;
+    perspective: 1000px;
+    z-index: 5;
+}
+
+.sub-label {
+    font-size: 1.55rem;
+    color: #fff5fa;
+    margin-bottom: 34px;
+    line-height: 1.25;
+    text-shadow: 0 0 18px rgba(255, 126, 179, 0.45);
+}
+
+.sub-label span {
+    font-style: italic;
+    font-size: 1.25rem;
+    color: #ff94c2;
+}
+
+.wax-envelope {
+    position: relative;
+    width: 276px;
+    height: 180px;
+    margin: 0 auto;
+}
+
+.env-back {
+    position: absolute;
+    inset: 0;
+    background: rgba(36, 22, 52, 0.85);
+    border: 1px solid rgba(255, 148, 194, 0.35);
+    border-radius: 12px;
+    box-shadow: 0 22px 45px rgba(0, 0, 0, 0.65), 0 0 25px rgba(255, 110, 175, 0.2);
+    z-index: 1;
+}
+
+.env-letter-peek {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 12px;
+    height: 152px;
+    background: linear-gradient(145deg, #fcf7ed, #efe3cc);
+    border: 1px solid rgba(206, 178, 138, 0.7);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+    transform: translateY(-14px);
+    will-change: transform;
+}
+
+.peek-tag {
+    display: inline-block;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.68rem;
+    color: #9e6b43;
+    letter-spacing: 1.5px;
+    margin-bottom: 3px;
+}
+
+.peek-title {
+    font-family: 'Caveat', cursive;
+    font-size: 1.35rem;
+    font-weight: bold;
+    color: #3d251e;
+    margin-bottom: 8px;
+}
+
+.peek-lines {
+    height: 46px;
+    background-image: repeating-linear-gradient(transparent, transparent 11px, rgba(143, 165, 194, 0.35) 12px);
+}
+
+.env-front-left,
+.env-front-right,
+.env-front-bottom {
+    position: absolute;
+    inset: 0;
+}
+
+.env-front-left {
+    background: linear-gradient(135deg, rgba(84, 42, 74, 0.92), rgba(28, 16, 40, 0.96));
+    clip-path: polygon(0 0, 52% 52%, 0 100%);
+    border-radius: 12px 0 0 12px;
+    z-index: 3;
+}
+
+.env-front-right {
+    background: linear-gradient(225deg, rgba(78, 38, 70, 0.92), rgba(24, 14, 36, 0.96));
+    clip-path: polygon(100% 0, 48% 52%, 100% 100%);
+    border-radius: 0 12px 12px 0;
+    z-index: 3;
+}
+
+.env-front-bottom {
+    background: linear-gradient(180deg, #321b47 0%, #170d24 100%);
+    clip-path: polygon(0 100%, 50% 46%, 100% 100%);
+    border-radius: 0 0 12px 12px;
+    border-bottom: 1px solid rgba(255, 158, 203, 0.35);
+    z-index: 4;
+}
+
+.env-flap-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 108px;
+    background: linear-gradient(180deg, #69325d 0%, #2b163e 100%);
+    clip-path: polygon(0 0, 100% 0, 50% 95%);
+    border-radius: 12px 12px 0 0;
+    transform-origin: top center;
+    z-index: 5;
+    will-change: transform;
+}
+
+.wax-seal {
+    position: absolute;
+    top: 78px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ff9ec9 0%, #e04885 70%, #992254 100%);
+    box-shadow: 0 0 22px rgba(255, 110, 175, 0.75), inset 0 2px 5px rgba(255, 255, 255, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 6;
+    will-change: transform, opacity;
+}
+
+.wax-seal-inner {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 240, 247, 0.65);
+    color: #ffffff;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tap-hint {
+    margin-top: 26px;
+    font-size: 0.82rem;
+    letter-spacing: 0.8px;
+    color: #ffb8d8;
+    animation: pulseFade 2.2s ease-in-out infinite;
+}
+
+@keyframes pulseFade {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+}

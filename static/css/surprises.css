@@ -1,0 +1,258 @@
+.options-area {
+    text-align: center;
+    padding-bottom: 125px;
+}
+
+.options-wrapper {
+    max-width: 620px;
+    width: 100%;
+}
+
+.options-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+}
+
+.opt-btn {
+    background: rgba(36, 22, 52, 0.65);
+    color: #e6d5df;
+    border: 1px solid rgba(255, 166, 206, 0.28);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.opt-btn:hover {
+    background: rgba(255, 126, 179, 0.2);
+    color: #ffffff;
+}
+
+.opt-btn.active {
+    background: linear-gradient(135deg, #ff7eb3, #d94686);
+    color: #ffffff;
+    border-color: #ffc2de;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(255, 110, 175, 0.45);
+}
+
+.option-display {
+    border-radius: 22px;
+    padding: 34px 24px;
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+}
+
+.opt-panel {
+    display: none;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.opt-panel.show {
+    display: block;
+}
+
+.opt-panel h3 {
+    font-size: 1.35rem;
+    color: #ffb8d8;
+    margin-bottom: 6px;
+}
+
+.opt-desc {
+    font-size: 0.84rem;
+    color: #cbb5c2;
+    margin-bottom: 14px;
+}
+
+/* Buket Bunga & 5 Bunga Bertebaran */
+.bouquet-box {
+    position: relative;
+    width: 345px;
+    height: 325px;
+    margin: 4px auto 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 850px;
+}
+
+.bouquet-aura {
+    position: absolute;
+    width: 270px;
+    height: 270px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 126, 179, 0.36) 0%, rgba(255, 209, 102, 0.16) 48%, transparent 72%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.bouquet-3d-wrap {
+    position: relative;
+    z-index: 2;
+    width: 315px;
+    height: 315px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: bottom center;
+    transform-style: preserve-3d;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+    border-radius: 26px;
+    will-change: transform;
+}
+
+#ascii-bouquet-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 14px rgba(255, 148, 194, 0.45));
+}
+
+.flower-burst-layer {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.burst-flower {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: -34px;
+    margin-top: -34px;
+    will-change: transform, opacity;
+}
+
+.burst-flower-img {
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+    pointer-events: none;
+}
+
+/* 3 Things I Admire */
+.admire-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+    margin-top: 16px;
+}
+
+.admire-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid #ff7eb3;
+    padding: 13px 16px;
+    border-radius: 10px;
+}
+
+.admire-card strong {
+    display: block;
+    font-size: 0.94rem;
+    color: #ff9ec9;
+    margin-bottom: 4px;
+}
+
+.admire-card p {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.84rem;
+    color: #ebd9e3;
+    line-height: 1.55;
+}
+
+/* Kue Tingkat Putih & Cupcake Pita Pink */
+.cake-box {
+    margin: 10px auto 8px;
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.coquette-cake-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.candle-flames {
+    transition: opacity 0.4s ease;
+}
+
+.candle-flames.blown {
+    opacity: 0;
+}
+
+.flame-core {
+    transform-origin: center bottom;
+    transform-box: fill-box;
+    animation: flicker 0.65s ease-in-out infinite alternate;
+}
+
+@keyframes flicker {
+    from { transform: scale(0.95) rotate(-4deg); }
+    to { transform: scale(1.1) rotate(4deg); }
+}
+
+.wish-status {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #ffb8d8;
+    margin-top: 6px;
+}
+
+.wish-form {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.wish-form textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 158, 203, 0.4);
+    background: rgba(15, 9, 24, 0.72);
+    color: #ffffff;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.86rem;
+    resize: none;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.wish-form textarea::placeholder {
+    color: rgba(255, 214, 232, 0.45);
+}
+
+.wish-form textarea:focus {
+    border-color: #ff7eb3;
+    box-shadow: 0 0 16px rgba(255, 126, 179, 0.3);
+}
+
+.send-feedback {
+    font-size: 0.84rem;
+    font-weight: bold;
+    min-height: 18px;
+}

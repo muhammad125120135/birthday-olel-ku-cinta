@@ -1,0 +1,337 @@
+.header-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    margin-bottom: 42px;
+    flex-wrap: wrap;
+}
+
+.header-cutout-badge {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    will-change: transform;
+}
+
+.header-cutout-img {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+    filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.68)) drop-shadow(0 0 22px rgba(255, 126, 179, 0.48));
+    will-change: transform;
+}
+
+.balloon {
+    font-size: 1.5rem;
+    animation: gentleFloat 3.4s ease-in-out infinite alternate;
+}
+
+.b2 { animation-delay: 1.2s; }
+
+@keyframes gentleFloat {
+    from { transform: translateY(0); }
+    to { transform: translateY(-8px); }
+}
+
+.title-stack {
+    text-align: left;
+}
+
+.edition-badge,
+.section-tag {
+    display: inline-block;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    color: #ff94c2;
+    background: rgba(255, 126, 179, 0.14);
+    border: 1px solid rgba(255, 148, 194, 0.3);
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+}
+
+.main-title {
+    font-size: 2.65rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1.12;
+    background: linear-gradient(135deg, #ffffff 30%, #ff9ec9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.real-paper-wrapper {
+    max-width: 660px;
+    width: 100%;
+    perspective: 1600px;
+}
+
+.real-paper-sheet {
+    position: relative;
+    background-color: #fbf5e8;
+    background-image:
+        linear-gradient(90deg, transparent 42px, rgba(214, 108, 122, 0.32) 42px, rgba(214, 108, 122, 0.32) 43px, transparent 43px),
+        repeating-linear-gradient(180deg, transparent 0px, transparent 31px, rgba(132, 156, 184, 0.24) 32px),
+        radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.65), rgba(235, 219, 192, 0.45));
+    background-position: 0 0, 0 5px, 0 0;
+    color: #2b211b;
+    border-radius: 6px;
+    border: 1px solid #dfd0b6;
+    padding: 32px 28px 28px 56px;
+    box-shadow:
+        0 24px 55px rgba(0, 0, 0, 0.65),
+        inset 0 0 38px rgba(173, 140, 99, 0.18),
+        0 5px 0 -2px #efe4cf,
+        0 6px 12px -2px rgba(0, 0, 0, 0.35),
+        0 10px 0 -4px #e4d5b9,
+        0 12px 18px -4px rgba(0, 0, 0, 0.45);
+}
+
+.paper-washi-tape {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1.5deg);
+    width: 124px;
+    height: 22px;
+    background: rgba(244, 152, 185, 0.68);
+    border-left: 1px dashed rgba(255, 255, 255, 0.55);
+    border-right: 1px dashed rgba(255, 255, 255, 0.55);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+    z-index: 15;
+}
+
+.paper-top-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    min-height: 32px;
+    line-height: 32px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.76rem;
+    color: #7d6652;
+    margin-bottom: 32px;
+    border-bottom: 1px dashed rgba(145, 118, 90, 0.35);
+}
+
+.fold-counter-badge {
+    background: rgba(196, 86, 128, 0.12);
+    color: #a63a66;
+    border: 1px solid rgba(196, 86, 128, 0.28);
+    padding: 0 10px;
+    height: 22px;
+    line-height: 20px;
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+.accordion-letter {
+    display: flex;
+    flex-direction: column;
+    perspective: 1400px;
+    transform-style: preserve-3d;
+}
+
+.paper-fold {
+    position: relative;
+    z-index: 5;
+    transform-origin: top center;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+}
+
+.fold-shadow-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(88, 60, 32, 0.26) 0%, rgba(88, 60, 32, 0.08) 28px, transparent 70px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.fold-crease-bar {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    line-height: 32px;
+    padding: 0 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+}
+
+.crease-label {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.7rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #9a7e63;
+}
+
+.crease-action {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.72rem;
+    color: #a83865;
+    font-weight: 700;
+    text-align: right;
+}
+
+.paper-fold.is-open {
+    background: linear-gradient(180deg, rgba(161, 132, 98, 0.13) 0%, rgba(255, 255, 255, 0.2) 12px, transparent 30px);
+    border-top: 1px solid rgba(163, 135, 102, 0.34);
+    box-shadow: inset 0 4px 10px -6px rgba(96, 68, 38, 0.24);
+}
+
+.paper-fold[data-fold="1"].is-open {
+    background: transparent;
+    border-top: none;
+    box-shadow: none;
+}
+
+.paper-fold.is-open .fold-crease-bar:hover {
+    background: rgba(176, 67, 111, 0.09);
+}
+
+.paper-fold.is-open .fold-content {
+    position: relative;
+    z-index: 3;
+    padding: 0 4px 32px;
+}
+
+.paper-fold.is-next-folded {
+    z-index: 10;
+    transform: perspective(1000px) rotateX(-15deg);
+    margin: 7px 0 5px;
+    background: linear-gradient(180deg, #e7d5b7 0%, #f9f1e1 46%, #dfcca9 100%);
+    border: 1px solid #c6b08c;
+    border-top: 1.5px solid #fffaf0;
+    border-radius: 5px;
+    box-shadow: 0 8px 18px rgba(74, 52, 30, 0.25), 0 2px 4px rgba(74, 52, 30, 0.16), inset 0 1px 4px rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease;
+}
+
+.paper-fold.is-next-folded:hover {
+    transform: perspective(1000px) rotateX(-5deg) translateY(-2px);
+    background: linear-gradient(180deg, #efe1c8 0%, #fff8eb 48%, #e8d5b4 100%);
+}
+
+.paper-fold.is-next-folded .fold-crease-bar {
+    padding: 6px 12px;
+}
+
+.paper-fold.is-next-folded .fold-content,
+.paper-fold.is-stacked-folded .fold-crease-bar,
+.paper-fold.is-stacked-folded .fold-content {
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.paper-fold.is-stacked-folded {
+    z-index: 8;
+    transform: perspective(1000px) rotateX(-28deg);
+    height: 11px;
+    margin-top: -1px;
+    background: linear-gradient(180deg, #e4d4b7 0%, #f3e7d1 45%, #c7b28e 100%);
+    border-bottom: 1px solid #b09872;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 3px 6px rgba(74, 52, 30, 0.16);
+    opacity: 0.88;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.paper-text {
+    font-family: 'Lora', 'Georgia', serif;
+    font-size: 0.96rem;
+    line-height: 32px;
+    color: #2b211b;
+    text-align: left;
+}
+
+.greeting-highlight {
+    font-family: 'Lora', 'Georgia', serif;
+    font-weight: 600;
+    font-size: 1.02rem;
+    line-height: 32px;
+    color: #9e2d59;
+}
+
+.closing-handwriting-box {
+    padding: 0 8px;
+    text-align: right;
+}
+
+.closing-handwriting {
+    font-family: 'Caveat', 'Dancing Script', cursive;
+    font-size: 1.72rem;
+    font-weight: 700;
+    line-height: 32px;
+    color: #8f224d;
+}
+
+.signature-flourish {
+    display: block;
+    line-height: 32px;
+    font-family: 'Dancing Script', 'Caveat', cursive;
+    font-size: 1.25rem;
+    color: #6e4e3a;
+}
+
+.paper-fold-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(156, 128, 96, 0.3);
+}
+
+.btn-paper-nav {
+    background: rgba(145, 118, 90, 0.14);
+    color: #4f3c2c;
+    border: 1px solid rgba(145, 118, 90, 0.35);
+    padding: 9px 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.78rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.25s ease, opacity 0.25s ease;
+}
+
+.btn-paper-nav:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+}
+
+.btn-paper-nav.primary {
+    background: linear-gradient(135deg, #c94b7c, #9e2d59);
+    color: #ffffff;
+    border-color: #9e2d59;
+    box-shadow: 0 4px 12px rgba(158, 45, 89, 0.28);
+}
+
+.scroll-indicator {
+    margin-top: 38px;
+    font-size: 0.85rem;
+    color: #ffb8d8;
+    opacity: 0.8;
+    animation: gentleFloat 1.8s ease-in-out infinite alternate;
+}
