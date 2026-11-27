@@ -7,16 +7,14 @@ import { initFireflies } from "./js/fireflies.js";
 import { initAudioPlayer, playerHandlers } from "./js/audio-player.js";
 import { initFolds, envelopeFoldHandlers } from "./js/envelope-folds.js";
 import { jarHandlers } from "./js/jar-notes.js";
-import { BURST_FLOWER_IMAGES, initSurprises, surpriseHandlers } from "./js/surprises.js";
+import { initSurprises, surpriseHandlers } from "./js/surprises.js";
 
-// Preload aset gambar
+// Preload aset ikon tombol
 [
     "static/tombol play.png",
     "static/tombol pouse.png",
     "static/play.png",
-    "static/puse.png",
-    "static/bouquet.png",
-    ...BURST_FLOWER_IMAGES
+    "static/puse.png"
 ].forEach((src) => {
     const img = new Image();
     img.src = src;

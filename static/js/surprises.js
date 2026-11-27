@@ -1,13 +1,268 @@
 import { motionPlay, inView, stagger, EASE_SILKY, SPRING_SNAPPY, SPRING_BOUNCY } from "./motion-utils.js";
+import { generateFlower3DPoints } from "./fireflies.js";
 
 const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
-export const BURST_FLOWER_IMAGES = [
-    "static/flower 1.png",
-    "static/flower 2.png",
-    "static/flower 3.png",
-    "static/flower 4.png",
-    "static/flower 5.png"
-];
+let triggerBouquetWilt = null;
+
+function build3DBouquetModel() {
+    const items = [];
+    const ASCII_CHARS = " .:-=+*#%@";
+
+    // 1. Kertas Pembungkus Buket (Kerucut & Lipatan Atas 3D)
+    for (let u = 0; u <= 1; u += 0.055) {
+        const y = 18 + u * 102;
+        const coneR = (1 - u * 0.78) * 58;
+        const flare = u < 0.25 ? Math.sin((0.25 - u) * Math.PI * 2) * 10 : 0;
+
+        for (let a = 0; a < Math.PI * 2; a += 0.14) {
+            const backRim = Math.sin(a) < 0 && u < 0.25 ? -18 * (0.25 - u) * 4 : 0;
+            const r = coneR + flare + Math.sin(a * 5) * 2.5;
+            const x = Math.cos(a) * r;
+            const z = Math.sin(a) * r * 0.72;
+
+            items.push({
+                x, y: y + backRim, z,
+                part: "wrap",
+                char: u < 0.08 ? "~" : ASCII_CHARS[Math.floor(4 + Math.cos(a) * 2)],
+                color: Math.sin(a) < 0 ? "rgb(235, 195, 212)" : "rgb(252, 232, 240)",
+                orderNorm: 0.15 + u * 0.2,
+                vx: (Math.random() - 0.5) * 1.4,
+                vy: 0.8 + Math.random() * 1.4,
+                vz: (Math.random() - 0.5) * 1.4
+            });
+        }
+    }
+
+    // 2. Pita Pink di Leher Buket
+    const ribbonY = 82;
+    for (let a = 0; a < Math.PI * 2; a += 0.18) {
+        items.push({
+            x: Math.cos(a) * 26,
+            y: ribbonY,
+            z: Math.sin(a) * 20,
+            part: "ribbon",
+            char: "#",
+            color: "rgb(255, 105, 165)",
+            orderNorm: 0.25,
+            vx: Math.cos(a) * 1.5,
+            vy: 1.2,
+            vz: Math.sin(a) * 1.5
+        });
+    }
+
+    // Simpul kupu-kupu pita depan
+    for (let t = -1; t <= 1; t += 0.12) {
+        const bowX = t * 24;
+        const bowY = ribbonY + Math.sin(Math.abs(t) * Math.PI) * 8;
+        items.push({
+            x: bowX, y: bowY - 4, z: 22,
+            part: "ribbon", char: "@", color: "rgb(255, 130, 185)",
+            orderNorm: 0.28, vx: t * 2, vy: 1.1, vz: 1.5
+        });
+        items.push({
+            x: bowX, y: bowY + 4, z: 22,
+            part: "ribbon", char: "*", color: "rgb(255, 90, 155)",
+            orderNorm: 0.28, vx: t * 2, vy: 1.3, vz: 1.5
+        });
+    }
+
+    // 3. Susunan 7 Bunga 3D (Matahari, Tulip, Anggrek) + Tangkainya
+    const bouquetLayout = [
+        { type: "sunflower", ox: 0, oy: -48, oz: 8, scale: 36, tiltX: -0.25, tiltZ: 0 },
+        { type: "tulip", ox: -34, oy: -38, oz: 14, scale: 30, tiltX: -0.2, tiltZ: -0.35 },
+        { type: "tulip", ox: 34, oy: -38, oz: 14, scale: 30, tiltX: -0.2, tiltZ: 0.35 },
+        { type: "orchid", ox: -22, oy: -66, oz: -8, scale: 33, tiltX: -0.15, tiltZ: -0.2 },
+        { type: "orchid", ox: 22, oy: -66, oz: -8, scale: 33, tiltX: -0.15, tiltZ: 0.2 },
+        { type: "tulip", ox: -14, oy: -22, oz: 24, scale: 27, tiltX: -0.35, tiltZ: -0.15 },
+        { type: "orchid", ox: 15, oy: -24, oz: 22, scale: 28, tiltX: -0.35, tiltZ: 0.18 }
+    ];
+
+    bouquetLayout.forEach((b, bIdx) => {
+        // Tangkai melengkung dari kepala bunga masuk ke ikatan pita
+        const steps = 16;
+        for (let s = 0; s <= steps; s++) {
+            const st = s / steps;
+            const sx = b.ox * (1 - st * 0.85);
+            const sy = b.oy + (ribbonY - b.oy) * st;
+            const sz = b.oz * (1 - st * 0.85);
+            items.push({
+                x: sx, y: sy, z: sz,
+                part: "stem",
+                char: "|",
+                color: "rgb(110, 210, 145)",
+                orderNorm: 0.1 + st * 0.2,
+                vx: (Math.random() - 0.5) * 0.8,
+                vy: 1.0 + Math.random(),
+                vz: (Math.random() - 0.5) * 0.8
+            });
+        }
+
+        // Kepala bunga 3D
+        const flowerPts = generateFlower3DPoints(b.type, b.scale);
+        flowerPts.forEach((pt) => {
+            const y1 = pt.y * Math.cos(b.tiltX) - pt.z * Math.sin(b.tiltX);
+            const z1 = pt.y * Math.sin(b.tiltX) + pt.z * Math.cos(b.tiltX);
+            const x2 = pt.x * Math.cos(b.tiltZ) - y1 * Math.sin(b.tiltZ);
+            const y2 = pt.x * Math.sin(b.tiltZ) + y1 * Math.cos(b.tiltZ);
+
+            const shadeIdx = Math.min(ASCII_CHARS.length - 1, Math.max(1, Math.floor(pt.lum * ASCII_CHARS.length)));
+            items.push({
+                x: b.ox + x2,
+                y: b.oy + y2,
+                z: b.oz + z1,
+                headCenterY: b.oy,
+                part: "flower",
+                distNorm: pt.distNorm,
+                char: ASCII_CHARS[shadeIdx],
+                sparkChar: pt.sparkChar,
+                color: pt.color,
+                orderNorm: 0.35 + pt.distNorm * 0.65,
+                vx: pt.vx * 1.15 + (bIdx - 3) * 0.25,
+                vy: pt.vy * 1.1,
+                vz: pt.vz * 1.15
+            });
+        });
+    });
+
+    return items;
+}
+
+function initAsciiBouquet() {
+    const canvas = document.getElementById("ascii-bouquet-canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    const model = build3DBouquetModel();
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2 + 12;
+
+    let state = "blooming";
+    let stateProgress = 0;
+    let time = 0;
+
+    triggerBouquetWilt = () => {
+        if (state === "wilting") return;
+        state = "wilting";
+        stateProgress = 0;
+    };
+
+    const optionsSection = document.getElementById("options-section");
+    if (optionsSection) {
+        inView(optionsSection, () => {
+            if (state === "hidden") {
+                state = "blooming";
+                stateProgress = 0;
+            }
+        }, { amount: 0.25 });
+    }
+
+    let lastTime = performance.now();
+
+    function renderBouquetFrame(now) {
+        const dt = Math.min(0.05, (now - lastTime) / 1000);
+        lastTime = now;
+
+        const panel = document.getElementById("opt-content-1");
+        if (!document.hidden && panel && panel.classList.contains("show")) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            time += dt * 1.8;
+
+            if (state === "blooming") {
+                stateProgress = Math.min(1, stateProgress + dt * 0.62);
+                if (stateProgress >= 1) state = "idle";
+            } else if (state === "wilting") {
+                stateProgress = Math.min(1, stateProgress + dt * 0.45);
+                if (stateProgress >= 1) {
+                    state = "hidden";
+                    setTimeout(() => {
+                        state = "blooming";
+                        stateProgress = 0;
+                        const msg = document.getElementById("bouquet-msg");
+                        if (msg) msg.innerText = "A fresh bouquet bloomed again for you 🌸";
+                    }, 900);
+                }
+            }
+
+            if (state !== "hidden") {
+                const bloomEase = state === "blooming" ? 1 - Math.pow(1 - stateProgress, 3) : 1;
+                const wiltT = state === "wilting" ? stateProgress : 0;
+                const rotY = Math.sin(time * 0.65) * 0.32;
+                const rotX = 0.14 + Math.cos(time * 0.5) * 0.06;
+
+                const projected = [];
+
+                for (const item of model) {
+                    if (state === "blooming" && item.orderNorm > bloomEase * 1.05) continue;
+
+                    let x = item.x;
+                    let y = item.y;
+                    let z = item.z;
+                    let alpha = 1;
+                    let char = item.char;
+                    let color = item.color;
+
+                    if (state === "blooming") {
+                        const grow = 0.25 + 0.75 * bloomEase;
+                        x *= grow;
+                        y = 40 + (y - 40) * grow;
+                        z *= grow;
+                    }
+
+                    if (wiltT > 0) {
+                        const droopAngle = wiltT * 0.85;
+                        const pivotY = 82;
+                        const dy = y - pivotY;
+                        y = pivotY + dy * Math.cos(droopAngle) + Math.abs(x) * wiltT * 0.35;
+                        z += Math.abs(dy) * Math.sin(droopAngle) * 0.6;
+
+                        if (item.part === "flower") {
+                            const disperse = Math.pow(wiltT, 1.25) * 58;
+                            x += item.vx * disperse;
+                            y += item.vy * disperse + 55 * wiltT * wiltT;
+                            z += item.vz * disperse;
+                            if (wiltT > 0.25 && item.sparkChar) char = item.sparkChar;
+                            color = `rgba(235, 175, 195, ${Math.max(0, 1 - wiltT * 1.25)})`;
+                        }
+                        alpha = Math.max(0, 1 - Math.pow(wiltT, 1.3));
+                    }
+
+                    const y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
+                    const z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
+                    const x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
+                    const z2 = -x * Math.sin(rotY) + z1 * Math.cos(rotY);
+
+                    const fov = 340;
+                    const scale = fov / (fov + z2);
+
+                    projected.push({
+                        px: cx + x2 * scale,
+                        py: cy + y1 * scale,
+                        z: z2,
+                        scale,
+                        alpha,
+                        char,
+                        color
+                    });
+                }
+
+                projected.sort((a, b) => b.z - a.z);
+
+                for (const p of projected) {
+                    const fontSize = Math.max(7, Math.round(9.5 * p.scale));
+                    ctx.font = `bold ${fontSize}px "Courier New", monospace`;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fillStyle = p.color;
+                    ctx.fillText(p.char, p.px, p.py);
+                }
+            }
+        }
+        requestAnimationFrame(renderBouquetFrame);
+    }
+
+    requestAnimationFrame(renderBouquetFrame);
+}
 
 export function initSurprises() {
     const bouquetBoxEl = document.getElementById("bouquet-box");
@@ -25,98 +280,6 @@ export function initSurprises() {
     }
 
     initAsciiBouquet();
-}
-
-function initAsciiBouquet() {
-    const canvas = document.getElementById("ascii-bouquet-canvas");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-
-    const DENSITY = " .:-=+*#%@";
-    const COLS = 66;
-    const ROWS = 66;
-    const cellW = canvas.width / COLS;
-    const cellH = canvas.height / ROWS;
-
-    const img = new Image();
-    img.src = "static/bouquet.png";
-
-    img.onload = () => {
-        const offCanvas = document.createElement("canvas");
-        offCanvas.width = COLS;
-        offCanvas.height = ROWS;
-        const offCtx = offCanvas.getContext("2d");
-        offCtx.drawImage(img, 0, 0, COLS, ROWS);
-
-        const pixels = offCtx.getImageData(0, 0, COLS, ROWS).data;
-        const cells = [];
-
-        for (let y = 0; y < ROWS; y++) {
-            for (let x = 0; x < COLS; x++) {
-                const i = (y * COLS + x) * 4;
-                const [r, g, b, a] = [pixels[i], pixels[i + 1], pixels[i + 2], pixels[i + 3]];
-                if (a < 40) continue;
-
-                const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-                const char = DENSITY[Math.min(DENSITY.length - 1, Math.floor(lum * DENSITY.length))];
-                if (char === " ") continue;
-
-                cells.push({
-                    x, y,
-                    normY: 1 - y / ROWS,
-                    char,
-                    color: `rgb(${Math.min(255, r + 25)}, ${Math.min(255, g + 20)}, ${Math.min(255, b + 25)})`
-                });
-            }
-        }
-
-        let bloomProgress = 0;
-        let hasStarted = false;
-        let time = 0;
-
-        const optionsSection = document.getElementById("options-section");
-        if (optionsSection) {
-            inView(optionsSection, () => {
-                if (!hasStarted) {
-                    hasStarted = true;
-                    bloomProgress = 0;
-                }
-            }, { amount: 0.25 });
-        } else {
-            hasStarted = true;
-        }
-
-        function renderAsciiFrame() {
-            const panel = document.getElementById("opt-content-1");
-            if (!document.hidden && panel && panel.classList.contains("show")) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.font = `bold ${Math.ceil(cellH)}px "Courier New", monospace`;
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-
-                if (hasStarted && bloomProgress < 1) bloomProgress = Math.min(1, bloomProgress + 0.015);
-                time += 0.035;
-
-                for (const c of cells) {
-                    if (c.normY > bloomProgress) continue;
-                    const sway = Math.sin(time + c.y * 0.12) * (c.normY * 2.4);
-                    ctx.fillStyle = c.color;
-                    ctx.fillText(c.char, c.x * cellW + cellW / 2 + sway, c.y * cellH + cellH / 2);
-                }
-            }
-            requestAnimationFrame(renderAsciiFrame);
-        }
-
-        const box = document.getElementById("bouquet-box");
-        if (box) {
-            box.addEventListener("click", () => {
-                hasStarted = true;
-                bloomProgress = 0.15;
-            });
-        }
-
-        requestAnimationFrame(renderAsciiFrame);
-    };
 }
 
 export const surpriseHandlers = {
@@ -137,48 +300,20 @@ export const surpriseHandlers = {
     bloomBouquet: (event) => {
         if (event) event.stopPropagation();
         const msg = document.getElementById("bouquet-msg");
-        const burstLayer = document.getElementById("flower-burst-layer");
 
-        motionPlay("#bouquet-3d-wrap", { scale: [1, 1.12, 0.97, 1], y: [0, -12, 2, 0], rotate: [0, 3.5, -1.8, 0] }, SPRING_BOUNCY);
-        motionPlay("#bouquet-aura", { scale: [1, 1.4, 1], opacity: [0.8, 1, 0.75] }, { duration: 0.7, ease: EASE_SILKY });
+        if (typeof triggerBouquetWilt === "function") {
+            triggerBouquetWilt();
+        }
 
-        msg.innerText = "Sending you endless happiness & warm hugs! 💐✨";
-        if (!burstLayer) return;
+        motionPlay(
+            "#bouquet-3d-wrap",
+            { scale: [1, 1.05, 0.96, 1], y: [0, -6, 4, 0] },
+            SPRING_BOUNCY
+        );
+        motionPlay("#bouquet-aura", { scale: [1, 1.25, 0.6], opacity: [0.8, 1, 0.2] }, { duration: 1.4, ease: EASE_SILKY });
 
-        const totalParticles = 15;
-        for (let i = 0; i < totalParticles; i++) {
-            const particle = document.createElement("div");
-            particle.className = "burst-flower";
-
-            const flowerImg = document.createElement("img");
-            flowerImg.src = BURST_FLOWER_IMAGES[i % BURST_FLOWER_IMAGES.length];
-            flowerImg.alt = "";
-            flowerImg.className = "burst-flower-img";
-            const sizePx = 58 + Math.floor(Math.random() * 22);
-            flowerImg.style.width = `${sizePx}px`;
-            flowerImg.style.height = `${sizePx}px`;
-            particle.appendChild(flowerImg);
-            burstLayer.appendChild(particle);
-
-            const angle = (i / totalParticles) * Math.PI * 2 + (Math.random() - 0.5) * 0.35;
-            const distance = 110 + Math.random() * 85;
-            const anim = motionPlay(
-                particle,
-                {
-                    x: [0, Math.cos(angle) * distance],
-                    y: [0, Math.sin(angle) * distance],
-                    scale: [0.25, 0.85 + Math.random() * 0.5, 0.8],
-                    rotate: [0, (Math.random() - 0.5) * 420],
-                    opacity: [1, 1, 0]
-                },
-                { duration: 1.35, ease: [0.16, 1, 0.3, 1] }
-            );
-
-            if (anim && anim.finished) {
-                anim.finished.then(() => particle.remove());
-            } else {
-                setTimeout(() => particle.remove(), 1400);
-            }
+        if (msg) {
+            msg.innerText = "Kelopaknya terurai tertiup angin malam... ✨🌸";
         }
     },
     blowCandle: () => {
