@@ -25,8 +25,129 @@ function rotate3D(x, y, z, rx, ry, rz) {
 export function generateFlower3DPoints(species, radius = 58) {
     const points = [];
 
-    if (species === "tulip") {
-        // Tetap dipertahankan untuk rangkaian di keranjang bunga (surprises.js)
+    if (species === "sakura") {
+        // Sakura: 5 kelopak pink pastel dengan lekukan khas di ujung kelopak
+        const petals = 5;
+        for (let p = 0; p < petals; p++) {
+            const baseA = (p / petals) * Math.PI * 2 - Math.PI / 2;
+            for (let u = 0.14; u <= 1; u += 0.11) {
+                for (let v = -1; v <= 1; v += 0.22) {
+                    const width = Math.sin(u * Math.PI * 0.84) * 0.44;
+                    const notch = u > 0.72 ? (u - 0.72) * 1.55 * (1 - Math.abs(v)) : 0;
+                    const effectiveU = Math.max(0.12, u - notch);
+                    const a = baseA + v * width;
+                    const r = effectiveU * radius;
+                    const z = Math.sin(effectiveU * Math.PI) * 9 - Math.abs(v) * 4;
+
+                    const lum = 0.48 + effectiveU * 0.48;
+                    const color = effectiveU < 0.36
+                        ? "rgb(245, 92, 158)"
+                        : `rgb(255, ${Math.round(178 + effectiveU * 58)}, ${Math.round(212 + effectiveU * 38)})`;
+
+                    points.push({
+                        x: Math.cos(a) * r,
+                        y: Math.sin(a) * r,
+                        z,
+                        lum,
+                        color,
+                        distNorm: effectiveU
+                    });
+                }
+            }
+        }
+        // Benang sari emas di pusat Sakura
+        for (let s = 0; s < 14; s++) {
+            const sa = (s / 14) * Math.PI * 2;
+            const sr = radius * 0.22;
+            points.push({
+                x: Math.cos(sa) * sr,
+                y: Math.sin(sa) * sr,
+                z: 11,
+                lum: 0.92,
+                color: "rgb(255, 224, 108)",
+                distNorm: 0.2
+            });
+        }
+    } else if (species === "lavender") {
+        // Lavender: Tangkai kuntum ungu-violet bertingkat yang menjulang
+        const florets = 52;
+        const goldenAngle = 2.39996;
+        for (let i = 0; i < florets; i++) {
+            const t = i / florets; // 0 = puncak runcing, 1 = pangkal bawah
+            const theta = i * goldenAngle;
+            const spikeRadius = radius * 0.35 * Math.sin(Math.pow(t, 0.72) * Math.PI * 0.9);
+            const y = -radius * 1.25 + t * radius * 1.72;
+
+            for (let b = 0; b < 3; b++) {
+                const subA = theta + (b - 1) * 0.48;
+                const subR = spikeRadius * (0.65 + (b % 2) * 0.35);
+                points.push({
+                    x: Math.cos(subA) * subR,
+                    y: y + (b - 1) * 2.4,
+                    z: Math.sin(subA) * subR,
+                    lum: 0.45 + (1 - t) * 0.5,
+                    color: `rgb(${Math.round(168 + (1 - t) * 58)}, ${Math.round(108 + (1 - t) * 72)}, 255)`,
+                    distNorm: t
+                });
+            }
+        }
+    } else if (species === "rose") {
+        const petals = 18;
+        const goldenAngle = 2.39996;
+        for (let p = 0; p < petals; p++) {
+            const pNorm = p / petals;
+            const baseAngle = p * goldenAngle;
+            const layerRadius = radius * (0.18 + pNorm * 0.68);
+            const cupHeight = radius * (0.42 - pNorm * 0.25);
+
+            for (let u = 0.15; u <= 1; u += 0.16) {
+                for (let v = -1; v <= 1; v += 0.33) {
+                    const spread = (0.35 + pNorm * 0.25) * Math.sin(u * Math.PI * 0.85);
+                    const theta = baseAngle + v * spread;
+                    const curlOut = Math.pow(u, 2.4) * (8 + pNorm * 10);
+                    const r = layerRadius * (0.55 + u * 0.45) + curlOut;
+
+                    const x = Math.cos(theta) * r;
+                    const z = Math.sin(theta) * r;
+                    const y = -cupHeight * Math.sin(u * Math.PI * 0.75) + Math.pow(u, 3) * 8;
+
+                    const lum = 0.3 + pNorm * 0.35 + u * 0.35;
+                    const color = `rgb(255, ${Math.round(55 + pNorm * 85 + u * 35)}, ${Math.round(105 + pNorm * 65 + u * 30)})`;
+
+                    points.push({ x, y, z, lum, color, distNorm: Math.min(1, pNorm * 0.7 + u * 0.3) });
+                }
+            }
+        }
+    } else if (species === "lily") {
+        const petals = 6;
+        for (let p = 0; p < petals; p++) {
+            const baseA = (p / petals) * Math.PI * 2;
+            const zOffset = (p % 2 === 0 ? 1 : -1) * 3;
+            for (let u = 0.1; u <= 1.05; u += 0.11) {
+                for (let v = -1; v <= 1; v += 0.28) {
+                    const width = Math.sin(u * Math.PI) * 0.3;
+                    const a = baseA + v * width;
+                    const r = u * radius * 1.08;
+                    const recurveZ = zOffset + Math.sin(u * Math.PI * 0.7) * 14 - Math.pow(u, 2.4) * 24;
+
+                    const isMidrib = Math.abs(v) < 0.35;
+                    const lum = 0.45 + u * 0.5;
+                    const color = isMidrib && u < 0.75
+                        ? `rgb(255, ${Math.round(95 + u * 90)}, ${Math.round(170 + u * 60)})`
+                        : `rgb(255, ${Math.round(225 + u * 28)}, ${Math.round(240 + u * 15)})`;
+
+                    points.push({
+                        x: Math.cos(a) * r,
+                        y: Math.sin(a) * r,
+                        z: recurveZ,
+                        lum,
+                        color,
+                        distNorm: Math.min(1, u)
+                    });
+                }
+            }
+        }
+    } else if (species === "tulip") {
         const petals = 6;
         for (let p = 0; p < petals; p++) {
             const baseAngle = (p / petals) * Math.PI * 2 + (p % 2) * 0.25;
@@ -84,7 +205,7 @@ export function generateFlower3DPoints(species, radius = 58) {
             }
         });
     } else {
-        // Matahari (Sunflower)
+        // Matahari (Sunflower) untuk latar belakang
         const coreCount = 55;
         const goldenAngle = Math.PI * (3 - Math.sqrt(5));
         for (let i = 0; i < coreCount; i++) {
@@ -141,7 +262,6 @@ export function initFireflies() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d", { alpha: true });
 
-    // Hanya Anggrek dan Matahari di latar belakang (bunga berbentuk bola dihapus)
     const SPECIES_LIST = ["orchid", "sunflower"];
 
     function resizeCanvas() {
@@ -167,7 +287,6 @@ export function initFireflies() {
         return ((((val + pad) % span) + span) % span) - pad;
     }
 
-    // 1. Partikel Kunang-Kunang ASCII
     const fireflyCount = window.innerWidth < 520 ? 22 : 34;
     const fireflies = Array.from({ length: fireflyCount }, () => {
         const depth = 0.25 + Math.random() * 0.85;
@@ -187,7 +306,6 @@ export function initFireflies() {
         };
     });
 
-    // 2. Generator Bunga Latar Anti-Tumpuk
     function spawnFloatingFlower(existingFlowers = [], staggerProgress = 0) {
         const species = SPECIES_LIST[Math.floor(Math.random() * SPECIES_LIST.length)];
         const radius = window.innerWidth < 520 ? 36 : 52;
@@ -199,7 +317,6 @@ export function initFireflies() {
         const parallaxFactor = 0.24 + Math.random() * 0.36;
         let maxNearestDist = -1;
 
-        // Cari posisi terjauh dari bunga lain yang sedang tampil agar tidak bertumpuk
         for (let attempt = 0; attempt < 25; attempt++) {
             const candCx = margin + Math.random() * Math.max(100, canvas.width - margin * 2);
             const candBaseY = margin + Math.random() * Math.max(100, canvas.height - margin * 2);
@@ -255,7 +372,6 @@ export function initFireflies() {
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
 
-            // Layer A: Kunang-kunang ASCII
             for (const f of fireflies) {
                 f.x += f.vx + Math.sin(now * 0.001 + f.depth * 6) * 0.12;
                 f.y += f.vy - scrollImpulse * f.depth * 0.12;
@@ -276,7 +392,6 @@ export function initFireflies() {
                 ctx.restore();
             }
 
-            // Layer B: Bunga Mekar -> Langsung Melebar Pecah Tanpa Jeda -> Fade Out
             for (let i = 0; i < bgFlowers.length; i++) {
                 const fl = bgFlowers[i];
                 fl.age += dt;
@@ -292,7 +407,6 @@ export function initFireflies() {
                 const drawCx = fl.cx + Math.sin(smoothScrollY * 0.003 + i) * 14;
                 const drawCy = wrapCoord(fl.baseY - smoothScrollY * fl.parallaxFactor, canvas.height, 85);
 
-                // Mekar mulus (0 -> 0.42) dan melebar mulai t = 0.35 dengan kecepatan awal non-nol agar tidak ada jeda
                 const bloomT = Math.min(1, t / 0.42);
                 const bloomRatio = Math.sin(bloomT * Math.PI * 0.5);
 
