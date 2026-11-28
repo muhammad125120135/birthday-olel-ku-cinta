@@ -3,159 +3,155 @@ import { motionPlay, stagger, EASE_SILKY, SPRING_SNAPPY, SPRING_BOUNCY } from ".
 import { generateFlower3DPoints } from "./fireflies.js";
 
 const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
-const BASKET_TOP_Y = 24;
-let triggerBasketWilt = null;
-let triggerBasketReset = null;
+const RIBBON_Y = 78; // Titik ikatan pita (pusat lenturan tangkai saat tertiup angin)
+let triggerBouquetWilt = null;
+let triggerBouquetReset = null;
 
-function build3DFlowerBasketModel() {
+function build3DSakuraLavenderBouquet() {
     const items = [];
     const ASCII_CHARS = " .:-=+*#%@";
 
-    // 1. Keranjang Anyaman Rotan 3D Penuh 360°
-    const basketBottomY = 86;
-    const rows = 14;
-    const cols = 44;
+    // 1. Kertas Pembungkus Buket Berlapis (Ruffled Pastel Wrapping Paper 3D)
+    const wrapTopY = 12;
+    const wrapBottomY = 132;
+    const rows = 18;
+    const cols = 46;
 
     for (let r = 0; r <= rows; r++) {
-        const u = r / rows;
-        const y = BASKET_TOP_Y + u * (basketBottomY - BASKET_TOP_Y);
-        const radiusX = 74 * (1 - u * 0.34);
-        const radiusZ = 56 * (1 - u * 0.34);
+        const u = r / rows; // 0 = kerah atas kertas, 1 = ujung pegangan bawah
+        const y = wrapTopY + u * (wrapBottomY - wrapTopY);
+
+        // Kerah atas melebar seperti kipas/corong, menyempit di pita (u ~ 0.55), lalu sedikit melebar di kaki
+        let baseR;
+        if (u < 0.55) {
+            const topT = u / 0.55;
+            baseR = 76 * (1 - topT * 0.72) + Math.pow(1 - topT, 2) * 14;
+        } else {
+            const botT = (u - 0.55) / 0.45;
+            baseR = 21 + botT * 13;
+        }
 
         for (let c = 0; c < cols; c++) {
             const a = (c / cols) * Math.PI * 2;
-            const isRim = r === 0 || r === 1;
-            const weave = (r + c) % 2 === 0;
+            // Lipatan gelombang kertas di tepi atas
+            const ruffle = u < 0.35 ? Math.sin(a * 7) * 5.5 * (1 - u / 0.35) : Math.sin(a * 5) * 1.5;
+            const highBackCollar = u < 0.28 && Math.sin(a) < 0
+                ? Math.sin(a) * 18 * (1 - u / 0.28)
+                : 0;
+
+            const r = baseR + ruffle;
+            const x = Math.cos(a) * r;
+            const z = Math.sin(a) * r * 0.78;
+            const isEdge = r === 0 || r === rows;
 
             items.push({
-                x: Math.cos(a) * (isRim ? radiusX + 4 : radiusX),
-                y,
-                z: Math.sin(a) * (isRim ? radiusZ + 3 : radiusZ),
-                part: "basket",
-                char: isRim ? "@" : (weave ? "#" : "="),
-                color: isRim
-                    ? "rgb(236, 186, 132)"
-                    : (weave ? "rgb(204, 148, 96)" : "rgb(168, 116, 72)"),
-                orderNorm: 0.08 + u * 0.22,
-                vx: Math.cos(a) * 0.7,
-                vy: 0.9 + Math.random() * 0.6,
-                vz: Math.sin(a) * 0.7
+                x,
+                y: y + highBackCollar,
+                z,
+                part: "wrap",
+                char: isEdge ? "~" : ASCII_CHARS[Math.floor(3 + Math.cos(a * 2) * 2)],
+                color: Math.sin(a) < 0
+                    ? "rgb(232, 206, 238)" // Lapisan dalam lilac lembut
+                    : "rgb(252, 234, 244)", // Lapisan luar pink krem pastel
+                orderNorm: 0.1 + u * 0.22,
+                vx: Math.cos(a) * 0.9,
+                vy: 0.8 + Math.random() * 0.9,
+                vz: Math.sin(a) * 0.9
             });
         }
     }
 
-    // Dasar keranjang
-    for (let ring = 0.2; ring <= 1; ring += 0.28) {
-        for (let a = 0; a < Math.PI * 2; a += 0.35) {
-            items.push({
-                x: Math.cos(a) * 48 * ring,
-                y: basketBottomY,
-                z: Math.sin(a) * 36 * ring,
-                part: "basket",
-                char: "+",
-                color: "rgb(155, 105, 64)",
-                orderNorm: 0.25,
-                vx: 0,
-                vy: 1.1,
-                vz: 0
-            });
-        }
+    // 2. Pita Sutra Pink-Lilac di Leher Buket (Depan & Belakang untuk Rotasi 360°)
+    for (let a = 0; a < Math.PI * 2; a += 0.16) {
+        items.push({
+            x: Math.cos(a) * 23,
+            y: RIBBON_Y,
+            z: Math.sin(a) * 19,
+            part: "ribbon",
+            char: "#",
+            color: "rgb(255, 112, 175)",
+            orderNorm: 0.26,
+            vx: Math.cos(a) * 1.2,
+            vy: 1.0,
+            vz: Math.sin(a) * 1.2
+        });
     }
 
-    // 2. Pegangan Keranjang Melengkung (Arch Handle) & Pita Pink (Depan & Belakang)
-    const handleSteps = 34;
-    for (let i = 0; i <= handleSteps; i++) {
-        const t = i / handleSteps;
-        const angle = Math.PI * (1 - t);
-        const hx = Math.cos(angle) * 72;
-        const hy = BASKET_TOP_Y - Math.sin(angle) * 86;
-
-        for (const offset of [-2.4, 2.4]) {
-            items.push({
-                x: hx,
-                y: hy + offset,
-                z: offset * 0.9,
-                part: "handle",
-                char: i % 2 === 0 ? "#" : "~",
-                color: "rgb(224, 170, 116)",
-                orderNorm: 0.15 + Math.sin(t * Math.PI) * 0.2,
-                vx: Math.cos(angle) * 0.8,
-                vy: 0.8,
-                vz: (Math.random() - 0.5) * 0.8
-            });
-        }
-    }
-
-    // Pita Pink di Puncak Pegangan Keranjang (sisi depan z:+4 & belakang z:-4 agar bagus saat berputar 360°)
-    const bowCenterY = BASKET_TOP_Y - 86;
-    for (const zSide of [4, -4]) {
-        for (let t = -1; t <= 1; t += 0.14) {
-            const bx = t * 20;
-            const by = bowCenterY + Math.sin(Math.abs(t) * Math.PI) * 7;
+    // Simpul kupu-kupu pita depan & belakang
+    for (const zSide of [20, -20]) {
+        for (let t = -1; t <= 1; t += 0.13) {
+            const bx = t * 22;
+            const by = RIBBON_Y + Math.sin(Math.abs(t) * Math.PI) * 7;
             items.push({
                 x: bx, y: by - 3, z: zSide,
-                part: "ribbon", char: "@", color: "rgb(255, 118, 178)",
-                orderNorm: 0.32, vx: t * 1.4, vy: 1.0, vz: zSide * 0.3
+                part: "ribbon", char: "@", color: "rgb(255, 145, 198)",
+                orderNorm: 0.28, vx: t * 1.4, vy: 1.0, vz: zSide * 0.15
             });
             items.push({
                 x: bx, y: by + 3, z: zSide,
-                part: "ribbon", char: "*", color: "rgb(255, 85, 152)",
-                orderNorm: 0.32, vx: t * 1.4, vy: 1.2, vz: zSide * 0.3
+                part: "ribbon", char: "*", color: "rgb(236, 95, 162)",
+                orderNorm: 0.28, vx: t * 1.4, vy: 1.2, vz: zSide * 0.15
             });
+        }
+
+        // Dua helai pita panjang menjuntai yang berkibar tertiup angin
+        for (const side of [-1, 1]) {
+            for (let s = 1; s <= 12; s++) {
+                const st = s / 12;
+                items.push({
+                    x: side * (6 + st * 12),
+                    y: RIBBON_Y + st * 46,
+                    z: zSide + (side > 0 ? 1 : -1),
+                    part: "ribbon_tail",
+                    tailSide: side,
+                    char: s === 12 ? "v" : "~",
+                    color: "rgb(255, 128, 186)",
+                    orderNorm: 0.3 + st * 0.1,
+                    vx: side * 1.1,
+                    vy: 1.3,
+                    vz: zSide * 0.15
+                });
+            }
         }
     }
 
-    // 3. Dedaunan Menjuntai Melingkar di Tepi Bibir Keranjang
-    const leafAngles = [-2.8, -2.2, -1.55, -0.95, -0.35, 0.3, 0.9, 1.55, 2.15, 2.75];
-    leafAngles.forEach((la) => {
-        for (let s = 0; s <= 5; s++) {
-            const st = s / 5;
-            const lx = Math.cos(la) * (74 + st * 14);
-            const ly = BASKET_TOP_Y + st * 14 + Math.sin(st * Math.PI) * -4;
-            const lz = Math.sin(la) * (56 + st * 11);
-            items.push({
-                x: lx, y: ly, z: lz,
-                part: "leaf",
-                char: st > 0.7 ? "v" : "~",
-                color: "rgb(98, 198, 134)",
-                orderNorm: 0.28 + st * 0.12,
-                vx: Math.cos(la) * 1.1,
-                vy: 1.3,
-                vz: Math.sin(la) * 1.1
-            });
-        }
-    });
+    // 3. Rangkaian 9 Bunga Sakura & Lavender 3D + Tangkai Lentur
+    const bouquetFlowers = [
+        // Lavender tinggi di belakang & samping (memberi siluet buket anggun)
+        { type: "lavender", ox: -28, oy: -46, oz: -14, scale: 36, tiltX: 0.12, tiltZ: -0.26 },
+        { type: "lavender", ox: 28, oy: -46, oz: -14, scale: 36, tiltX: 0.12, tiltZ: 0.26 },
+        { type: "lavender", ox: 0, oy: -54, oz: -18, scale: 38, tiltX: 0.16, tiltZ: 0.04 },
+        { type: "lavender", ox: -42, oy: -24, oz: 4, scale: 31, tiltX: -0.08, tiltZ: -0.42 },
+        { type: "lavender", ox: 42, oy: -24, oz: 4, scale: 31, tiltX: -0.08, tiltZ: 0.42 },
 
-    // 4. Rangkaian 8 Bunga 3D (Matahari, Tulip, Anggrek) menghadap melingkar untuk tampilan 360°
-    const basketFlowers = [
-        { type: "sunflower", ox: 0, oy: -24, oz: 12, scale: 34, tiltX: -0.22, tiltZ: 0 },
-        { type: "sunflower", ox: 0, oy: -28, oz: -16, scale: 30, tiltX: 0.24, tiltZ: 0.05 },
-        { type: "tulip", ox: -38, oy: -12, oz: 14, scale: 28, tiltX: -0.18, tiltZ: -0.35 },
-        { type: "tulip", ox: 38, oy: -12, oz: 14, scale: 28, tiltX: -0.18, tiltZ: 0.35 },
-        { type: "orchid", ox: -28, oy: -22, oz: -18, scale: 30, tiltX: 0.18, tiltZ: -0.25 },
-        { type: "orchid", ox: 28, oy: -22, oz: -18, scale: 30, tiltX: 0.18, tiltZ: 0.25 },
-        { type: "tulip", ox: -16, oy: 2, oz: 26, scale: 25, tiltX: -0.32, tiltZ: -0.15 },
-        { type: "orchid", ox: 17, oy: 0, oz: 24, scale: 26, tiltX: -0.32, tiltZ: 0.18 }
+        // Sakura mekar bertingkat di tengah & depan
+        { type: "sakura", ox: 0, oy: -22, oz: 14, scale: 34, tiltX: -0.24, tiltZ: 0 },
+        { type: "sakura", ox: -24, oy: -12, oz: 18, scale: 30, tiltX: -0.22, tiltZ: -0.28 },
+        { type: "sakura", ox: 24, oy: -12, oz: 18, scale: 30, tiltX: -0.22, tiltZ: 0.28 },
+        { type: "sakura", ox: 0, oy: 4, oz: 26, scale: 28, tiltX: -0.35, tiltZ: 0.06 }
     ];
 
-    basketFlowers.forEach((b, bIdx) => {
-        const steps = 10;
+    bouquetFlowers.forEach((b, bIdx) => {
+        // Tangkai hijau lembut dari kepala bunga turun ke ikatan pita
+        const steps = 14;
         for (let s = 0; s <= steps; s++) {
             const st = s / steps;
             items.push({
-                x: b.ox * (1 - st * 0.35),
-                y: b.oy + (BASKET_TOP_Y + 14 - b.oy) * st,
-                z: b.oz * (1 - st * 0.35),
+                x: b.ox * (1 - st * 0.82),
+                y: b.oy + (RIBBON_Y - b.oy) * st,
+                z: b.oz * (1 - st * 0.82),
+                flowerIndex: bIdx,
                 part: "stem",
                 char: "|",
-                color: "rgb(108, 208, 142)",
-                orderNorm: 0.22 + st * 0.15,
+                color: "rgb(112, 206, 148)",
+                orderNorm: 0.18 + st * 0.16,
                 vx: (Math.random() - 0.5) * 0.7,
                 vy: 1.0 + Math.random() * 0.8,
                 vz: (Math.random() - 0.5) * 0.7
             });
         }
 
+        // Kepala bunga Sakura / Lavender 3D
         const flowerPts = generateFlower3DPoints(b.type, b.scale);
         flowerPts.forEach((pt) => {
             const y1 = pt.y * Math.cos(b.tiltX) - pt.z * Math.sin(b.tiltX);
@@ -168,17 +164,37 @@ function build3DFlowerBasketModel() {
                 x: b.ox + x2,
                 y: b.oy + y2,
                 z: b.oz + z1,
+                flowerIndex: bIdx,
                 part: "flower",
                 char: ASCII_CHARS[shadeIdx],
                 sparkChar: pt.sparkChar,
                 color: pt.color,
-                orderNorm: 0.35 + pt.distNorm * 0.65,
-                vx: pt.vx * 1.1 + (bIdx - 3.5) * 0.22,
+                orderNorm: 0.34 + pt.distNorm * 0.66,
+                vx: pt.vx * 1.15 + (bIdx - 4) * 0.24,
                 vy: pt.vy * 1.05,
-                vz: pt.vz * 1.1
+                vz: pt.vz * 1.15
             });
         });
     });
+
+    // 4. Kelopak Sakura Kecil Melayang Tertiup Angin di Sekitar Buket
+    for (let p = 0; p < 10; p++) {
+        const angle = (p / 10) * Math.PI * 2;
+        const dist = 62 + (p % 3) * 18;
+        items.push({
+            x: Math.cos(angle) * dist,
+            y: -45 + (p % 5) * 20,
+            z: Math.sin(angle) * dist,
+            petalPhase: p * 0.9,
+            part: "ambient_petal",
+            char: p % 2 === 0 ? "✿" : "·",
+            color: p % 3 === 0 ? "rgb(205, 165, 255)" : "rgb(255, 195, 224)",
+            orderNorm: 0.55 + (p / 10) * 0.4,
+            vx: Math.cos(angle) * 1.5,
+            vy: 0.6 + (p % 3) * 0.3,
+            vz: Math.sin(angle) * 1.5
+        });
+    }
 
     return items;
 }
@@ -188,23 +204,24 @@ function initAsciiBouquet() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    // Perluas bidang resolusi kanvas agar kelopak yang bertebaran tidak terpotong tepi kotak
+    // Kanvas lebar agar kelopak yang bertebaran saat diklik tidak terpotong tepi kartu
     canvas.width = 620;
     canvas.height = 540;
 
-    const model = build3DFlowerBasketModel();
+    const model = build3DSakuraLavenderBouquet();
     const cx = canvas.width / 2;
-    const cy = canvas.height / 2 + 14;
-    
+    const cy = canvas.height / 2 + 6;
+
     let state = "blooming"; // "blooming" -> "idle" -> "wilting" -> "hidden"
     let stateProgress = 0;
-    let rotY = 0; // Sudut rotasi Y terus berputar 360 derajat (0 -> 2π)
+    let rotY = 0;
+    let windTime = 0;
     let wiltResetTimer = null;
 
     const TWO_PI = Math.PI * 2;
-    const ROTATE_SPEED = 0.65; // Kecepatan putar 360° yang halus dan jelas terlihat (~9.6 detik per 1 putaran penuh)
+    const ROTATE_SPEED = 0.58;
 
-    triggerBasketReset = () => {
+    triggerBouquetReset = () => {
         if (wiltResetTimer) {
             clearTimeout(wiltResetTimer);
             wiltResetTimer = null;
@@ -213,7 +230,7 @@ function initAsciiBouquet() {
         stateProgress = 0;
     };
 
-    triggerBasketWilt = () => {
+    triggerBouquetWilt = () => {
         if (state === "wilting") return;
         if (wiltResetTimer) {
             clearTimeout(wiltResetTimer);
@@ -229,7 +246,7 @@ function initAsciiBouquet() {
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting && state !== "wilting") {
-                        triggerBasketReset();
+                        triggerBouquetReset();
                     }
                 });
             },
@@ -240,7 +257,7 @@ function initAsciiBouquet() {
 
     let lastTime = performance.now();
 
-    function renderBasketFrame(now) {
+    function renderBouquetFrame(now) {
         const dt = Math.min(0.05, (now - lastTime) / 1000);
         lastTime = now;
 
@@ -260,20 +277,25 @@ function initAsciiBouquet() {
                 if (stateProgress >= 1) {
                     state = "hidden";
                     wiltResetTimer = setTimeout(() => {
-                        triggerBasketReset();
+                        triggerBouquetReset();
                         const msg = document.getElementById("bouquet-msg");
-                        if (msg) msg.innerText = "A fresh flower basket bloomed again for you 🌸";
+                        if (msg) msg.innerText = "Buket Sakura & Lavender segar kembali mekar untukmu 🌸💜";
                     }, 900);
                 }
             }
 
-            // Terus berputar 360 derajat searah jarum jam tanpa henti
             if (state !== "hidden") {
                 rotY = (rotY + dt * ROTATE_SPEED) % TWO_PI;
+                windTime += dt;
+
+                // Hembusan angin lembut multi-gelombang
+                const breezeStrength = 0.65 + 0.35 * Math.sin(windTime * 0.75);
+                const globalWindX = Math.sin(windTime * 1.45) * breezeStrength;
+                const globalWindZ = Math.cos(windTime * 1.15) * 0.65 * breezeStrength;
 
                 const bloomEase = state === "blooming" ? 1 - Math.pow(1 - stateProgress, 3) : 1;
                 const wiltT = state === "wilting" ? stateProgress : 0;
-                const rotX = 0.22;
+                const rotX = 0.16;
 
                 const projected = [];
 
@@ -287,31 +309,54 @@ function initAsciiBouquet() {
                     let char = item.char;
                     let color = item.color;
 
+                    // Transisi masuk: mekar mengembang dari ikatan pita
                     if (state === "blooming") {
-                        const grow = 0.22 + 0.78 * bloomEase;
+                        const grow = 0.2 + 0.8 * bloomEase;
                         x *= grow;
-                        y = 32 + (y - 32) * grow;
+                        y = RIBBON_Y + (y - RIBBON_Y) * grow;
                         z *= grow;
                     }
 
+                    // Animasi tertiup angin pada tangkai, kepala bunga, pita menjuntai, & kelopak melayang
+                    if (item.part === "stem" || item.part === "flower") {
+                        const heightAboveTie = Math.max(0, RIBBON_Y - y);
+                        const flex = Math.pow(heightAboveTie / 110, 1.45);
+                        const phase = (item.flowerIndex || 0) * 0.75;
+                        const localSwayX = (globalWindX + Math.sin(windTime * 2.1 + phase) * 0.35) * 16 * flex;
+                        const localSwayZ = (globalWindZ + Math.cos(windTime * 1.8 + phase) * 0.35) * 12 * flex;
+
+                        x += localSwayX;
+                        z += localSwayZ;
+                        y += (Math.abs(localSwayX) + Math.abs(localSwayZ)) * 0.14;
+                    } else if (item.part === "ribbon_tail") {
+                        const dropDist = Math.max(0, y - RIBBON_Y);
+                        const tailFlex = Math.pow(dropDist / 46, 1.35);
+                        x += Math.sin(windTime * 2.4 - dropDist * 0.08 + item.tailSide) * 10 * tailFlex;
+                        z += Math.cos(windTime * 2.0 - dropDist * 0.08) * 6 * tailFlex;
+                    } else if (item.part === "ambient_petal") {
+                        x += Math.sin(windTime * 1.3 + item.petalPhase) * 14 + globalWindX * 10;
+                        y += Math.cos(windTime * 1.6 + item.petalPhase) * 9;
+                        z += Math.sin(windTime * 1.1 + item.petalPhase) * 12;
+                        alpha = 0.55 + 0.35 * Math.sin(windTime * 2.2 + item.petalPhase);
+                    }
+
+                    // Transisi saat diklik: tangkai melengkung layu, kelopak terurai tertiup angin
                     if (wiltT > 0) {
-                        const droopAngle = wiltT * 0.78;
-                        const pivotY = BASKET_TOP_Y + 12;
-                        if (y < pivotY) {
-                            const dy = y - pivotY;
-                            y = pivotY + dy * Math.cos(droopAngle) + Math.abs(x) * wiltT * 0.28;
+                        const droopAngle = wiltT * 0.82;
+                        if (y < RIBBON_Y) {
+                            const dy = y - RIBBON_Y;
+                            y = RIBBON_Y + dy * Math.cos(droopAngle) + Math.abs(x) * wiltT * 0.3;
                             z += Math.abs(dy) * Math.sin(droopAngle) * 0.55;
                         }
 
-                        if (item.part === "flower") {
-                            const disperse = Math.pow(wiltT, 1.25) * 56;
-                            x += item.vx * disperse;
-                            y += item.vy * disperse + 52 * wiltT * wiltT;
+                        if (item.part === "flower" || item.part === "ambient_petal") {
+                            const disperse = Math.pow(wiltT, 1.2) * 64;
+                            x += (item.vx + 0.65) * disperse; // ikut terbawa angin ke samping
+                            y += item.vy * disperse + 48 * wiltT * wiltT;
                             z += item.vz * disperse;
                             if (wiltT > 0.25 && item.sparkChar) char = item.sparkChar;
-                            color = `rgba(235, 175, 195, ${Math.max(0, 1 - wiltT * 1.25)})`;
                         }
-                        alpha = Math.max(0, 1 - Math.pow(wiltT, 1.3));
+                        alpha *= Math.max(0, 1 - Math.pow(wiltT, 1.3));
                     }
 
                     // Rotasi 3D 360° + proyeksi perspektif
@@ -320,7 +365,7 @@ function initAsciiBouquet() {
                     const x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
                     const z2 = -x * Math.sin(rotY) + z1 * Math.cos(rotY);
 
-                    const fov = 320;
+                    const fov = 340;
                     const scale = fov / (fov + z2);
 
                     projected.push({
@@ -345,10 +390,10 @@ function initAsciiBouquet() {
                 }
             }
         }
-        requestAnimationFrame(renderBasketFrame);
+        requestAnimationFrame(renderBouquetFrame);
     }
 
-    requestAnimationFrame(renderBasketFrame);
+    requestAnimationFrame(renderBouquetFrame);
 }
 
 export function initSurprises() {
@@ -380,8 +425,8 @@ export const surpriseHandlers = {
 
         motionPlay(activePanel, { opacity: [0, 1], y: [12, 0] }, { duration: 0.45, ease: EASE_SILKY });
 
-        if (optionNumber === 1 && typeof triggerBasketReset === "function") {
-            triggerBasketReset();
+        if (optionNumber === 1 && typeof triggerBouquetReset === "function") {
+            triggerBouquetReset();
         }
 
         if (optionNumber === 2) {
@@ -392,8 +437,8 @@ export const surpriseHandlers = {
         if (event) event.stopPropagation();
         const msg = document.getElementById("bouquet-msg");
 
-        if (typeof triggerBasketWilt === "function") {
-            triggerBasketWilt();
+        if (typeof triggerBouquetWilt === "function") {
+            triggerBouquetWilt();
         }
 
         motionPlay(
@@ -404,7 +449,7 @@ export const surpriseHandlers = {
         motionPlay("#bouquet-aura", { scale: [1, 1.25, 0.6], opacity: [0.8, 1, 0.2] }, { duration: 1.4, ease: EASE_SILKY });
 
         if (msg) {
-            msg.innerText = "Kelopaknya terurai tertiup angin malam... ✨🌸";
+            msg.innerText = "Kelopak Sakura & Lavender bertebaran tertiup angin... ✨🌸💜";
         }
     },
     blowCandle: () => {
