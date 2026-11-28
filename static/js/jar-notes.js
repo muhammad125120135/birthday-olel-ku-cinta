@@ -309,7 +309,7 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
 }
 
 // ============================================================================
-// ANIMASI TULISAN BAWAH: WARNA-WARNI PELANGI & MELENGKUNG DARI KIRI KE KANAN
+// ANIMASI TULISAN BAWAH: GELOMBANG HALUS & WARNA MENGIKUTI FASE GELOMBANG
 // ============================================================================
 function initCurvedRainbowLabels() {
     const pills = document.querySelectorAll(".wing-mini-pill");
@@ -334,13 +334,13 @@ function initCurvedRainbowLabels() {
             return span;
         });
 
-        letterGroups.push({ spans, offsetPhase: pillIdx * 1.2 });
+        letterGroups.push({ spans, offsetPhase: pillIdx * 1.4 });
     });
 
     if (letterGroups.length === 0) return;
 
     function animateRainbowWave(now) {
-        const t = now * 0.001;
+        const t = prefersReducedMotion ? 0 : now * 0.001;
 
         letterGroups.forEach(({ spans, offsetPhase }) => {
             const len = spans.length;
@@ -348,16 +348,23 @@ function initCurvedRainbowLabels() {
                 const span = spans[i];
                 const norm = len > 1 ? (i / (len - 1)) * 2 - 1 : 0; // -1 (kiri) ke +1 (kanan)
 
-                // Lengkungan busur (arch) + gelombang merambat dari kiri ke kanan
-                const archY = (norm * norm - 0.45) * 5.2;
-                const waveY = prefersReducedMotion ? 0 : Math.sin(t * 3.6 - i * 0.48 + offsetPhase) * 3.6;
-                const y = archY + waveY;
-                const rot = norm * 6.5 + (prefersReducedMotion ? 0 : Math.cos(t * 3.6 - i * 0.48 + offsetPhase) * 3.5);
+                // Fase gelombang lembut yang mengalir dari kiri ke kanan
+                const wavePhase = t * 2.0 - i * 0.32 + offsetPhase;
+                const waveSin = Math.sin(wavePhase);
+                const waveCos = Math.cos(wavePhase);
 
-                // Warna-warni pelangi pastel mengalir dari kiri ke kanan
-                const hue = Math.round(((i * 24) - (prefersReducedMotion ? 0 : t * 125) + 3600) % 360);
-                span.style.color = `hsl(${hue}, 95%, 76%)`;
-                span.style.textShadow = `0 0 10px hsla(${hue}, 95%, 64%, 0.55)`;
+                // Lengkungan & ayunan gelombang yang sudah dilemahkan
+                const archY = (norm * norm - 0.45) * 2.4;
+                const waveY = waveSin * 1.45;
+                const y = archY + waveY;
+                const rot = norm * 3.0 + waveCos * 1.3;
+
+                // Warna & kecerahan dikunci langsung ke fase gelombang
+                const hue = Math.round(((wavePhase * (180 / Math.PI)) % 360 + 360) % 360);
+                const lightness = Math.round(74 + waveSin * 5);
+
+                span.style.color = `hsl(${hue}, 92%, ${lightness}%)`;
+                span.style.textShadow = `0 0 8px hsla(${hue}, 92%, 62%, 0.48)`;
                 span.style.transform = `translateY(${y.toFixed(2)}px) rotate(${rot.toFixed(1)}deg)`;
             }
         });
