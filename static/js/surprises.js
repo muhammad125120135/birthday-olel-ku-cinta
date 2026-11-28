@@ -444,14 +444,14 @@ function build3DStarlightCakeModel() {
             const isCreamLayer = Math.abs(u - 0.56) < 0.07;
 
             let char = "#";
-            let color = "rgb(252, 185, 214)"; // Bolu stroberi pastel
+            let color = "rgb(252, 185, 214)";
 
             if (isDrip) {
                 char = u > dripLimit - 0.08 ? "~" : "@";
-                color = "rgb(255, 242, 250)"; // Lelehan krim putih-pink
+                color = "rgb(255, 242, 250)";
             } else if (isCreamLayer) {
                 char = "=";
-                color = "rgb(225, 195, 255)"; // Lapisan krim lilac di tengah kue
+                color = "rgb(225, 195, 255)";
             }
 
             bodyPoints.push({
@@ -466,7 +466,7 @@ function build3DStarlightCakeModel() {
         }
     }
 
-    // D. Mutiara Gula di Pinggir Bawah & Atas Kue
+    // D. Mutiara Gula di Pinggir Bawah Kue
     const pearlCount = 26;
     for (let i = 0; i < pearlCount; i++) {
         const a = (i / pearlCount) * Math.PI * 2;
@@ -481,7 +481,7 @@ function build3DStarlightCakeModel() {
         });
     }
 
-    // E. 8 Pusaran Krim Kocok (Whipped Cream Swirls) di Atas Kue
+    // E. 8 Pusaran Krim Kocok di Atas Kue
     const swirlCount = 8;
     for (let s = 0; s < swirlCount; s++) {
         const sa = (s / swirlCount) * Math.PI * 2;
@@ -505,13 +505,15 @@ function build3DStarlightCakeModel() {
         }
     }
 
-    // F. Lilin Ulang Tahun Bergaris di Tengah Kue
-    const candleTopY = -34;
-    for (let cy = cakeTopY; cy >= candleTopY; cy -= 3.2) {
-        const stepIdx = Math.round((cakeTopY - cy) / 3.2);
+    // F. Lilin Ulang Tahun Bergaris tepat di Poros Tengah (x = 0, z = 0)
+    const candleSteps = 11;
+    const candleHeight = 34;
+    const candleTopY = cakeTopY - candleHeight; // -32
+    for (let s = 0; s <= candleSteps; s++) {
+        const cy = cakeTopY - (s / candleSteps) * candleHeight;
         for (let c = 0; c < 10; c++) {
             const a = (c / 10) * Math.PI * 2;
-            const isStripe = (stepIdx + c) % 3 === 0;
+            const isStripe = (s + c) % 3 === 0;
             bodyPoints.push({
                 x: Math.cos(a) * 4.5,
                 y: cy,
@@ -519,15 +521,16 @@ function build3DStarlightCakeModel() {
                 part: "candle",
                 char: isStripe ? "/" : "|",
                 color: isStripe ? "rgb(255, 108, 175)" : "rgb(255, 248, 252)",
-                orderNorm: 0.65 + ((cakeTopY - cy) / (cakeTopY - candleTopY)) * 0.2
+                orderNorm: 0.65 + (s / candleSteps) * 0.2
             });
         }
     }
 
-    // Sumbu lilin
+    // Sumbu lilin tepat di puncak lilin
+    const wickTopY = candleTopY - 3;
     bodyPoints.push({
         x: 0,
-        y: candleTopY - 3,
+        y: wickTopY,
         z: 0,
         part: "wick",
         char: "|",
@@ -535,7 +538,7 @@ function build3DStarlightCakeModel() {
         orderNorm: 0.88
     });
 
-    // G. Cincin Orbit Bintang & Hati Miring (Saturn-like Starlight Ring)
+    // G. Cincin Orbit Bintang & Hati Miring
     const orbitCount = 54;
     for (let i = 0; i < orbitCount; i++) {
         const a = (i / orbitCount) * Math.PI * 2;
@@ -567,14 +570,13 @@ function build3DStarlightCakeModel() {
         });
     }
 
-    return { bodyPoints, orbitPoints, wickY: candleTopY - 4 };
+    return { bodyPoints, orbitPoints, wickY: wickTopY };
 }
 
 function initAsciiCake() {
     const cakeBox = document.getElementById("cake-box");
     if (!cakeBox) return;
 
-    // Pastikan canvas 3D terpasang di dalam #cake-box (menggantikan kue statis lama)
     let canvas = document.getElementById("ascii-cake-canvas");
     if (!canvas) {
         cakeBox.innerHTML = "";
@@ -593,7 +595,7 @@ function initAsciiCake() {
 
     let flameLit = true;
     let entranceProgress = 0;
-    let ringPulse = 0; // Gelombang mekar cincin orbit saat lilin ditiup
+    let ringPulse = 0;
     let rotY = 0;
     let orbitSpin = 0;
     let time = 0;
@@ -601,9 +603,9 @@ function initAsciiCake() {
 
     function spawnSmokePuff() {
         smokeParticles.push({
-            x: (Math.random() - 0.5) * 3,
-            y: wickY - 2,
-            z: (Math.random() - 0.5) * 3,
+            x: (Math.random() - 0.5) * 2.5,
+            dy: -1,
+            z: (Math.random() - 0.5) * 2.5,
             vx: (Math.random() - 0.5) * 8,
             vy: -(18 + Math.random() * 14),
             phase: Math.random() * Math.PI * 2,
@@ -613,6 +615,21 @@ function initAsciiCake() {
         });
     }
 
+    // Proyeksi seragam: putar sumbu Y dulu (poros tengah kue), lalu miringkan kamera (rotX)
+    function projectCakePoint(x, y, z, currentRotY, rotX, fov) {
+        const x1 = x * Math.cos(currentRotY) + z * Math.sin(currentRotY);
+        const z1 = -x * Math.sin(currentRotY) + z * Math.cos(currentRotY);
+        const y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
+        const z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX);
+        const scale = fov / (fov + z2);
+        return {
+            px: cx + x1 * scale,
+            py: cy + y2 * scale,
+            z: z2,
+            scale
+        };
+    }
+
     triggerCakeEntrance = () => {
         entranceProgress = 0;
     };
@@ -620,13 +637,11 @@ function initAsciiCake() {
     triggerCakeBlowToggle = () => {
         flameLit = !flameLit;
         if (!flameLit) {
-            // Lilin ditiup: cincin orbit memancarkan gelombang & asap mengepul naik
             ringPulse = 1;
             for (let i = 0; i < 14; i++) {
                 setTimeout(() => spawnSmokePuff(), i * 110);
             }
         } else {
-            // Lilin dinyalakan kembali
             ringPulse = 0.45;
             smokeParticles.length = 0;
         }
@@ -674,32 +689,28 @@ function initAsciiCake() {
             }
 
             const easeIn = 1 - Math.pow(1 - entranceProgress, 3);
-            const hoverY = Math.sin(time * 2.1) * 5.5; // Efek kue melayang lembut
+            const grow = 0.35 + 0.65 * easeIn;
+            const hoverY = Math.sin(time * 2.1) * 5.5;
             const rotX = 0.26;
             const fov = 330;
 
             const projected = [];
 
-            // 1. Render Badan Kue, Krim, Piring, & Lilin
+            // 1. Render Badan Kue, Krim, Piring, Lilin, & Sumbu
             for (const pt of bodyPoints) {
                 if (pt.orderNorm > easeIn * 1.05) continue;
 
-                const grow = 0.35 + 0.65 * easeIn;
-                const x = pt.x * grow;
-                const y = pt.y * grow + hoverY;
-                const z = pt.z * grow;
+                const proj = projectCakePoint(
+                    pt.x * grow,
+                    pt.y * grow + hoverY,
+                    pt.z * grow,
+                    rotY,
+                    rotX,
+                    fov
+                );
 
-                const y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
-                const z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
-                const x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
-                const z2 = -x * Math.sin(rotY) + z1 * Math.cos(rotY);
-
-                const scale = fov / (fov + z2);
                 projected.push({
-                    px: cx + x2 * scale,
-                    py: cy + y1 * scale,
-                    z: z2,
-                    scale,
+                    ...proj,
                     alpha: easeIn,
                     char: pt.char,
                     color: pt.color,
@@ -718,12 +729,10 @@ function initAsciiCake() {
                 const a = op.angle + orbitSpin;
                 const r = (op.baseRadius + pulseExpand) * (0.4 + 0.6 * easeIn);
 
-                // Posisi di bidang datar cincin
                 const rx0 = Math.cos(a) * r;
                 const ry0 = op.yOffset;
                 const rz0 = Math.sin(a) * r;
 
-                // Miringkan bidang cincin seperti cincin Saturnus
                 const ry1 = ry0 * Math.cos(ringTiltX) - rz0 * Math.sin(ringTiltX);
                 const rz1 = ry0 * Math.sin(ringTiltX) + rz0 * Math.cos(ringTiltX);
                 const rx2 = rx0 * Math.cos(ringTiltZ) - ry1 * Math.sin(ringTiltZ);
@@ -744,37 +753,36 @@ function initAsciiCake() {
                 });
             }
 
-            // 3. Render Api Lilin (jika menyala) atau Asap Mengepul (jika ditiup)
+            // Posisi puncak sumbu saat ini (mengikuti skala grow & gerakan melayang hoverY)
+            const currentWickY = wickY * grow + hoverY;
+
+            // 3. Render Api Lilin tepat di atas sumbu
             if (flameLit && easeIn > 0.75) {
-                const flameSway = Math.sin(time * 9) * 1.8 + Math.cos(time * 14) * 0.9;
-                const flameFlicker = 0.9 + 0.15 * Math.sin(time * 16);
+                const flameSway = Math.sin(time * 9) * 1.6 + Math.cos(time * 14) * 0.8;
+                const flameFlicker = 0.9 + 0.14 * Math.sin(time * 16);
 
                 const flameLayers = [
-                    { dy: -3, r: 3.2, char: "@", color: "rgb(255, 250, 215)" },
-                    { dy: -7, r: 4.0, char: "#", color: "rgb(255, 212, 92)" },
-                    { dy: -11, r: 3.0, char: "*", color: "rgb(255, 148, 82)" },
-                    { dy: -15, r: 1.6, char: "^", color: "rgb(255, 108, 120)" },
-                    { dy: -19, r: 0.4, char: "·", color: "rgb(255, 220, 140)" }
+                    { dy: -1.5, r: 2.8, char: "@", color: "rgb(255, 250, 215)" },
+                    { dy: -5.0, r: 3.6, char: "#", color: "rgb(255, 212, 92)" },
+                    { dy: -8.5, r: 2.7, char: "*", color: "rgb(255, 148, 82)" },
+                    { dy: -12.0, r: 1.4, char: "^", color: "rgb(255, 108, 120)" },
+                    { dy: -15.5, r: 0.3, char: "·", color: "rgb(255, 220, 140)" }
                 ];
 
                 flameLayers.forEach((fl, idx) => {
                     const steps = fl.r > 1 ? 6 : 1;
                     for (let s = 0; s < steps; s++) {
                         const sa = (s / steps) * Math.PI * 2 + time * 4;
-                        const fx = Math.cos(sa) * fl.r + flameSway * (idx * 0.28);
-                        const fy = wickY + fl.dy * flameFlicker + hoverY;
+                        const fx = Math.cos(sa) * fl.r + flameSway * (idx * 0.26);
+                        const fy = currentWickY + fl.dy * flameFlicker;
                         const fz = Math.sin(sa) * fl.r;
 
-                        const y1 = fy * Math.cos(rotX) - fz * Math.sin(rotX);
-                        const z1 = fy * Math.sin(rotX) + fz * Math.cos(rotX);
-                        const scale = fov / (fov + z1);
-
+                        const proj = projectCakePoint(fx, fy, fz, rotY, rotX, fov);
                         projected.push({
-                            px: cx + fx * scale,
-                            py: cy + y1 * scale,
-                            z: z1 - 4,
-                            scale: scale * 1.08,
-                            alpha: 0.95,
+                            ...proj,
+                            z: proj.z - 4,
+                            scale: proj.scale * 1.06,
+                            alpha: 0.96,
                             char: fl.char,
                             color: fl.color,
                             glow: "rgba(255, 200, 95, 0.9)"
@@ -783,7 +791,7 @@ function initAsciiCake() {
                 });
             }
 
-            // Update & render partikel asap saat lilin padam
+            // 4. Render Asap Mengepul dari Sumbu saat Lilin Padam
             for (let i = smokeParticles.length - 1; i >= 0; i--) {
                 const sp = smokeParticles[i];
                 sp.age += dt;
@@ -792,19 +800,14 @@ function initAsciiCake() {
                     continue;
                 }
                 const st = sp.age / sp.life;
-                const sx = sp.x + Math.sin(time * 4 + sp.phase) * (4 + st * 14) + sp.vx * st;
-                const sy = sp.y + sp.vy * sp.age + hoverY;
-                const sz = sp.z + Math.cos(time * 3.5 + sp.phase) * 5;
+                const sx = sp.x + Math.sin(time * 4 + sp.phase) * (3 + st * 13) + sp.vx * st;
+                const sy = currentWickY + sp.dy + sp.vy * sp.age;
+                const sz = sp.z + Math.cos(time * 3.5 + sp.phase) * 4;
 
-                const y1 = sy * Math.cos(rotX) - sz * Math.sin(rotX);
-                const z1 = sy * Math.sin(rotX) + sz * Math.cos(rotX);
-                const scale = fov / (fov + z1);
-
+                const proj = projectCakePoint(sx, sy, sz, rotY, rotX, fov);
                 projected.push({
-                    px: cx + sx * scale,
-                    py: cy + y1 * scale,
-                    z: z1,
-                    scale: scale * (0.9 + st * 0.4),
+                    ...proj,
+                    scale: proj.scale * (0.9 + st * 0.4),
                     alpha: (1 - st) * 0.78,
                     char: sp.char,
                     color: "rgb(218, 212, 238)",
