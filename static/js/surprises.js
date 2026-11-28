@@ -594,7 +594,7 @@ function initAsciiCake() {
 
     const { bodyPoints, orbitPoints, wickY } = build3DStarlightCakeModel();
     const cx = canvas.width / 2;
-    const cy = canvas.height / 2 + 14;
+    const cy = canvas.height / 2 - 22;
 
     let flameLit = true;
     let entranceProgress = 0;
