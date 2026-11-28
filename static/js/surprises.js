@@ -210,7 +210,7 @@ function initAsciiBouquet() {
 
     const model = build3DSakuraLavenderBouquet();
     const cx = canvas.width / 2;
-    const cy = canvas.height / 2 + 6;
+    const cy = canvas.height / 2 - 28;
 
     let state = "blooming"; // "blooming" -> "idle" -> "wilting" -> "hidden"
     let stateProgress = 0;
