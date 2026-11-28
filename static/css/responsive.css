@@ -12,9 +12,21 @@
     .wing-note-tag { font-size: 0.88rem; padding: 3px 10px; margin-bottom: 4px; }
     .wing-mini-pill { font-size: 0.86rem; padding: 4px 11px; margin-top: 6px; }
     .wing-deco { font-size: 1rem; }
+
+    /* Proporsi Jar untuk Tablet */
     .jar { width: 126px; }
-    .jar-glass { width: 122px; height: 168px; }
-    .note-slip { width: 30px; height: 23px; font-size: 0.72rem; }
+    .jar-lid { width: 70px; height: 15px; border-radius: 5px 5px 2px 2px; }
+    .jar-neck { width: 62px; height: 11px; }
+    .jar-glass { width: 122px; height: 162px; border-radius: 27px; }
+    .jar-glass::after { top: 11px; left: 11px; width: 8px; height: 88px; }
+    .note-slip { width: 28px; height: 22px; font-size: 0.68rem; border-radius: 5px; }
+    .s1 { bottom: 11px; left: 13px; }
+    .s2 { bottom: 12px; right: 14px; }
+    .s3 { bottom: 34px; left: 42px; }
+    .s4 { bottom: 54px; left: 16px; }
+    .s5 { bottom: 51px; right: 18px; }
+    .s6 { bottom: 75px; left: 38px; }
+    .s7 { bottom: 30px; left: 11px; }
 }
 
 @media (max-width: 480px) {
@@ -42,15 +54,33 @@
     .btn-scrapbook-nav { padding: 7px 12px; font-size: 0.7rem; }
     .scrapbook-page-badge { font-size: 0.7rem; padding: 5px 11px; }
 
-    /* Jar & ASCII Art di HP */
+    /* Jar & ASCII Art di HP (Elemen sekitar tidak berubah) */
     .jar-area { padding-left: 10px; padding-right: 10px; }
     .jar-stage { gap: 4px; width: 100%; }
     .jar-side-wing { flex: 1 1 0; min-width: 0; max-width: 132px; }
     .jar-ascii-wrap { width: 100%; height: 180px; }
     .wing-note-tag { font-size: 0.74rem; padding: 3px 8px; margin-bottom: 3px; }
     .wing-mini-pill { font-size: 0.74rem; padding: 3px 8px; margin-top: 5px; }
+
+    /* Proporsi Botol Jar Tengah di HP */
     .jar { width: 98px; }
-    .jar-glass { width: 94px; height: 140px; }
+    .jar-lid { width: 55px; height: 12px; border-radius: 4px 4px 2px 2px; }
+    .jar-neck { width: 48px; height: 9px; }
+    .jar-glass { width: 94px; height: 128px; border-radius: 21px; }
+    .jar-glass::after { top: 9px; left: 9px; width: 6px; height: 68px; }
+    .jar-sparkle { font-size: 0.54rem; }
+    .sp1 { top: 18px; left: 20px; }
+    .sp2 { top: 28px; right: 21px; }
+    .sp3 { top: 42px; left: 42px; }
+    .sp4 { top: 15px; right: 34px; }
+    .note-slip { width: 22px; height: 17px; font-size: 0.56rem; border-radius: 4px; }
+    .s1 { bottom: 9px; left: 10px; }
+    .s2 { bottom: 10px; right: 11px; }
+    .s3 { bottom: 26px; left: 32px; }
+    .s4 { bottom: 42px; left: 12px; }
+    .s5 { bottom: 40px; right: 14px; }
+    .s6 { bottom: 58px; left: 30px; }
+    .s7 { bottom: 24px; left: 9px; }
 
     /* Ukuran Kanvas 3D Bouquet & Cake di HP */
     .bouquet-box { width: 280px; height: 268px; }

@@ -163,7 +163,7 @@ function sampleImageToAsciiParticles(img, canvasW, canvasH, sideDir) {
     return particles;
 }
 
-function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
+    function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
     const wrap = document.getElementById(wrapId);
     const canvas = document.getElementById(canvasId);
     if (!wrap || !canvas) return;
@@ -174,7 +174,7 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
     canvas.width = W;
     canvas.height = H;
 
-    // Kanvas bayangan untuk menyimpan bentuk ASCII saat diam (1x gambar, bukan 4.000x per frame)
+    // Kanvas bayangan untuk menyimpan bentuk ASCII dasar agar render gelombang tetap ringan
     const staticCanvas = document.createElement("canvas");
     staticCanvas.width = W;
     staticCanvas.height = H;
@@ -185,6 +185,14 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
     let progress = 0;
     let reenterTimer = null;
     let time = 0;
+    const phaseOffset = sideDir > 0 ? 1.5 : 0;
+
+    function getGentleWaveOffsetX(yPos, nowSec) {
+        if (prefersReducedMotion) return 0;
+        // Amplop halus agar bagian tengah tubuh berayun lembut tanpa memotong ujung atas/bawah
+        const verticalEnvelope = 0.45 + 0.55 * Math.sin((yPos / H) * Math.PI);
+        return Math.sin(nowSec * 2.1 - yPos * 0.015 + phaseOffset) * 3.8 * verticalEnvelope;
+    }
 
     function bakeStaticPortrait(list) {
         sctx.clearRect(0, 0, W, H);
@@ -276,11 +284,20 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
                 }
             }
 
-            const floatY = Math.sin(time * 2.0 + (sideDir > 0 ? 1.4 : 0)) * 3.5;
+            const floatY = prefersReducedMotion ? 0 : Math.sin(time * 1.9 + phaseOffset) * 3.0;
 
             if (state === "idle") {
-                // Jauh lebih ringan: salin gambar utuh dari offscreen canvas
-                ctx.drawImage(staticCanvas, 0, floatY);
+                // Gelombang lembut per baris kanvas (sangat ringan & mulus)
+                const sliceHeight = 5;
+                for (let sy = 0; sy < H; sy += sliceHeight) {
+                    const sh = Math.min(sliceHeight, H - sy);
+                    const waveX = getGentleWaveOffsetX(sy + sh * 0.5, time);
+                    ctx.drawImage(
+                        staticCanvas,
+                        0, sy, W, sh,
+                        waveX, sy + floatY, W, sh
+                    );
+                }
             } else {
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
@@ -288,7 +305,8 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
 
                 for (let i = 0; i < particles.length; i++) {
                     const p = particles[i];
-                    let drawX = p.tx;
+                    const waveX = getGentleWaveOffsetX(p.ty, time);
+                    let drawX = p.tx + waveX;
                     let drawY = p.ty + floatY;
                     let alpha = 1;
                     let char = p.char;
@@ -298,13 +316,13 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
                         const ease = 1 - Math.pow(1 - localT, 3);
                         const inv = 1 - ease;
 
-                        drawX = p.tx + p.enterOx * inv + Math.sin(time * 5 + p.phase) * 8 * inv;
+                        drawX = p.tx + waveX * ease + p.enterOx * inv + Math.sin(time * 5 + p.phase) * 8 * inv;
                         drawY = p.ty + floatY + p.enterOy * inv;
                         alpha = ease;
                         if (localT < 0.45) char = p.sparkChar;
                     } else if (state === "dissolving") {
                         const easeOut = Math.pow(progress, 1.35);
-                        drawX = p.tx + p.exitVx * easeOut + Math.sin(time * 6 + p.phase) * 10 * easeOut;
+                        drawX = p.tx + waveX * (1 - easeOut) + p.exitVx * easeOut + Math.sin(time * 6 + p.phase) * 10 * easeOut;
                         drawY = p.ty + floatY + p.exitVy * easeOut;
                         alpha = Math.max(0, 1 - Math.pow(progress, 1.15));
                         if (progress > 0.18) char = p.sparkChar;
