@@ -81,7 +81,7 @@
     display: block;
     overflow: visible;
     pointer-events: none;
-    filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 14px rgba(255, 126, 179, 0.28));
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 14px rgba(255, 126, 179, 0.28));
 }
 
 /* Tulisan Atas: Gaya tetap sama, ukuran & penempatan disesuaikan rapi di atas ASCII */
@@ -201,7 +201,7 @@
     width: 152px;
     height: 202px;
     margin: 0 auto;
-    background: rgba(36, 22, 52, 0.58);
+    background: rgba(36, 22, 52, 0.72);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 2px solid rgba(255, 166, 206, 0.48);

@@ -358,19 +358,25 @@ export function initFireflies() {
         bgFlowers.push(spawnFloatingFlower(bgFlowers, (idx / totalBgFlowers) * 4.4));
     }
 
+const overlayEl = document.getElementById("envelope-overlay");
     let lastTime = performance.now();
 
     function animateBackground(now) {
         const dt = Math.min(0.05, (now - lastTime) / 1000);
         lastTime = now;
 
+        // Jangan render partikel latar selama layar amplop pembuka masih menutup layar
+        const isEnvelopeBlocking = overlayEl && overlayEl.style.display !== "none" && !overlayEl.classList.contains("opened");
+
         smoothScrollY += (lastScrollY - smoothScrollY) * 0.14;
         scrollImpulse *= 0.9;
 
-        if (!document.hidden) {
+        if (!document.hidden && !isEnvelopeBlocking) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
+
+            let currentFontSize = -1;
 
             for (const f of fireflies) {
                 f.x += f.vx + Math.sin(now * 0.001 + f.depth * 6) * 0.12;
@@ -382,14 +388,13 @@ export function initFireflies() {
                 const drawX = wrapCoord(f.x, canvas.width, 18);
                 const drawY = wrapCoord(f.y - smoothScrollY * f.depth * 0.45, canvas.height, 18);
 
-                ctx.save();
+                if (f.size !== currentFontSize) {
+                    currentFontSize = f.size;
+                    ctx.font = `bold ${currentFontSize}px "Courier New", monospace`;
+                }
                 ctx.globalAlpha = f.alpha;
-                ctx.font = `bold ${f.size}px "Courier New", monospace`;
                 ctx.fillStyle = f.color;
-                ctx.shadowColor = f.glow;
-                ctx.shadowBlur = 8;
                 ctx.fillText(f.char, drawX, drawY);
-                ctx.restore();
             }
 
             for (let i = 0; i < bgFlowers.length; i++) {
@@ -454,15 +459,19 @@ export function initFireflies() {
 
                 for (const item of rendered) {
                     const fontSize = Math.max(8, Math.round(11 * item.scale));
-                    ctx.font = `bold ${fontSize}px "Courier New", monospace`;
+                    if (fontSize !== currentFontSize) {
+                        currentFontSize = fontSize;
+                        ctx.font = `bold ${currentFontSize}px "Courier New", monospace`;
+                    }
                     ctx.globalAlpha = globalAlpha * Math.min(1, item.scale);
                     ctx.fillStyle = item.color;
                     ctx.fillText(item.char, item.px, item.py);
                 }
             }
+            ctx.globalAlpha = 1;
         }
         requestAnimationFrame(animateBackground);
     }
-
+    
     requestAnimationFrame(animateBackground);
 }

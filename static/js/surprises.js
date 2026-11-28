@@ -5,6 +5,10 @@ import { generateFlower3DPoints } from "./fireflies.js";
 const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
 const RIBBON_Y = 78;
 
+let isOptionsVisible = false;
+let resumeBouquetLoop = null;
+let resumeCakeLoop = null;
+
 let triggerBouquetWilt = null;
 let triggerBouquetReset = null;
 let triggerCakeBlowToggle = null;
@@ -213,6 +217,18 @@ function initAsciiBouquet() {
     const TWO_PI = Math.PI * 2;
     const ROTATE_SPEED = 0.58;
 
+    const panel = document.getElementById("opt-content-1");
+    let lastTime = performance.now();
+    let rafId = null;
+
+    function scheduleBouquetFrame() {
+        if (rafId === null && isOptionsVisible && !document.hidden && panel && panel.classList.contains("show")) {
+            lastTime = performance.now();
+            rafId = requestAnimationFrame(renderBouquetFrame);
+        }
+    }
+    resumeBouquetLoop = scheduleBouquetFrame;
+
     triggerBouquetReset = () => {
         if (wiltResetTimer) {
             clearTimeout(wiltResetTimer);
@@ -220,6 +236,7 @@ function initAsciiBouquet() {
         }
         state = "blooming";
         stateProgress = 0;
+        scheduleBouquetFrame();
     };
 
     triggerBouquetWilt = () => {
@@ -230,6 +247,7 @@ function initAsciiBouquet() {
         }
         state = "wilting";
         stateProgress = 0;
+        scheduleBouquetFrame();
     };
 
     const targetObserve = document.getElementById("bouquet-box") || canvas;
@@ -247,138 +265,144 @@ function initAsciiBouquet() {
         observer.observe(targetObserve);
     }
 
-    let lastTime = performance.now();
-
     function renderBouquetFrame(now) {
+        rafId = null;
+        if (document.hidden || !isOptionsVisible || !panel || !panel.classList.contains("show")) {
+            return;
+        }
+
         const dt = Math.min(0.05, (now - lastTime) / 1000);
         lastTime = now;
 
-        const panel = document.getElementById("opt-content-1");
-        if (!document.hidden && panel && panel.classList.contains("show")) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
 
-            if (state === "blooming") {
-                stateProgress = Math.min(1, stateProgress + dt * 0.65);
-                if (stateProgress >= 1) state = "idle";
-            } else if (state === "wilting") {
-                stateProgress = Math.min(1, stateProgress + dt * 0.45);
-                if (stateProgress >= 1) {
-                    state = "hidden";
-                    wiltResetTimer = setTimeout(() => {
-                        triggerBouquetReset();
-                        const msg = document.getElementById("bouquet-msg");
-                        if (msg) msg.innerText = "Buket Sakura & Lavender segar kembali mekar untukmu 🌸💜";
-                    }, 900);
-                }
-            }
-
-            if (state !== "hidden") {
-                rotY = (rotY + dt * ROTATE_SPEED) % TWO_PI;
-                windTime += dt;
-
-                const breezeStrength = 0.65 + 0.35 * Math.sin(windTime * 0.75);
-                const globalWindX = Math.sin(windTime * 1.45) * breezeStrength;
-                const globalWindZ = Math.cos(windTime * 1.15) * 0.65 * breezeStrength;
-
-                const bloomEase = state === "blooming" ? 1 - Math.pow(1 - stateProgress, 3) : 1;
-                const wiltT = state === "wilting" ? stateProgress : 0;
-                const rotX = 0.16;
-
-                const projected = [];
-
-                for (const item of model) {
-                    if (state === "blooming" && item.orderNorm > bloomEase * 1.05) continue;
-
-                    let x = item.x;
-                    let y = item.y;
-                    let z = item.z;
-                    let alpha = 1;
-                    let char = item.char;
-                    let color = item.color;
-
-                    if (state === "blooming") {
-                        const grow = 0.2 + 0.8 * bloomEase;
-                        x *= grow;
-                        y = RIBBON_Y + (y - RIBBON_Y) * grow;
-                        z *= grow;
-                    }
-
-                    if (item.part === "stem" || item.part === "flower") {
-                        const heightAboveTie = Math.max(0, RIBBON_Y - y);
-                        const flex = Math.pow(heightAboveTie / 110, 1.45);
-                        const phase = (item.flowerIndex || 0) * 0.75;
-                        const localSwayX = (globalWindX + Math.sin(windTime * 2.1 + phase) * 0.35) * 16 * flex;
-                        const localSwayZ = (globalWindZ + Math.cos(windTime * 1.8 + phase) * 0.35) * 12 * flex;
-
-                        x += localSwayX;
-                        z += localSwayZ;
-                        y += (Math.abs(localSwayX) + Math.abs(localSwayZ)) * 0.14;
-                    } else if (item.part === "ribbon_tail") {
-                        const dropDist = Math.max(0, y - RIBBON_Y);
-                        const tailFlex = Math.pow(dropDist / 46, 1.35);
-                        x += Math.sin(windTime * 2.4 - dropDist * 0.08 + item.tailSide) * 10 * tailFlex;
-                        z += Math.cos(windTime * 2.0 - dropDist * 0.08) * 6 * tailFlex;
-                    } else if (item.part === "ambient_petal") {
-                        x += Math.sin(windTime * 1.3 + item.petalPhase) * 14 + globalWindX * 10;
-                        y += Math.cos(windTime * 1.6 + item.petalPhase) * 9;
-                        z += Math.sin(windTime * 1.1 + item.petalPhase) * 12;
-                        alpha = 0.55 + 0.35 * Math.sin(windTime * 2.2 + item.petalPhase);
-                    }
-
-                    if (wiltT > 0) {
-                        const droopAngle = wiltT * 0.82;
-                        if (y < RIBBON_Y) {
-                            const dy = y - RIBBON_Y;
-                            y = RIBBON_Y + dy * Math.cos(droopAngle) + Math.abs(x) * wiltT * 0.3;
-                            z += Math.abs(dy) * Math.sin(droopAngle) * 0.55;
-                        }
-
-                        if (item.part === "flower" || item.part === "ambient_petal") {
-                            const disperse = Math.pow(wiltT, 1.2) * 64;
-                            x += (item.vx + 0.65) * disperse;
-                            y += item.vy * disperse + 48 * wiltT * wiltT;
-                            z += item.vz * disperse;
-                            if (wiltT > 0.25 && item.sparkChar) char = item.sparkChar;
-                        }
-                        alpha *= Math.max(0, 1 - Math.pow(wiltT, 1.3));
-                    }
-
-                    const y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
-                    const z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
-                    const x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
-                    const z2 = -x * Math.sin(rotY) + z1 * Math.cos(rotY);
-
-                    const fov = 340;
-                    const scale = fov / (fov + z2);
-
-                    projected.push({
-                        px: cx + x2 * scale,
-                        py: cy + y1 * scale,
-                        z: z2,
-                        scale,
-                        alpha,
-                        char,
-                        color
-                    });
-                }
-
-                projected.sort((a, b) => b.z - a.z);
-
-                for (const p of projected) {
-                    const fontSize = Math.max(8, Math.round(9.5 * p.scale));
-                    ctx.font = `bold ${fontSize}px "Courier New", monospace`;
-                    ctx.globalAlpha = p.alpha;
-                    ctx.fillStyle = p.color;
-                    ctx.fillText(p.char, p.px, p.py);
-                }
+        if (state === "blooming") {
+            stateProgress = Math.min(1, stateProgress + dt * 0.65);
+            if (stateProgress >= 1) state = "idle";
+        } else if (state === "wilting") {
+            stateProgress = Math.min(1, stateProgress + dt * 0.45);
+            if (stateProgress >= 1) {
+                state = "hidden";
+                wiltResetTimer = setTimeout(() => {
+                    triggerBouquetReset();
+                    const msg = document.getElementById("bouquet-msg");
+                    if (msg) msg.innerText = "Buket Sakura & Lavender segar kembali mekar untukmu 🌸💜";
+                }, 900);
             }
         }
-        requestAnimationFrame(renderBouquetFrame);
+
+        if (state !== "hidden") {
+            rotY = (rotY + dt * ROTATE_SPEED) % TWO_PI;
+            windTime += dt;
+
+            const breezeStrength = 0.65 + 0.35 * Math.sin(windTime * 0.75);
+            const globalWindX = Math.sin(windTime * 1.45) * breezeStrength;
+            const globalWindZ = Math.cos(windTime * 1.15) * 0.65 * breezeStrength;
+
+            const bloomEase = state === "blooming" ? 1 - Math.pow(1 - stateProgress, 3) : 1;
+            const wiltT = state === "wilting" ? stateProgress : 0;
+            const rotX = 0.16;
+
+            const projected = [];
+
+            for (const item of model) {
+                if (state === "blooming" && item.orderNorm > bloomEase * 1.05) continue;
+
+                let x = item.x;
+                let y = item.y;
+                let z = item.z;
+                let alpha = 1;
+                let char = item.char;
+                let color = item.color;
+
+                if (state === "blooming") {
+                    const grow = 0.2 + 0.8 * bloomEase;
+                    x *= grow;
+                    y = RIBBON_Y + (y - RIBBON_Y) * grow;
+                    z *= grow;
+                }
+
+                if (item.part === "stem" || item.part === "flower") {
+                    const heightAboveTie = Math.max(0, RIBBON_Y - y);
+                    const flex = Math.pow(heightAboveTie / 110, 1.45);
+                    const phase = (item.flowerIndex || 0) * 0.75;
+                    const localSwayX = (globalWindX + Math.sin(windTime * 2.1 + phase) * 0.35) * 16 * flex;
+                    const localSwayZ = (globalWindZ + Math.cos(windTime * 1.8 + phase) * 0.35) * 12 * flex;
+
+                    x += localSwayX;
+                    z += localSwayZ;
+                    y += (Math.abs(localSwayX) + Math.abs(localSwayZ)) * 0.14;
+                } else if (item.part === "ribbon_tail") {
+                    const dropDist = Math.max(0, y - RIBBON_Y);
+                    const tailFlex = Math.pow(dropDist / 46, 1.35);
+                    x += Math.sin(windTime * 2.4 - dropDist * 0.08 + item.tailSide) * 10 * tailFlex;
+                    z += Math.cos(windTime * 2.0 - dropDist * 0.08) * 6 * tailFlex;
+                } else if (item.part === "ambient_petal") {
+                    x += Math.sin(windTime * 1.3 + item.petalPhase) * 14 + globalWindX * 10;
+                    y += Math.cos(windTime * 1.6 + item.petalPhase) * 9;
+                    z += Math.sin(windTime * 1.1 + item.petalPhase) * 12;
+                    alpha = 0.55 + 0.35 * Math.sin(windTime * 2.2 + item.petalPhase);
+                }
+
+                if (wiltT > 0) {
+                    const droopAngle = wiltT * 0.82;
+                    if (y < RIBBON_Y) {
+                        const dy = y - RIBBON_Y;
+                        y = RIBBON_Y + dy * Math.cos(droopAngle) + Math.abs(x) * wiltT * 0.3;
+                        z += Math.abs(dy) * Math.sin(droopAngle) * 0.55;
+                    }
+
+                    if (item.part === "flower" || item.part === "ambient_petal") {
+                        const disperse = Math.pow(wiltT, 1.2) * 64;
+                        x += (item.vx + 0.65) * disperse;
+                        y += item.vy * disperse + 48 * wiltT * wiltT;
+                        z += item.vz * disperse;
+                        if (wiltT > 0.25 && item.sparkChar) char = item.sparkChar;
+                    }
+                    alpha *= Math.max(0, 1 - Math.pow(wiltT, 1.3));
+                }
+
+                const y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
+                const z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
+                const x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
+                const z2 = -x * Math.sin(rotY) + z1 * Math.cos(rotY);
+
+                const fov = 340;
+                const scale = fov / (fov + z2);
+
+                projected.push({
+                    px: cx + x2 * scale,
+                    py: cy + y1 * scale,
+                    z: z2,
+                    scale,
+                    alpha,
+                    char,
+                    color
+                });
+            }
+
+            projected.sort((a, b) => b.z - a.z);
+
+            let currentFontSize = -1;
+            for (const p of projected) {
+                const fontSize = Math.max(8, Math.round(9.5 * p.scale));
+                if (fontSize !== currentFontSize) {
+                    currentFontSize = fontSize;
+                    ctx.font = `bold ${currentFontSize}px "Courier New", monospace`;
+                }
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.fillText(p.char, p.px, p.py);
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        scheduleBouquetFrame();
     }
 
-    requestAnimationFrame(renderBouquetFrame);
+    scheduleBouquetFrame();
 }
 
 // ============================================================================
@@ -604,6 +628,18 @@ function initAsciiCake() {
     let time = 0;
     const smokeParticles = [];
 
+    const panel = document.getElementById("opt-content-3");
+    let lastTime = performance.now();
+    let rafId = null;
+
+    function scheduleCakeFrame() {
+        if (rafId === null && isOptionsVisible && !document.hidden && panel && panel.classList.contains("show")) {
+            lastTime = performance.now();
+            rafId = requestAnimationFrame(renderCakeFrame);
+        }
+    }
+    resumeCakeLoop = scheduleCakeFrame;
+
     function spawnSmokePuff() {
         smokeParticles.push({
             x: (Math.random() - 0.5) * 2.5,
@@ -634,6 +670,7 @@ function initAsciiCake() {
 
     triggerCakeEntrance = () => {
         entranceProgress = 0;
+        scheduleCakeFrame();
     };
 
     triggerCakeBlowToggle = () => {
@@ -647,6 +684,7 @@ function initAsciiCake() {
             ringPulse = 0.45;
             smokeParticles.length = 0;
         }
+        scheduleCakeFrame();
         return flameLit;
     };
 
@@ -657,6 +695,7 @@ function initAsciiCake() {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting && entranceProgress === 0) {
                         entranceProgress = 0.01;
+                        scheduleCakeFrame();
                     }
                 });
             },
@@ -667,176 +706,182 @@ function initAsciiCake() {
         entranceProgress = 1;
     }
 
-    let lastTime = performance.now();
-
     function renderCakeFrame(now) {
+        rafId = null;
+        if (document.hidden || !isOptionsVisible || !panel || !panel.classList.contains("show")) {
+            return;
+        }
+
         const dt = Math.min(0.05, (now - lastTime) / 1000);
         lastTime = now;
 
-        const panel = document.getElementById("opt-content-3");
-        if (!document.hidden && panel && panel.classList.contains("show")) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
 
-            time += dt;
-            rotY = (rotY + dt * 0.55) % (Math.PI * 2);
-            orbitSpin = (orbitSpin + dt * 0.95) % (Math.PI * 2);
+        time += dt;
+        rotY = (rotY + dt * 0.55) % (Math.PI * 2);
+        orbitSpin = (orbitSpin + dt * 0.95) % (Math.PI * 2);
 
-            if (entranceProgress < 1) {
-                entranceProgress = Math.min(1, entranceProgress + dt * 0.85);
-            }
-            if (ringPulse > 0) {
-                ringPulse = Math.max(0, ringPulse - dt * 0.75);
-            }
-
-            const easeIn = 1 - Math.pow(1 - entranceProgress, 3);
-            const grow = (0.35 + 0.65 * easeIn) * CAKE_SCALE;
-            const hoverY = Math.sin(time * 2.1) * 6;
-            const rotX = 0.26;
-            const fov = 350;
-
-            const projected = [];
-
-            // 1. Render Badan Kue, Krim, Piring, Lilin, & Sumbu
-            for (const pt of bodyPoints) {
-                if (pt.orderNorm > easeIn * 1.05) continue;
-
-                const proj = projectCakePoint(
-                    pt.x * grow,
-                    pt.y * grow + hoverY,
-                    pt.z * grow,
-                    rotY,
-                    rotX,
-                    fov
-                );
-
-                projected.push({
-                    ...proj,
-                    alpha: easeIn,
-                    char: pt.char,
-                    color: pt.color,
-                    glow: null
-                });
-            }
-
-            // 2. Render Cincin Orbit Bintang & Hati Miring
-            const pulseExpand = Math.sin(ringPulse * Math.PI) * 34;
-            const ringTiltZ = -0.24;
-            const ringTiltX = 0.34;
-
-            for (const op of orbitPoints) {
-                if (op.orderNorm > easeIn * 1.05) continue;
-
-                const a = op.angle + orbitSpin;
-                const r = (op.baseRadius + pulseExpand) * (0.4 + 0.6 * easeIn) * CAKE_SCALE;
-
-                const rx0 = Math.cos(a) * r;
-                const ry0 = op.yOffset * CAKE_SCALE;
-                const rz0 = Math.sin(a) * r;
-
-                const ry1 = ry0 * Math.cos(ringTiltX) - rz0 * Math.sin(ringTiltX);
-                const rz1 = ry0 * Math.sin(ringTiltX) + rz0 * Math.cos(ringTiltX);
-                const rx2 = rx0 * Math.cos(ringTiltZ) - ry1 * Math.sin(ringTiltZ);
-                const ry2 = rx0 * Math.sin(ringTiltZ) + ry1 * Math.cos(ringTiltZ) + hoverY * 0.7;
-
-                const scale = fov / (fov + rz1);
-                const twinkle = 0.65 + 0.35 * Math.sin(time * 3.5 + op.twinklePhase);
-
-                projected.push({
-                    px: cx + rx2 * scale,
-                    py: cy + ry2 * scale,
-                    z: rz1,
-                    scale: scale * (1 + ringPulse * 0.25),
-                    alpha: easeIn * twinkle,
-                    char: op.char,
-                    color: op.color,
-                    glow: op.char === "✦" || op.char === "♥" ? op.color : null
-                });
-            }
-
-            const currentWickY = wickY * grow + hoverY;
-
-            // 3. Render Api Lilin tepat di atas sumbu
-            if (flameLit && easeIn > 0.75) {
-                const flameSway = Math.sin(time * 9) * 1.6 + Math.cos(time * 14) * 0.8;
-                const flameFlicker = 0.9 + 0.14 * Math.sin(time * 16);
-
-                const flameLayers = [
-                    { dy: -1.5, r: 2.8, char: "@", color: "rgb(255, 250, 215)" },
-                    { dy: -5.0, r: 3.6, char: "#", color: "rgb(255, 212, 92)" },
-                    { dy: -8.5, r: 2.7, char: "*", color: "rgb(255, 148, 82)" },
-                    { dy: -12.0, r: 1.4, char: "^", color: "rgb(255, 108, 120)" },
-                    { dy: -15.5, r: 0.3, char: "·", color: "rgb(255, 220, 140)" }
-                ];
-
-                flameLayers.forEach((fl, idx) => {
-                    const steps = fl.r > 1 ? 6 : 1;
-                    for (let s = 0; s < steps; s++) {
-                        const sa = (s / steps) * Math.PI * 2 + time * 4;
-                        const fx = (Math.cos(sa) * fl.r + flameSway * (idx * 0.26)) * CAKE_SCALE;
-                        const fy = currentWickY + fl.dy * flameFlicker * CAKE_SCALE;
-                        const fz = Math.sin(sa) * fl.r * CAKE_SCALE;
-
-                        const proj = projectCakePoint(fx, fy, fz, rotY, rotX, fov);
-                        projected.push({
-                            ...proj,
-                            z: proj.z - 4,
-                            scale: proj.scale * 1.06,
-                            alpha: 0.96,
-                            char: fl.char,
-                            color: fl.color,
-                            glow: "rgba(255, 200, 95, 0.9)"
-                        });
-                    }
-                });
-            }
-
-            // 4. Render Asap Mengepul dari Sumbu saat Lilin Padam
-            for (let i = smokeParticles.length - 1; i >= 0; i--) {
-                const sp = smokeParticles[i];
-                sp.age += dt;
-                if (sp.age >= sp.life) {
-                    smokeParticles.splice(i, 1);
-                    continue;
-                }
-                const st = sp.age / sp.life;
-                const sx = (sp.x + Math.sin(time * 4 + sp.phase) * (3 + st * 13) + sp.vx * st) * CAKE_SCALE;
-                const sy = currentWickY + (sp.dy + sp.vy * sp.age) * CAKE_SCALE;
-                const sz = (sp.z + Math.cos(time * 3.5 + sp.phase) * 4) * CAKE_SCALE;
-
-                const proj = projectCakePoint(sx, sy, sz, rotY, rotX, fov);
-                projected.push({
-                    ...proj,
-                    scale: proj.scale * (0.9 + st * 0.4),
-                    alpha: (1 - st) * 0.78,
-                    char: sp.char,
-                    color: "rgb(218, 212, 238)",
-                    glow: null
-                });
-            }
-
-            projected.sort((a, b) => b.z - a.z);
-
-            for (const p of projected) {
-                const fontSize = Math.max(10, Math.round(12 * p.scale));
-                ctx.font = `bold ${fontSize}px "Courier New", monospace`;
-                ctx.globalAlpha = p.alpha;
-                ctx.fillStyle = p.color;
-                if (p.glow) {
-                    ctx.shadowColor = p.glow;
-                    ctx.shadowBlur = 10;
-                } else {
-                    ctx.shadowBlur = 0;
-                }
-                ctx.fillText(p.char, p.px, p.py);
-            }
-            ctx.shadowBlur = 0;
+        if (entranceProgress < 1) {
+            entranceProgress = Math.min(1, entranceProgress + dt * 0.85);
         }
-        requestAnimationFrame(renderCakeFrame);
+        if (ringPulse > 0) {
+            ringPulse = Math.max(0, ringPulse - dt * 0.75);
+        }
+
+        const easeIn = 1 - Math.pow(1 - entranceProgress, 3);
+        const grow = (0.35 + 0.65 * easeIn) * CAKE_SCALE;
+        const hoverY = Math.sin(time * 2.1) * 6;
+        const rotX = 0.26;
+        const fov = 350;
+
+        const projected = [];
+
+        // 1. Render Badan Kue, Krim, Piring, Lilin, & Sumbu
+        for (const pt of bodyPoints) {
+            if (pt.orderNorm > easeIn * 1.05) continue;
+
+            const proj = projectCakePoint(
+                pt.x * grow,
+                pt.y * grow + hoverY,
+                pt.z * grow,
+                rotY,
+                rotX,
+                fov
+            );
+
+            projected.push({
+                ...proj,
+                alpha: easeIn,
+                char: pt.char,
+                color: pt.color,
+                glow: null
+            });
+        }
+
+        // 2. Render Cincin Orbit Bintang & Hati Miring
+        const pulseExpand = Math.sin(ringPulse * Math.PI) * 34;
+        const ringTiltZ = -0.24;
+        const ringTiltX = 0.34;
+
+        for (const op of orbitPoints) {
+            if (op.orderNorm > easeIn * 1.05) continue;
+
+            const a = op.angle + orbitSpin;
+            const r = (op.baseRadius + pulseExpand) * (0.4 + 0.6 * easeIn) * CAKE_SCALE;
+
+            const rx0 = Math.cos(a) * r;
+            const ry0 = op.yOffset * CAKE_SCALE;
+            const rz0 = Math.sin(a) * r;
+
+            const ry1 = ry0 * Math.cos(ringTiltX) - rz0 * Math.sin(ringTiltX);
+            const rz1 = ry0 * Math.sin(ringTiltX) + rz0 * Math.cos(ringTiltX);
+            const rx2 = rx0 * Math.cos(ringTiltZ) - ry1 * Math.sin(ringTiltZ);
+            const ry2 = rx0 * Math.sin(ringTiltZ) + ry1 * Math.cos(ringTiltZ) + hoverY * 0.7;
+
+            const scale = fov / (fov + rz1);
+            const twinkle = 0.65 + 0.35 * Math.sin(time * 3.5 + op.twinklePhase);
+
+            projected.push({
+                px: cx + rx2 * scale,
+                py: cy + ry2 * scale,
+                z: rz1,
+                scale: scale * (1 + ringPulse * 0.25),
+                alpha: easeIn * twinkle,
+                char: op.char,
+                color: op.color,
+                glow: op.char === "✦" || op.char === "♥" ? op.color : null
+            });
+        }
+
+        const currentWickY = wickY * grow + hoverY;
+
+        // 3. Render Api Lilin tepat di atas sumbu
+        if (flameLit && easeIn > 0.75) {
+            const flameSway = Math.sin(time * 9) * 1.6 + Math.cos(time * 14) * 0.8;
+            const flameFlicker = 0.9 + 0.14 * Math.sin(time * 16);
+
+            const flameLayers = [
+                { dy: -1.5, r: 2.8, char: "@", color: "rgb(255, 250, 215)" },
+                { dy: -5.0, r: 3.6, char: "#", color: "rgb(255, 212, 92)" },
+                { dy: -8.5, r: 2.7, char: "*", color: "rgb(255, 148, 82)" },
+                { dy: -12.0, r: 1.4, char: "^", color: "rgb(255, 108, 120)" },
+                { dy: -15.5, r: 0.3, char: "·", color: "rgb(255, 220, 140)" }
+            ];
+
+            flameLayers.forEach((fl, idx) => {
+                const steps = fl.r > 1 ? 6 : 1;
+                for (let s = 0; s < steps; s++) {
+                    const sa = (s / steps) * Math.PI * 2 + time * 4;
+                    const fx = (Math.cos(sa) * fl.r + flameSway * (idx * 0.26)) * CAKE_SCALE;
+                    const fy = currentWickY + fl.dy * flameFlicker * CAKE_SCALE;
+                    const fz = Math.sin(sa) * fl.r * CAKE_SCALE;
+
+                    const proj = projectCakePoint(fx, fy, fz, rotY, rotX, fov);
+                    projected.push({
+                        ...proj,
+                        z: proj.z - 4,
+                        scale: proj.scale * 1.06,
+                        alpha: 0.96,
+                        char: fl.char,
+                        color: fl.color,
+                        glow: "rgba(255, 200, 95, 0.9)"
+                    });
+                }
+            });
+        }
+
+        // 4. Render Asap Mengepul dari Sumbu saat Lilin Padam
+        for (let i = smokeParticles.length - 1; i >= 0; i--) {
+            const sp = smokeParticles[i];
+            sp.age += dt;
+            if (sp.age >= sp.life) {
+                smokeParticles.splice(i, 1);
+                continue;
+            }
+            const st = sp.age / sp.life;
+            const sx = (sp.x + Math.sin(time * 4 + sp.phase) * (3 + st * 13) + sp.vx * st) * CAKE_SCALE;
+            const sy = currentWickY + (sp.dy + sp.vy * sp.age) * CAKE_SCALE;
+            const sz = (sp.z + Math.cos(time * 3.5 + sp.phase) * 4) * CAKE_SCALE;
+
+            const proj = projectCakePoint(sx, sy, sz, rotY, rotX, fov);
+            projected.push({
+                ...proj,
+                scale: proj.scale * (0.9 + st * 0.4),
+                alpha: (1 - st) * 0.78,
+                char: sp.char,
+                color: "rgb(218, 212, 238)",
+                glow: null
+            });
+        }
+
+        projected.sort((a, b) => b.z - a.z);
+
+        let currentFontSize = -1;
+        for (const p of projected) {
+            const fontSize = Math.max(10, Math.round(12 * p.scale));
+            if (fontSize !== currentFontSize) {
+                currentFontSize = fontSize;
+                ctx.font = `bold ${currentFontSize}px "Courier New", monospace`;
+            }
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            if (p.glow) {
+                ctx.shadowColor = p.glow;
+                ctx.shadowBlur = 10;
+            } else {
+                ctx.shadowBlur = 0;
+            }
+            ctx.fillText(p.char, p.px, p.py);
+        }
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+
+        scheduleCakeFrame();
     }
 
-    requestAnimationFrame(renderCakeFrame);
+    scheduleCakeFrame();
 }
 
 // ============================================================================
@@ -859,6 +904,34 @@ export function initSurprises() {
 
     initAsciiBouquet();
     initAsciiCake();
+
+    const optionsSection = document.getElementById("options-section");
+    if ("IntersectionObserver" in window && optionsSection) {
+        const sectionObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    isOptionsVisible = entry.isIntersecting;
+                    if (isOptionsVisible) {
+                        if (typeof resumeBouquetLoop === "function") resumeBouquetLoop();
+                        if (typeof resumeCakeLoop === "function") resumeCakeLoop();
+                    }
+                });
+            },
+            { rootMargin: "180px 0px" }
+        );
+        sectionObserver.observe(optionsSection);
+    } else {
+        isOptionsVisible = true;
+        if (typeof resumeBouquetLoop === "function") resumeBouquetLoop();
+        if (typeof resumeCakeLoop === "function") resumeCakeLoop();
+    }
+
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && isOptionsVisible) {
+            if (typeof resumeBouquetLoop === "function") resumeBouquetLoop();
+            if (typeof resumeCakeLoop === "function") resumeCakeLoop();
+        }
+    });
 }
 
 export const surpriseHandlers = {
@@ -872,16 +945,18 @@ export const surpriseHandlers = {
 
         motionPlay(activePanel, { opacity: [0, 1], y: [12, 0] }, { duration: 0.45, ease: EASE_SILKY });
 
-        if (optionNumber === 1 && typeof triggerBouquetReset === "function") {
-            triggerBouquetReset();
+        if (optionNumber === 1) {
+            if (typeof triggerBouquetReset === "function") triggerBouquetReset();
+            if (typeof resumeBouquetLoop === "function") resumeBouquetLoop();
         }
 
         if (optionNumber === 2) {
             motionPlay(activePanel.querySelectorAll(".admire-card"), { opacity: [0, 1], x: [-14, 0] }, { duration: 0.48, delay: stagger(0.08), ease: EASE_SILKY });
         }
 
-        if (optionNumber === 3 && typeof triggerCakeEntrance === "function") {
-            triggerCakeEntrance();
+        if (optionNumber === 3) {
+            if (typeof triggerCakeEntrance === "function") triggerCakeEntrance();
+            if (typeof resumeCakeLoop === "function") resumeCakeLoop();
         }
     },
     bloomBouquet: (event) => {

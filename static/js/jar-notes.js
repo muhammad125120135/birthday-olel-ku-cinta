@@ -174,11 +174,29 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
     canvas.width = W;
     canvas.height = H;
 
+    // Kanvas bayangan untuk menyimpan bentuk ASCII saat diam (1x gambar, bukan 4.000x per frame)
+    const staticCanvas = document.createElement("canvas");
+    staticCanvas.width = W;
+    staticCanvas.height = H;
+    const sctx = staticCanvas.getContext("2d");
+
     let particles = [];
-    let state = "assembling"; // "assembling" | "idle" | "dissolving"
+    let state = "assembling";
     let progress = 0;
     let reenterTimer = null;
     let time = 0;
+
+    function bakeStaticPortrait(list) {
+        sctx.clearRect(0, 0, W, H);
+        sctx.textAlign = "center";
+        sctx.textBaseline = "middle";
+        sctx.font = 'bold 8.5px "Courier New", monospace';
+        for (let i = 0; i < list.length; i++) {
+            const p = list[i];
+            sctx.fillStyle = p.color;
+            sctx.fillText(p.char, p.tx, p.ty);
+        }
+    }
 
     function triggerReplayCycle() {
         if (particles.length === 0) return;
@@ -186,7 +204,6 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
             clearTimeout(reenterTimer);
             reenterTimer = null;
         }
-        // Jika sedang diam atau sedang masuk, jalankan animasi keluar dulu lalu masuk lagi
         if (state !== "dissolving") {
             state = "dissolving";
             progress = 0;
@@ -209,6 +226,7 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
     img.src = canvas.dataset.src;
     img.onload = () => {
         particles = sampleImageToAsciiParticles(img, W, H, sideDir);
+        bakeStaticPortrait(particles);
         state = "assembling";
         progress = 0;
     };
@@ -240,10 +258,6 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
 
         if (!document.hidden && isVisible && particles.length > 0) {
             ctx.clearRect(0, 0, W, H);
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.font = 'bold 8.5px "Courier New", monospace';
-
             time += dt;
 
             if (state === "assembling") {
@@ -264,42 +278,46 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
 
             const floatY = Math.sin(time * 2.0 + (sideDir > 0 ? 1.4 : 0)) * 3.5;
 
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                let drawX = p.tx;
-                let drawY = p.ty + floatY;
-                let alpha = 1;
-                let char = p.char;
+            if (state === "idle") {
+                // Jauh lebih ringan: salin gambar utuh dari offscreen canvas
+                ctx.drawImage(staticCanvas, 0, floatY);
+            } else {
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = 'bold 8.5px "Courier New", monospace';
 
-                if (state === "assembling") {
-                    const localT = Math.max(0, Math.min(1, (progress - p.stagger) / (1 - p.stagger)));
-                    const ease = 1 - Math.pow(1 - localT, 3);
-                    const inv = 1 - ease;
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    let drawX = p.tx;
+                    let drawY = p.ty + floatY;
+                    let alpha = 1;
+                    let char = p.char;
 
-                    drawX = p.tx + p.enterOx * inv + Math.sin(time * 5 + p.phase) * 8 * inv;
-                    drawY = p.ty + floatY + p.enterOy * inv;
-                    alpha = ease;
-                    if (localT < 0.45) char = p.sparkChar;
-                } else if (state === "dissolving") {
-                    const easeOut = Math.pow(progress, 1.35);
-                    drawX = p.tx + p.exitVx * easeOut + Math.sin(time * 6 + p.phase) * 10 * easeOut;
-                    drawY = p.ty + floatY + p.exitVy * easeOut;
-                    alpha = Math.max(0, 1 - Math.pow(progress, 1.15));
-                    if (progress > 0.18) char = p.sparkChar;
-                } else {
-                    // Kilau halus sesekali di titik terang saat diam
-                    if (p.lum > 0.78 && Math.sin(time * 3.2 + p.phase) > 0.92) {
-                        char = "✦";
+                    if (state === "assembling") {
+                        const localT = Math.max(0, Math.min(1, (progress - p.stagger) / (1 - p.stagger)));
+                        const ease = 1 - Math.pow(1 - localT, 3);
+                        const inv = 1 - ease;
+
+                        drawX = p.tx + p.enterOx * inv + Math.sin(time * 5 + p.phase) * 8 * inv;
+                        drawY = p.ty + floatY + p.enterOy * inv;
+                        alpha = ease;
+                        if (localT < 0.45) char = p.sparkChar;
+                    } else if (state === "dissolving") {
+                        const easeOut = Math.pow(progress, 1.35);
+                        drawX = p.tx + p.exitVx * easeOut + Math.sin(time * 6 + p.phase) * 10 * easeOut;
+                        drawY = p.ty + floatY + p.exitVy * easeOut;
+                        alpha = Math.max(0, 1 - Math.pow(progress, 1.15));
+                        if (progress > 0.18) char = p.sparkChar;
                     }
+
+                    if (alpha <= 0.01) continue;
+
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = p.color;
+                    ctx.fillText(char, drawX, drawY);
                 }
-
-                if (alpha <= 0.01) continue;
-
-                ctx.globalAlpha = alpha;
-                ctx.fillStyle = p.color;
-                ctx.fillText(char, drawX, drawY);
+                ctx.globalAlpha = 1;
             }
-            ctx.globalAlpha = 1;
         }
 
         requestAnimationFrame(renderLoop);
@@ -308,9 +326,6 @@ function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
     requestAnimationFrame(renderLoop);
 }
 
-// ============================================================================
-// ANIMASI TULISAN BAWAH: GELOMBANG HALUS & WARNA MENGIKUTI FASE GELOMBANG
-// ============================================================================
 function initCurvedRainbowLabels() {
     const pills = document.querySelectorAll(".wing-mini-pill");
     const letterGroups = [];
@@ -339,35 +354,37 @@ function initCurvedRainbowLabels() {
 
     if (letterGroups.length === 0) return;
 
+    let lastWaveFrame = 0;
+
     function animateRainbowWave(now) {
-        const t = prefersReducedMotion ? 0 : now * 0.001;
+        // Batasi pembaruan ke ~30fps dan hentikan saat tidak terlihat di layar
+        if (now - lastWaveFrame >= 32 && !document.hidden) {
+            lastWaveFrame = now;
+            const t = prefersReducedMotion ? 0 : now * 0.001;
 
-        letterGroups.forEach(({ spans, offsetPhase }) => {
-            const len = spans.length;
-            for (let i = 0; i < len; i++) {
-                const span = spans[i];
-                const norm = len > 1 ? (i / (len - 1)) * 2 - 1 : 0; // -1 (kiri) ke +1 (kanan)
+            letterGroups.forEach(({ spans, offsetPhase }) => {
+                const len = spans.length;
+                for (let i = 0; i < len; i++) {
+                    const span = spans[i];
+                    const norm = len > 1 ? (i / (len - 1)) * 2 - 1 : 0;
 
-                // Fase gelombang lembut yang mengalir dari kiri ke kanan
-                const wavePhase = t * 2.0 - i * 0.32 + offsetPhase;
-                const waveSin = Math.sin(wavePhase);
-                const waveCos = Math.cos(wavePhase);
+                    const wavePhase = t * 2.0 - i * 0.32 + offsetPhase;
+                    const waveSin = Math.sin(wavePhase);
+                    const waveCos = Math.cos(wavePhase);
 
-                // Lengkungan & ayunan gelombang yang sudah dilemahkan
-                const archY = (norm * norm - 0.45) * 2.4;
-                const waveY = waveSin * 1.45;
-                const y = archY + waveY;
-                const rot = norm * 3.0 + waveCos * 1.3;
+                    const archY = (norm * norm - 0.45) * 2.4;
+                    const waveY = waveSin * 1.45;
+                    const y = archY + waveY;
+                    const rot = norm * 3.0 + waveCos * 1.3;
 
-                // Warna & kecerahan dikunci langsung ke fase gelombang
-                const hue = Math.round(((wavePhase * (180 / Math.PI)) % 360 + 360) % 360);
-                const lightness = Math.round(74 + waveSin * 5);
+                    const hue = Math.round(((wavePhase * (180 / Math.PI)) % 360 + 360) % 360);
+                    const lightness = Math.round(74 + waveSin * 5);
 
-                span.style.color = `hsl(${hue}, 92%, ${lightness}%)`;
-                span.style.textShadow = `0 0 8px hsla(${hue}, 92%, 62%, 0.48)`;
-                span.style.transform = `translateY(${y.toFixed(2)}px) rotate(${rot.toFixed(1)}deg)`;
-            }
-        });
+                    span.style.color = `hsl(${hue}, 92%, ${lightness}%)`;
+                    span.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0) rotate(${rot.toFixed(1)}deg)`;
+                }
+            });
+        }
 
         requestAnimationFrame(animateRainbowWave);
     }
