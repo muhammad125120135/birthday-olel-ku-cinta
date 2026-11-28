@@ -33,8 +33,8 @@
     .scrapbook-text-body { gap: 6px; }
     .scrapbook-greeting { font-size: 0.66rem; line-height: 1.38; }
     .scrapbook-paragraph { font-size: 0.63rem; line-height: 1.44; }
-    .scrapbook-closing-text { font-size: 1.04rem; line-height: 1.24; }
-    .scrapbook-signature { font-size: 0.86rem; }
+    .scrapbook-closing-text { font-size: 0.92rem; line-height: 1.28; }
+    .scrapbook-signature { font-size: 0.8rem; }
     .scrapbook-left-footer { font-size: 0.54rem; padding-top: 4px; }
     .scrapbook-right-inner { padding: 12px 10px 12px 13px; }
     .page-corner-curl { width: 24px; height: 24px; }

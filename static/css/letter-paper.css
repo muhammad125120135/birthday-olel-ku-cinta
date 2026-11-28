@@ -273,9 +273,9 @@
 
 .scrapbook-closing-text {
     font-family: 'Caveat', 'Dancing Script', cursive;
-    font-size: 1.38rem;
+    font-size: 1.12rem;
     font-weight: 700;
-    line-height: 1.3;
+    line-height: 1.35;
     color: #ffbddb;
 }
 
@@ -283,7 +283,7 @@
     display: block;
     margin-top: 2px;
     font-family: 'Dancing Script', 'Caveat', cursive;
-    font-size: 1.08rem;
+    font-size: 0.95rem;
     color: #ebd3b8;
 }
 
