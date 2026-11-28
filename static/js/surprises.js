@@ -3,25 +3,29 @@ import { motionPlay, stagger, EASE_SILKY, SPRING_SNAPPY, SPRING_BOUNCY } from ".
 import { generateFlower3DPoints } from "./fireflies.js";
 
 const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_KODE_ANDA";
-const RIBBON_Y = 78; // Titik ikatan pita (pusat lenturan tangkai saat tertiup angin)
+const RIBBON_Y = 78;
+
 let triggerBouquetWilt = null;
 let triggerBouquetReset = null;
+let triggerCakeBlowToggle = null;
+let triggerCakeEntrance = null;
 
+// ============================================================================
+// 1. MODEL 3D BUKET SAKURA & LAVENDER
+// ============================================================================
 function build3DSakuraLavenderBouquet() {
     const items = [];
     const ASCII_CHARS = " .:-=+*#%@";
 
-    // 1. Kertas Pembungkus Buket Berlapis (Ruffled Pastel Wrapping Paper 3D)
     const wrapTopY = 12;
     const wrapBottomY = 132;
     const rows = 18;
     const cols = 46;
 
     for (let r = 0; r <= rows; r++) {
-        const u = r / rows; // 0 = kerah atas kertas, 1 = ujung pegangan bawah
+        const u = r / rows;
         const y = wrapTopY + u * (wrapBottomY - wrapTopY);
 
-        // Kerah atas melebar seperti kipas/corong, menyempit di pita (u ~ 0.55), lalu sedikit melebar di kaki
         let baseR;
         if (u < 0.55) {
             const topT = u / 0.55;
@@ -33,15 +37,14 @@ function build3DSakuraLavenderBouquet() {
 
         for (let c = 0; c < cols; c++) {
             const a = (c / cols) * Math.PI * 2;
-            // Lipatan gelombang kertas di tepi atas
             const ruffle = u < 0.35 ? Math.sin(a * 7) * 5.5 * (1 - u / 0.35) : Math.sin(a * 5) * 1.5;
             const highBackCollar = u < 0.28 && Math.sin(a) < 0
                 ? Math.sin(a) * 18 * (1 - u / 0.28)
                 : 0;
 
-            const r = baseR + ruffle;
-            const x = Math.cos(a) * r;
-            const z = Math.sin(a) * r * 0.78;
+            const rVal = baseR + ruffle;
+            const x = Math.cos(a) * rVal;
+            const z = Math.sin(a) * rVal * 0.78;
             const isEdge = r === 0 || r === rows;
 
             items.push({
@@ -51,8 +54,8 @@ function build3DSakuraLavenderBouquet() {
                 part: "wrap",
                 char: isEdge ? "~" : ASCII_CHARS[Math.floor(3 + Math.cos(a * 2) * 2)],
                 color: Math.sin(a) < 0
-                    ? "rgb(232, 206, 238)" // Lapisan dalam lilac lembut
-                    : "rgb(252, 234, 244)", // Lapisan luar pink krem pastel
+                    ? "rgb(232, 206, 238)"
+                    : "rgb(252, 234, 244)",
                 orderNorm: 0.1 + u * 0.22,
                 vx: Math.cos(a) * 0.9,
                 vy: 0.8 + Math.random() * 0.9,
@@ -61,7 +64,6 @@ function build3DSakuraLavenderBouquet() {
         }
     }
 
-    // 2. Pita Sutra Pink-Lilac di Leher Buket (Depan & Belakang untuk Rotasi 360°)
     for (let a = 0; a < Math.PI * 2; a += 0.16) {
         items.push({
             x: Math.cos(a) * 23,
@@ -77,7 +79,6 @@ function build3DSakuraLavenderBouquet() {
         });
     }
 
-    // Simpul kupu-kupu pita depan & belakang
     for (const zSide of [20, -20]) {
         for (let t = -1; t <= 1; t += 0.13) {
             const bx = t * 22;
@@ -94,7 +95,6 @@ function build3DSakuraLavenderBouquet() {
             });
         }
 
-        // Dua helai pita panjang menjuntai yang berkibar tertiup angin
         for (const side of [-1, 1]) {
             for (let s = 1; s <= 12; s++) {
                 const st = s / 12;
@@ -115,16 +115,12 @@ function build3DSakuraLavenderBouquet() {
         }
     }
 
-    // 3. Rangkaian 9 Bunga Sakura & Lavender 3D + Tangkai Lentur
     const bouquetFlowers = [
-        // Lavender tinggi di belakang & samping (memberi siluet buket anggun)
         { type: "lavender", ox: -28, oy: -46, oz: -14, scale: 36, tiltX: 0.12, tiltZ: -0.26 },
         { type: "lavender", ox: 28, oy: -46, oz: -14, scale: 36, tiltX: 0.12, tiltZ: 0.26 },
         { type: "lavender", ox: 0, oy: -54, oz: -18, scale: 38, tiltX: 0.16, tiltZ: 0.04 },
         { type: "lavender", ox: -42, oy: -24, oz: 4, scale: 31, tiltX: -0.08, tiltZ: -0.42 },
         { type: "lavender", ox: 42, oy: -24, oz: 4, scale: 31, tiltX: -0.08, tiltZ: 0.42 },
-
-        // Sakura mekar bertingkat di tengah & depan
         { type: "sakura", ox: 0, oy: -22, oz: 14, scale: 34, tiltX: -0.24, tiltZ: 0 },
         { type: "sakura", ox: -24, oy: -12, oz: 18, scale: 30, tiltX: -0.22, tiltZ: -0.28 },
         { type: "sakura", ox: 24, oy: -12, oz: 18, scale: 30, tiltX: -0.22, tiltZ: 0.28 },
@@ -132,7 +128,6 @@ function build3DSakuraLavenderBouquet() {
     ];
 
     bouquetFlowers.forEach((b, bIdx) => {
-        // Tangkai hijau lembut dari kepala bunga turun ke ikatan pita
         const steps = 14;
         for (let s = 0; s <= steps; s++) {
             const st = s / steps;
@@ -151,7 +146,6 @@ function build3DSakuraLavenderBouquet() {
             });
         }
 
-        // Kepala bunga Sakura / Lavender 3D
         const flowerPts = generateFlower3DPoints(b.type, b.scale);
         flowerPts.forEach((pt) => {
             const y1 = pt.y * Math.cos(b.tiltX) - pt.z * Math.sin(b.tiltX);
@@ -177,7 +171,6 @@ function build3DSakuraLavenderBouquet() {
         });
     });
 
-    // 4. Kelopak Sakura Kecil Melayang Tertiup Angin di Sekitar Buket
     for (let p = 0; p < 10; p++) {
         const angle = (p / 10) * Math.PI * 2;
         const dist = 62 + (p % 3) * 18;
@@ -204,7 +197,6 @@ function initAsciiBouquet() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    // Kanvas lebar agar kelopak yang bertebaran saat diklik tidak terpotong tepi kartu
     canvas.width = 620;
     canvas.height = 540;
 
@@ -212,7 +204,7 @@ function initAsciiBouquet() {
     const cx = canvas.width / 2;
     const cy = canvas.height / 2 - 28;
 
-    let state = "blooming"; // "blooming" -> "idle" -> "wilting" -> "hidden"
+    let state = "blooming";
     let stateProgress = 0;
     let rotY = 0;
     let windTime = 0;
@@ -269,9 +261,7 @@ function initAsciiBouquet() {
 
             if (state === "blooming") {
                 stateProgress = Math.min(1, stateProgress + dt * 0.65);
-                if (stateProgress >= 1) {
-                    state = "idle";
-                }
+                if (stateProgress >= 1) state = "idle";
             } else if (state === "wilting") {
                 stateProgress = Math.min(1, stateProgress + dt * 0.45);
                 if (stateProgress >= 1) {
@@ -288,7 +278,6 @@ function initAsciiBouquet() {
                 rotY = (rotY + dt * ROTATE_SPEED) % TWO_PI;
                 windTime += dt;
 
-                // Hembusan angin lembut multi-gelombang
                 const breezeStrength = 0.65 + 0.35 * Math.sin(windTime * 0.75);
                 const globalWindX = Math.sin(windTime * 1.45) * breezeStrength;
                 const globalWindZ = Math.cos(windTime * 1.15) * 0.65 * breezeStrength;
@@ -309,7 +298,6 @@ function initAsciiBouquet() {
                     let char = item.char;
                     let color = item.color;
 
-                    // Transisi masuk: mekar mengembang dari ikatan pita
                     if (state === "blooming") {
                         const grow = 0.2 + 0.8 * bloomEase;
                         x *= grow;
@@ -317,7 +305,6 @@ function initAsciiBouquet() {
                         z *= grow;
                     }
 
-                    // Animasi tertiup angin pada tangkai, kepala bunga, pita menjuntai, & kelopak melayang
                     if (item.part === "stem" || item.part === "flower") {
                         const heightAboveTie = Math.max(0, RIBBON_Y - y);
                         const flex = Math.pow(heightAboveTie / 110, 1.45);
@@ -340,7 +327,6 @@ function initAsciiBouquet() {
                         alpha = 0.55 + 0.35 * Math.sin(windTime * 2.2 + item.petalPhase);
                     }
 
-                    // Transisi saat diklik: tangkai melengkung layu, kelopak terurai tertiup angin
                     if (wiltT > 0) {
                         const droopAngle = wiltT * 0.82;
                         if (y < RIBBON_Y) {
@@ -351,7 +337,7 @@ function initAsciiBouquet() {
 
                         if (item.part === "flower" || item.part === "ambient_petal") {
                             const disperse = Math.pow(wiltT, 1.2) * 64;
-                            x += (item.vx + 0.65) * disperse; // ikut terbawa angin ke samping
+                            x += (item.vx + 0.65) * disperse;
                             y += item.vy * disperse + 48 * wiltT * wiltT;
                             z += item.vz * disperse;
                             if (wiltT > 0.25 && item.sparkChar) char = item.sparkChar;
@@ -359,7 +345,6 @@ function initAsciiBouquet() {
                         alpha *= Math.max(0, 1 - Math.pow(wiltT, 1.3));
                     }
 
-                    // Rotasi 3D 360° + proyeksi perspektif
                     const y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
                     const z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
                     const x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
@@ -382,7 +367,7 @@ function initAsciiBouquet() {
                 projected.sort((a, b) => b.z - a.z);
 
                 for (const p of projected) {
-                    const fontSize = Math.max(7, Math.round(9.5 * p.scale));
+                    const fontSize = Math.max(8, Math.round(9.5 * p.scale));
                     ctx.font = `bold ${fontSize}px "Courier New", monospace`;
                     ctx.globalAlpha = p.alpha;
                     ctx.fillStyle = p.color;
@@ -396,6 +381,463 @@ function initAsciiBouquet() {
     requestAnimationFrame(renderBouquetFrame);
 }
 
+// ============================================================================
+// 2. MODEL 3D FLOATING STARLIGHT CAKE DENGAN CINCIN ORBIT
+// ============================================================================
+function build3DStarlightCakeModel() {
+    const bodyPoints = [];
+    const orbitPoints = [];
+
+    const cakeRadius = 52;
+    const cakeTopY = 2;
+    const cakeBottomY = 48;
+
+    // A. Piring Kaca Melayang di Bawah Kue
+    const plateY = 62;
+    for (let ring = 0.25; ring <= 1.0; ring += 0.25) {
+        const r = ring * 74;
+        const steps = Math.max(14, Math.round(ring * 48));
+        for (let i = 0; i < steps; i++) {
+            const a = (i / steps) * Math.PI * 2;
+            const isRim = ring >= 0.95;
+            bodyPoints.push({
+                x: Math.cos(a) * r,
+                y: plateY + (isRim ? -2 : 0),
+                z: Math.sin(a) * r,
+                part: "plate",
+                char: isRim ? "=" : "·",
+                color: isRim ? "rgb(215, 225, 255)" : "rgb(175, 190, 235)",
+                orderNorm: 0.05 + ring * 0.1
+            });
+        }
+    }
+
+    // B. Permukaan Atas Kue (Cream Topping)
+    for (let ring = 0.15; ring <= 1.0; ring += 0.21) {
+        const r = ring * cakeRadius;
+        const steps = Math.max(12, Math.round(ring * 40));
+        for (let i = 0; i < steps; i++) {
+            const a = (i / steps) * Math.PI * 2;
+            bodyPoints.push({
+                x: Math.cos(a) * r,
+                y: cakeTopY,
+                z: Math.sin(a) * r,
+                part: "cake_top",
+                char: ring > 0.8 ? "@" : "+",
+                color: "rgb(255, 238, 248)",
+                orderNorm: 0.35 + ring * 0.15
+            });
+        }
+    }
+
+    // C. Dinding Silinder Kue & Lelehan Krim Pastel (Drip Frosting)
+    const rows = 11;
+    const cols = 44;
+    for (let r = 0; r <= rows; r++) {
+        const u = r / rows;
+        const y = cakeTopY + u * (cakeBottomY - cakeTopY);
+
+        for (let c = 0; c < cols; c++) {
+            const a = (c / cols) * Math.PI * 2;
+            const dripLimit = 0.26 + 0.18 * Math.sin(a * 7) + 0.08 * Math.cos(a * 3);
+            const isDrip = u <= dripLimit;
+            const isCreamLayer = Math.abs(u - 0.56) < 0.07;
+
+            let char = "#";
+            let color = "rgb(252, 185, 214)"; // Bolu stroberi pastel
+
+            if (isDrip) {
+                char = u > dripLimit - 0.08 ? "~" : "@";
+                color = "rgb(255, 242, 250)"; // Lelehan krim putih-pink
+            } else if (isCreamLayer) {
+                char = "=";
+                color = "rgb(225, 195, 255)"; // Lapisan krim lilac di tengah kue
+            }
+
+            bodyPoints.push({
+                x: Math.cos(a) * (isDrip ? cakeRadius + 1.2 : cakeRadius),
+                y,
+                z: Math.sin(a) * (isDrip ? cakeRadius + 1.2 : cakeRadius),
+                part: "cake_body",
+                char,
+                color,
+                orderNorm: 0.15 + (1 - u) * 0.25
+            });
+        }
+    }
+
+    // D. Mutiara Gula di Pinggir Bawah & Atas Kue
+    const pearlCount = 26;
+    for (let i = 0; i < pearlCount; i++) {
+        const a = (i / pearlCount) * Math.PI * 2;
+        bodyPoints.push({
+            x: Math.cos(a) * (cakeRadius + 2.5),
+            y: cakeBottomY,
+            z: Math.sin(a) * (cakeRadius + 2.5),
+            part: "pearl",
+            char: "o",
+            color: i % 2 === 0 ? "rgb(255, 224, 130)" : "rgb(255, 155, 205)",
+            orderNorm: 0.2
+        });
+    }
+
+    // E. 8 Pusaran Krim Kocok (Whipped Cream Swirls) di Atas Kue
+    const swirlCount = 8;
+    for (let s = 0; s < swirlCount; s++) {
+        const sa = (s / swirlCount) * Math.PI * 2;
+        const sx = Math.cos(sa) * (cakeRadius * 0.72);
+        const sz = Math.sin(sa) * (cakeRadius * 0.72);
+
+        for (let h = 0; h < 3; h++) {
+            const subR = (2 - h) * 2.5;
+            for (let k = 0; k < 4; k++) {
+                const ka = (k / 4) * Math.PI * 2 + h;
+                bodyPoints.push({
+                    x: sx + Math.cos(ka) * subR,
+                    y: cakeTopY - 2 - h * 2.5,
+                    z: sz + Math.sin(ka) * subR,
+                    part: "swirl",
+                    char: h === 2 ? "*" : "@",
+                    color: s % 2 === 0 ? "rgb(255, 142, 196)" : "rgb(255, 245, 252)",
+                    orderNorm: 0.52 + h * 0.05
+                });
+            }
+        }
+    }
+
+    // F. Lilin Ulang Tahun Bergaris di Tengah Kue
+    const candleTopY = -34;
+    for (let cy = cakeTopY; cy >= candleTopY; cy -= 3.2) {
+        const stepIdx = Math.round((cakeTopY - cy) / 3.2);
+        for (let c = 0; c < 10; c++) {
+            const a = (c / 10) * Math.PI * 2;
+            const isStripe = (stepIdx + c) % 3 === 0;
+            bodyPoints.push({
+                x: Math.cos(a) * 4.5,
+                y: cy,
+                z: Math.sin(a) * 4.5,
+                part: "candle",
+                char: isStripe ? "/" : "|",
+                color: isStripe ? "rgb(255, 108, 175)" : "rgb(255, 248, 252)",
+                orderNorm: 0.65 + ((cakeTopY - cy) / (cakeTopY - candleTopY)) * 0.2
+            });
+        }
+    }
+
+    // Sumbu lilin
+    bodyPoints.push({
+        x: 0,
+        y: candleTopY - 3,
+        z: 0,
+        part: "wick",
+        char: "|",
+        color: "rgb(140, 115, 130)",
+        orderNorm: 0.88
+    });
+
+    // G. Cincin Orbit Bintang & Hati Miring (Saturn-like Starlight Ring)
+    const orbitCount = 54;
+    for (let i = 0; i < orbitCount; i++) {
+        const a = (i / orbitCount) * Math.PI * 2;
+        const radialOffset = ((i % 3) - 1) * 7.5;
+        const isHeart = i % 9 === 0;
+        const isBigStar = i % 4 === 0 && !isHeart;
+
+        let char = "·";
+        let color = "rgb(210, 180, 255)";
+        if (isHeart) {
+            char = "♥";
+            color = "rgb(255, 128, 192)";
+        } else if (isBigStar) {
+            char = "✦";
+            color = "rgb(255, 226, 118)";
+        } else if (i % 2 === 0) {
+            char = "*";
+            color = "rgb(255, 182, 224)";
+        }
+
+        orbitPoints.push({
+            angle: a,
+            baseRadius: 88 + radialOffset,
+            yOffset: Math.sin(i * 1.7) * 2.5,
+            char,
+            color,
+            twinklePhase: i * 0.6,
+            orderNorm: 0.4 + (i / orbitCount) * 0.55
+        });
+    }
+
+    return { bodyPoints, orbitPoints, wickY: candleTopY - 4 };
+}
+
+function initAsciiCake() {
+    const cakeBox = document.getElementById("cake-box");
+    if (!cakeBox) return;
+
+    // Pastikan canvas 3D terpasang di dalam #cake-box (menggantikan kue statis lama)
+    let canvas = document.getElementById("ascii-cake-canvas");
+    if (!canvas) {
+        cakeBox.innerHTML = "";
+        canvas = document.createElement("canvas");
+        canvas.id = "ascii-cake-canvas";
+        cakeBox.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext("2d");
+    canvas.width = 480;
+    canvas.height = 430;
+
+    const { bodyPoints, orbitPoints, wickY } = build3DStarlightCakeModel();
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2 + 12;
+
+    let flameLit = true;
+    let entranceProgress = 0;
+    let ringPulse = 0; // Gelombang mekar cincin orbit saat lilin ditiup
+    let rotY = 0;
+    let orbitSpin = 0;
+    let time = 0;
+    const smokeParticles = [];
+
+    function spawnSmokePuff() {
+        smokeParticles.push({
+            x: (Math.random() - 0.5) * 3,
+            y: wickY - 2,
+            z: (Math.random() - 0.5) * 3,
+            vx: (Math.random() - 0.5) * 8,
+            vy: -(18 + Math.random() * 14),
+            phase: Math.random() * Math.PI * 2,
+            age: 0,
+            life: 2.2 + Math.random() * 1.1,
+            char: ["~", "(", ")", "·", "°"][Math.floor(Math.random() * 5)]
+        });
+    }
+
+    triggerCakeEntrance = () => {
+        entranceProgress = 0;
+    };
+
+    triggerCakeBlowToggle = () => {
+        flameLit = !flameLit;
+        if (!flameLit) {
+            // Lilin ditiup: cincin orbit memancarkan gelombang & asap mengepul naik
+            ringPulse = 1;
+            for (let i = 0; i < 14; i++) {
+                setTimeout(() => spawnSmokePuff(), i * 110);
+            }
+        } else {
+            // Lilin dinyalakan kembali
+            ringPulse = 0.45;
+            smokeParticles.length = 0;
+        }
+        return flameLit;
+    };
+
+    const targetObserve = cakeBox;
+    if ("IntersectionObserver" in window && targetObserve) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && entranceProgress === 0) {
+                        entranceProgress = 0.01;
+                    }
+                });
+            },
+            { threshold: 0.2 }
+        );
+        observer.observe(targetObserve);
+    } else {
+        entranceProgress = 1;
+    }
+
+    let lastTime = performance.now();
+
+    function renderCakeFrame(now) {
+        const dt = Math.min(0.05, (now - lastTime) / 1000);
+        lastTime = now;
+
+        const panel = document.getElementById("opt-content-3");
+        if (!document.hidden && panel && panel.classList.contains("show")) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            time += dt;
+            rotY = (rotY + dt * 0.55) % (Math.PI * 2);
+            orbitSpin = (orbitSpin + dt * 0.95) % (Math.PI * 2);
+
+            if (entranceProgress < 1) {
+                entranceProgress = Math.min(1, entranceProgress + dt * 0.85);
+            }
+            if (ringPulse > 0) {
+                ringPulse = Math.max(0, ringPulse - dt * 0.75);
+            }
+
+            const easeIn = 1 - Math.pow(1 - entranceProgress, 3);
+            const hoverY = Math.sin(time * 2.1) * 5.5; // Efek kue melayang lembut
+            const rotX = 0.26;
+            const fov = 330;
+
+            const projected = [];
+
+            // 1. Render Badan Kue, Krim, Piring, & Lilin
+            for (const pt of bodyPoints) {
+                if (pt.orderNorm > easeIn * 1.05) continue;
+
+                const grow = 0.35 + 0.65 * easeIn;
+                const x = pt.x * grow;
+                const y = pt.y * grow + hoverY;
+                const z = pt.z * grow;
+
+                const y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
+                const z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
+                const x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
+                const z2 = -x * Math.sin(rotY) + z1 * Math.cos(rotY);
+
+                const scale = fov / (fov + z2);
+                projected.push({
+                    px: cx + x2 * scale,
+                    py: cy + y1 * scale,
+                    z: z2,
+                    scale,
+                    alpha: easeIn,
+                    char: pt.char,
+                    color: pt.color,
+                    glow: null
+                });
+            }
+
+            // 2. Render Cincin Orbit Bintang & Hati Miring
+            const pulseExpand = Math.sin(ringPulse * Math.PI) * 34;
+            const ringTiltZ = -0.24;
+            const ringTiltX = 0.34;
+
+            for (const op of orbitPoints) {
+                if (op.orderNorm > easeIn * 1.05) continue;
+
+                const a = op.angle + orbitSpin;
+                const r = (op.baseRadius + pulseExpand) * (0.4 + 0.6 * easeIn);
+
+                // Posisi di bidang datar cincin
+                const rx0 = Math.cos(a) * r;
+                const ry0 = op.yOffset;
+                const rz0 = Math.sin(a) * r;
+
+                // Miringkan bidang cincin seperti cincin Saturnus
+                const ry1 = ry0 * Math.cos(ringTiltX) - rz0 * Math.sin(ringTiltX);
+                const rz1 = ry0 * Math.sin(ringTiltX) + rz0 * Math.cos(ringTiltX);
+                const rx2 = rx0 * Math.cos(ringTiltZ) - ry1 * Math.sin(ringTiltZ);
+                const ry2 = rx0 * Math.sin(ringTiltZ) + ry1 * Math.cos(ringTiltZ) + hoverY * 0.7;
+
+                const scale = fov / (fov + rz1);
+                const twinkle = 0.65 + 0.35 * Math.sin(time * 3.5 + op.twinklePhase);
+
+                projected.push({
+                    px: cx + rx2 * scale,
+                    py: cy + ry2 * scale,
+                    z: rz1,
+                    scale: scale * (1 + ringPulse * 0.25),
+                    alpha: easeIn * twinkle,
+                    char: op.char,
+                    color: op.color,
+                    glow: op.char === "✦" || op.char === "♥" ? op.color : null
+                });
+            }
+
+            // 3. Render Api Lilin (jika menyala) atau Asap Mengepul (jika ditiup)
+            if (flameLit && easeIn > 0.75) {
+                const flameSway = Math.sin(time * 9) * 1.8 + Math.cos(time * 14) * 0.9;
+                const flameFlicker = 0.9 + 0.15 * Math.sin(time * 16);
+
+                const flameLayers = [
+                    { dy: -3, r: 3.2, char: "@", color: "rgb(255, 250, 215)" },
+                    { dy: -7, r: 4.0, char: "#", color: "rgb(255, 212, 92)" },
+                    { dy: -11, r: 3.0, char: "*", color: "rgb(255, 148, 82)" },
+                    { dy: -15, r: 1.6, char: "^", color: "rgb(255, 108, 120)" },
+                    { dy: -19, r: 0.4, char: "·", color: "rgb(255, 220, 140)" }
+                ];
+
+                flameLayers.forEach((fl, idx) => {
+                    const steps = fl.r > 1 ? 6 : 1;
+                    for (let s = 0; s < steps; s++) {
+                        const sa = (s / steps) * Math.PI * 2 + time * 4;
+                        const fx = Math.cos(sa) * fl.r + flameSway * (idx * 0.28);
+                        const fy = wickY + fl.dy * flameFlicker + hoverY;
+                        const fz = Math.sin(sa) * fl.r;
+
+                        const y1 = fy * Math.cos(rotX) - fz * Math.sin(rotX);
+                        const z1 = fy * Math.sin(rotX) + fz * Math.cos(rotX);
+                        const scale = fov / (fov + z1);
+
+                        projected.push({
+                            px: cx + fx * scale,
+                            py: cy + y1 * scale,
+                            z: z1 - 4,
+                            scale: scale * 1.08,
+                            alpha: 0.95,
+                            char: fl.char,
+                            color: fl.color,
+                            glow: "rgba(255, 200, 95, 0.9)"
+                        });
+                    }
+                });
+            }
+
+            // Update & render partikel asap saat lilin padam
+            for (let i = smokeParticles.length - 1; i >= 0; i--) {
+                const sp = smokeParticles[i];
+                sp.age += dt;
+                if (sp.age >= sp.life) {
+                    smokeParticles.splice(i, 1);
+                    continue;
+                }
+                const st = sp.age / sp.life;
+                const sx = sp.x + Math.sin(time * 4 + sp.phase) * (4 + st * 14) + sp.vx * st;
+                const sy = sp.y + sp.vy * sp.age + hoverY;
+                const sz = sp.z + Math.cos(time * 3.5 + sp.phase) * 5;
+
+                const y1 = sy * Math.cos(rotX) - sz * Math.sin(rotX);
+                const z1 = sy * Math.sin(rotX) + sz * Math.cos(rotX);
+                const scale = fov / (fov + z1);
+
+                projected.push({
+                    px: cx + sx * scale,
+                    py: cy + y1 * scale,
+                    z: z1,
+                    scale: scale * (0.9 + st * 0.4),
+                    alpha: (1 - st) * 0.78,
+                    char: sp.char,
+                    color: "rgb(218, 212, 238)",
+                    glow: null
+                });
+            }
+
+            projected.sort((a, b) => b.z - a.z);
+
+            for (const p of projected) {
+                const fontSize = Math.max(8, Math.round(10 * p.scale));
+                ctx.font = `bold ${fontSize}px "Courier New", monospace`;
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                if (p.glow) {
+                    ctx.shadowColor = p.glow;
+                    ctx.shadowBlur = 10;
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+                ctx.fillText(p.char, p.px, p.py);
+            }
+            ctx.shadowBlur = 0;
+        }
+        requestAnimationFrame(renderCakeFrame);
+    }
+
+    requestAnimationFrame(renderCakeFrame);
+}
+
+// ============================================================================
+// 3. INISIALISASI & HANDLER INTERAKSI SURPRISES
+// ============================================================================
 export function initSurprises() {
     const bouquetBoxEl = document.getElementById("bouquet-box");
     const bouquet3dWrap = document.getElementById("bouquet-3d-wrap");
@@ -412,6 +854,7 @@ export function initSurprises() {
     }
 
     initAsciiBouquet();
+    initAsciiCake();
 }
 
 export const surpriseHandlers = {
@@ -431,6 +874,10 @@ export const surpriseHandlers = {
 
         if (optionNumber === 2) {
             motionPlay(activePanel.querySelectorAll(".admire-card"), { opacity: [0, 1], x: [-14, 0] }, { duration: 0.48, delay: stagger(0.08), ease: EASE_SILKY });
+        }
+
+        if (optionNumber === 3 && typeof triggerCakeEntrance === "function") {
+            triggerCakeEntrance();
         }
     },
     bloomBouquet: (event) => {
@@ -455,16 +902,22 @@ export const surpriseHandlers = {
     blowCandle: () => {
         const flame = document.getElementById("flame");
         const status = document.getElementById("wish-status");
-        motionPlay("#cake-box", { scale: [1, 0.96, 1.025, 1] }, SPRING_SNAPPY);
+        motionPlay("#cake-box", { scale: [1, 0.96, 1.03, 1] }, SPRING_SNAPPY);
 
-        if (!flame.classList.contains("blown")) {
-            flame.classList.add("blown");
-            status.innerText = "Yeay! Sekarang tulis harapanmu di bawah ini 🎉✨";
+        const isLit = typeof triggerCakeBlowToggle === "function"
+            ? triggerCakeBlowToggle()
+            : !(flame && !flame.classList.contains("blown"));
+
+        if (!isLit) {
+            if (flame) flame.classList.add("blown");
+            if (status) status.innerText = "Yeay! Sekarang tulis harapanmu di bawah ini 🎉✨";
         } else {
-            flame.classList.remove("blown");
-            status.innerText = "Tap the candle to blow it out ✨";
+            if (flame) flame.classList.remove("blown");
+            if (status) status.innerText = "Tap the candle to blow it out ✨";
         }
-        motionPlay(status, { scale: [0.94, 1.03, 1], opacity: [0.6, 1] }, SPRING_SNAPPY);
+        if (status) {
+            motionPlay(status, { scale: [0.94, 1.03, 1], opacity: [0.6, 1] }, SPRING_SNAPPY);
+        }
     },
     sendWishToEmail: async () => {
         const input = document.getElementById("wish-input");

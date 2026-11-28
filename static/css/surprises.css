@@ -261,3 +261,29 @@
     font-weight: bold;
     min-height: 18px;
 }
+
+/* Canvas 3D ASCII Floating Starlight Cake */
+.cake-box {
+    position: relative;
+    width: 310px;
+    height: 290px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: visible;
+    user-select: none;
+}
+
+#ascii-cake-canvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 480px;
+    height: 430px;
+    display: block;
+    pointer-events: none;
+    filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 14px rgba(255, 168, 214, 0.35));
+}
