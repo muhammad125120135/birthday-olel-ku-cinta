@@ -118,6 +118,7 @@ input,
     content: "";
     position: absolute;
     inset: 0;
+    border-radius: inherit;
     background: radial-gradient(
         460px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
         rgba(255, 126, 179, 0.14),

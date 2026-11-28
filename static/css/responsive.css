@@ -14,6 +14,11 @@
 }
 
 @media (max-width: 480px) {
+    /* ...aturan HP lainnya tetap... */
+    .bouquet-box {width: 280px; height: 268px; }
+    .bouquet-3d-wrap {width: 256px; height: 256px; }
+    #ascii-bouquet-canvas {width: 500px; height: 435px; }
+    }
     .main-title { font-size: 2rem; }
     .header-cutout-img { width: 176px; height: 176px; }
     .real-paper-sheet {
@@ -49,8 +54,7 @@
     .btn-speed { padding: 3px 5px; font-size: 0.68rem; }
     .btn-circle-play { width: 60px; height: 60px; }
     .options-area { padding-bottom: 145px; }
-}
-
+    
 @media (prefers-reduced-motion: reduce) {
     .hero-stagger {
         opacity: 1;

@@ -188,10 +188,14 @@ function initAsciiBouquet() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
+    // Perluas bidang resolusi kanvas agar kelopak yang bertebaran tidak terpotong tepi kotak
+    canvas.width = 620;
+    canvas.height = 540;
+
     const model = build3DFlowerBasketModel();
     const cx = canvas.width / 2;
     const cy = canvas.height / 2 + 14;
-
+    
     let state = "blooming"; // "blooming" -> "idle" -> "wilting" -> "hidden"
     let stateProgress = 0;
     let rotY = 0; // Sudut rotasi Y terus berputar 360 derajat (0 -> 2π)
