@@ -84,3 +84,298 @@ export const jarHandlers = {
     forceCloseModal,
     closeModal: (e) => { if (e.target.id === "modal") forceCloseModal(); }
 };
+
+// ============================================================================
+// ASCII ART INTERAKTIF UNTUK KEDUA GAMBAR DI SAMPING JAR
+// ============================================================================
+const PORTRAIT_ASCII_RAMP = " .:-=+*#%@";
+const SPARKLE_CHARS = ["✦", "*", "·", "✿", "♥"];
+
+function sampleImageToAsciiParticles(img, canvasW, canvasH, sideDir) {
+    const offscreen = document.createElement("canvas");
+    offscreen.width = canvasW;
+    offscreen.height = canvasH;
+    const octx = offscreen.getContext("2d", { willReadFrequently: true });
+
+    // Hitung skala proporsional agar foto tidak gepeng
+    const scale = Math.min(canvasW / img.naturalWidth, canvasH / img.naturalHeight) * 0.96;
+    const drawW = img.naturalWidth * scale;
+    const drawH = img.naturalHeight * scale;
+    const offsetX = (canvasW - drawW) / 2;
+    const offsetY = (canvasH - drawH) / 2;
+
+    octx.drawImage(img, offsetX, offsetY, drawW, drawH);
+    const { data } = octx.getImageData(0, 0, canvasW, canvasH);
+
+    const cellW = 7;
+    const cellH = 8.5;
+    const particles = [];
+
+    for (let y = 0; y < canvasH; y += cellH) {
+        for (let x = 0; x < canvasW; x += cellW) {
+            const px = Math.min(canvasW - 1, Math.floor(x + cellW * 0.5));
+            const py = Math.min(canvasH - 1, Math.floor(y + cellH * 0.5));
+            const idx = (py * canvasW + px) * 4;
+
+            const r = data[idx];
+            const g = data[idx + 1];
+            const b = data[idx + 2];
+            const a = data[idx + 3];
+
+            if (a < 32) continue;
+
+            // Angkat pencahayaan area gelap (seperti hijab hitam) agar tetap jelas di latar malam
+            const boostR = Math.min(255, Math.round(r * 1.16 + 26));
+            const boostG = Math.min(255, Math.round(g * 1.16 + 24));
+            const boostB = Math.min(255, Math.round(b * 1.18 + 30));
+
+            const lum = (0.299 * boostR + 0.587 * boostG + 0.114 * boostB) / 255;
+            const charIdx = Math.min(
+                PORTRAIT_ASCII_RAMP.length - 1,
+                Math.max(1, Math.floor(lum * (PORTRAIT_ASCII_RAMP.length - 1)) + 1)
+            );
+
+            const normX = (px - canvasW / 2) / (canvasW / 2);
+            const normY = (py - canvasH / 2) / (canvasH / 2);
+            const radialAngle = Math.atan2(normY, normX) + (Math.random() - 0.5) * 0.7;
+            const burstDist = 75 + Math.random() * 145;
+
+            particles.push({
+                tx: px,
+                ty: py,
+                char: PORTRAIT_ASCII_RAMP[charIdx],
+                sparkChar: SPARKLE_CHARS[Math.floor(Math.random() * SPARKLE_CHARS.length)],
+                color: `rgb(${boostR}, ${boostG}, ${boostB})`,
+                lum,
+                // Urutan muncul dari tengah & atas ke luar
+                stagger: Math.min(0.45, Math.hypot(normX * 0.7, normY * 0.5) * 0.35 + Math.random() * 0.14),
+                // Arah hamburan keluar saat diklik
+                exitVx: Math.cos(radialAngle) * burstDist + sideDir * (28 + Math.random() * 45),
+                exitVy: Math.sin(radialAngle) * burstDist - (35 + Math.random() * 65),
+                // Arah datang masuk saat muncul kembali
+                enterOx: (Math.random() - 0.5) * 180 + sideDir * 60,
+                enterOy: -90 - Math.random() * 130,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+    }
+
+    return particles;
+}
+
+function createInteractiveAsciiPortrait(wrapId, canvasId, sideDir) {
+    const wrap = document.getElementById(wrapId);
+    const canvas = document.getElementById(canvasId);
+    if (!wrap || !canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const W = 640;
+    const H = 800;
+    canvas.width = W;
+    canvas.height = H;
+
+    let particles = [];
+    let state = "assembling"; // "assembling" | "idle" | "dissolving"
+    let progress = 0;
+    let reenterTimer = null;
+    let time = 0;
+
+    function triggerReplayCycle() {
+        if (particles.length === 0) return;
+        if (reenterTimer) {
+            clearTimeout(reenterTimer);
+            reenterTimer = null;
+        }
+        // Jika sedang diam atau sedang masuk, jalankan animasi keluar dulu lalu masuk lagi
+        if (state !== "dissolving") {
+            state = "dissolving";
+            progress = 0;
+        }
+    }
+
+    wrap.addEventListener("click", (e) => {
+        e.stopPropagation();
+        triggerReplayCycle();
+    });
+
+    wrap.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            triggerReplayCycle();
+        }
+    });
+
+    const img = new Image();
+    img.src = canvas.dataset.src;
+    img.onload = () => {
+        particles = sampleImageToAsciiParticles(img, W, H, sideDir);
+        state = "assembling";
+        progress = 0;
+    };
+
+    const jarSection = document.getElementById("jar-section") || wrap;
+    if ("IntersectionObserver" in window && jarSection) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && particles.length > 0 && state === "idle") {
+                        state = "assembling";
+                        progress = 0;
+                    }
+                });
+            },
+            { threshold: 0.18 }
+        );
+        observer.observe(jarSection);
+    }
+
+    let lastTime = performance.now();
+
+    function renderLoop(now) {
+        const dt = Math.min(0.05, (now - lastTime) / 1000);
+        lastTime = now;
+
+        const rect = wrap.getBoundingClientRect();
+        const isVisible = rect.bottom > -120 && rect.top < window.innerHeight + 120;
+
+        if (!document.hidden && isVisible && particles.length > 0) {
+            ctx.clearRect(0, 0, W, H);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = 'bold 8.5px "Courier New", monospace';
+
+            time += dt;
+
+            if (state === "assembling") {
+                progress = Math.min(1, progress + dt * 0.92);
+                if (progress >= 1) {
+                    state = "idle";
+                }
+            } else if (state === "dissolving") {
+                progress = Math.min(1, progress + dt * 1.18);
+                if (progress >= 1 && !reenterTimer) {
+                    reenterTimer = setTimeout(() => {
+                        reenterTimer = null;
+                        state = "assembling";
+                        progress = 0;
+                    }, 220);
+                }
+            }
+
+            const floatY = Math.sin(time * 2.0 + (sideDir > 0 ? 1.4 : 0)) * 3.5;
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                let drawX = p.tx;
+                let drawY = p.ty + floatY;
+                let alpha = 1;
+                let char = p.char;
+
+                if (state === "assembling") {
+                    const localT = Math.max(0, Math.min(1, (progress - p.stagger) / (1 - p.stagger)));
+                    const ease = 1 - Math.pow(1 - localT, 3);
+                    const inv = 1 - ease;
+
+                    drawX = p.tx + p.enterOx * inv + Math.sin(time * 5 + p.phase) * 8 * inv;
+                    drawY = p.ty + floatY + p.enterOy * inv;
+                    alpha = ease;
+                    if (localT < 0.45) char = p.sparkChar;
+                } else if (state === "dissolving") {
+                    const easeOut = Math.pow(progress, 1.35);
+                    drawX = p.tx + p.exitVx * easeOut + Math.sin(time * 6 + p.phase) * 10 * easeOut;
+                    drawY = p.ty + floatY + p.exitVy * easeOut;
+                    alpha = Math.max(0, 1 - Math.pow(progress, 1.15));
+                    if (progress > 0.18) char = p.sparkChar;
+                } else {
+                    // Kilau halus sesekali di titik terang saat diam
+                    if (p.lum > 0.78 && Math.sin(time * 3.2 + p.phase) > 0.92) {
+                        char = "✦";
+                    }
+                }
+
+                if (alpha <= 0.01) continue;
+
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = p.color;
+                ctx.fillText(char, drawX, drawY);
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        requestAnimationFrame(renderLoop);
+    }
+
+    requestAnimationFrame(renderLoop);
+}
+
+// ============================================================================
+// ANIMASI TULISAN BAWAH: WARNA-WARNI PELANGI & MELENGKUNG DARI KIRI KE KANAN
+// ============================================================================
+function initCurvedRainbowLabels() {
+    const pills = document.querySelectorAll(".wing-mini-pill");
+    const letterGroups = [];
+
+    pills.forEach((pill, pillIdx) => {
+        const rawText = pill.textContent.trim();
+        pill.setAttribute("aria-label", rawText);
+        pill.innerHTML = "";
+
+        const chars = Array.from(rawText);
+        const spans = chars.map((ch) => {
+            const span = document.createElement("span");
+            span.className = "curved-rainbow-char";
+            if (ch === " ") {
+                span.innerHTML = "&nbsp;";
+                span.style.width = "0.28em";
+            } else {
+                span.textContent = ch;
+            }
+            pill.appendChild(span);
+            return span;
+        });
+
+        letterGroups.push({ spans, offsetPhase: pillIdx * 1.2 });
+    });
+
+    if (letterGroups.length === 0) return;
+
+    function animateRainbowWave(now) {
+        const t = now * 0.001;
+
+        letterGroups.forEach(({ spans, offsetPhase }) => {
+            const len = spans.length;
+            for (let i = 0; i < len; i++) {
+                const span = spans[i];
+                const norm = len > 1 ? (i / (len - 1)) * 2 - 1 : 0; // -1 (kiri) ke +1 (kanan)
+
+                // Lengkungan busur (arch) + gelombang merambat dari kiri ke kanan
+                const archY = (norm * norm - 0.45) * 5.2;
+                const waveY = prefersReducedMotion ? 0 : Math.sin(t * 3.6 - i * 0.48 + offsetPhase) * 3.6;
+                const y = archY + waveY;
+                const rot = norm * 6.5 + (prefersReducedMotion ? 0 : Math.cos(t * 3.6 - i * 0.48 + offsetPhase) * 3.5);
+
+                // Warna-warni pelangi pastel mengalir dari kiri ke kanan
+                const hue = Math.round(((i * 24) - (prefersReducedMotion ? 0 : t * 125) + 3600) % 360);
+                span.style.color = `hsl(${hue}, 95%, 76%)`;
+                span.style.textShadow = `0 0 10px hsla(${hue}, 95%, 64%, 0.55)`;
+                span.style.transform = `translateY(${y.toFixed(2)}px) rotate(${rot.toFixed(1)}deg)`;
+            }
+        });
+
+        requestAnimationFrame(animateRainbowWave);
+    }
+
+    requestAnimationFrame(animateRainbowWave);
+}
+
+function initJarSideEnhancements() {
+    createInteractiveAsciiPortrait("ascii-wing-left", "jar-ascii-canvas-left", -1);
+    createInteractiveAsciiPortrait("ascii-wing-right", "jar-ascii-canvas-right", 1);
+    initCurvedRainbowLabels();
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initJarSideEnhancements);
+} else {
+    initJarSideEnhancements();
+}
