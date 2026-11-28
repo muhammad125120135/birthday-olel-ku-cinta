@@ -110,145 +110,43 @@
                 </div>
             </div>
 
-            <div id="letter-paper" class="real-paper-wrapper hero-stagger">
-                <div class="real-paper-sheet">
-                    <div class="paper-washi-tape"></div>
-                    <div class="paper-top-meta">
-                        <span>Bandar Lampung, 12 Desember 2026</span>
-                        <span id="fold-counter-badge" class="fold-counter-badge">Lipatan 1 / 9</span>
-                    </div>
+            <div id="letter-paper" class="scrapbook-wrapper hero-stagger">
+                <div class="scrapbook-stage">
+                    <!-- Tumpukan ketebalan halaman belakang buku -->
+                    <div class="scrapbook-stack-edges"></div>
 
-                    <div id="accordion-letter" class="accordion-letter">
-                        <div class="paper-fold is-open" data-fold="1">
-                            <div class="fold-shadow-veil"></div>
-                            <div class="fold-crease-bar">
-                                <span class="crease-label">Lipatan 01</span>
-                                <span class="crease-action">Bagian Pembuka</span>
-                            </div>
-                            <div class="fold-content">
-                                <p class="paper-text greeting-highlight">HAIII SAYANG QU YANG SANGAT SANGAT CANTIK DAN LUCU.</p>
-                            </div>
+                    <!-- Badan Utama Scrapbook 2 Halaman -->
+                    <div id="scrapbook-book" class="scrapbook-book">
+                        <!-- Halaman Kiri (Teks Surat) -->
+                        <div id="scrapbook-base-left" class="scrapbook-page page-left" onclick="prevSpread()" title="Klik untuk halaman sebelumnya"></div>
+
+                        <!-- Garis Jilid & Renda Tengah Buku -->
+                        <div class="scrapbook-spine-crease"></div>
+
+                        <!-- Halaman Kanan (Kosong untuk desain berikutnya) -->
+                        <div id="scrapbook-base-right" class="scrapbook-page page-right" onclick="nextSpread()" title="Klik untuk halaman berikutnya"></div>
+
+                        <!-- Lembar 3D yang Berputar Saat Halaman Dibalik -->
+                        <div id="scrapbook-flip-leaf" class="scrapbook-flip-leaf" aria-hidden="true">
+                            <div id="scrapbook-flip-front" class="flip-face flip-front"></div>
+                            <div id="scrapbook-flip-back" class="flip-face flip-back"></div>
+                            <div id="scrapbook-flip-shade" class="flip-shade"></div>
                         </div>
-
-                        <div class="paper-fold is-next-folded" data-fold="2" onclick="handleFoldClick(2, event)">
-                            <div class="fold-shadow-veil"></div>
-                            <div class="fold-crease-bar">
-                                <span class="crease-label">Lipatan 02</span>
-                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
-                            </div>
-                            <div class="fold-content">
-                                <p class="paper-text">
-                                    HAPPY BIRTHDAY LOWFY! Hari ini, tepatnya di tanggal 12 Desember 2026, kamu uda menyentuh umur 19 tahun looo.. waktu beneran jalan kaya mobil racing aja. Nggak ada rasanya yaa.. sekarang kamu uda nyentuh umur 19, dan itu hampir 20 yaa.. WOW.. beneran uda masuk dalam fase baru di mana kamu uda pelan-pelan mulai menghadapi dunia yang bener-bener jauh lebih luas dari yang kemarin-kemarin.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="paper-fold is-stacked-folded" data-fold="3" onclick="handleFoldClick(3, event)">
-                            <div class="fold-shadow-veil"></div>
-                            <div class="fold-crease-bar">
-                                <span class="crease-label">Lipatan 03</span>
-                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
-                            </div>
-                            <div class="fold-content">
-                                <p class="paper-text">
-                                    Kalo boleh jujur, akhir-akhir ini aku sering banget kepikiran sama kamu. Kaya berat banget nggak sih jalanin hari-hari kamu sekarang? terutama kamu sekarang uda masuk dan mulai adaptasi di kehidupan perkuliahan ini? Aku tau kok kalo dunia kuliah itu nggak semudah yang di bayangin. Yang pasti banyak banget hal-hal baru yang mungkin bikin kamu kaget, dari tugas-tugas yang selalu datang tanpa lampu merah, jadwal yang lumayan padat, atau ada beberapa momen di mana kamu kaya ngerasa capek banget mulai dari fisik atau pikiran kamu. Juga kadang mungkin ada hari di mana kamu ngerasa riwueh banget, pengen ngeluh, bahkan kaya kamu mungkin ngerasa meragukan diri kamu sendiri.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="paper-fold is-stacked-folded" data-fold="4" onclick="handleFoldClick(4, event)">
-                            <div class="fold-shadow-veil"></div>
-                            <div class="fold-crease-bar">
-                                <span class="crease-label">Lipatan 04</span>
-                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
-                            </div>
-                            <div class="fold-content">
-                                <p class="paper-text">
-                                    Setiap kali kamu ngerasain hari kamu berat, iki cuma mau kamu ingat satu hal sayang.. kamu nggak sendirian. Iki selalu berharap supaya kamu selalu punya kesabaran dan kesehatan buat jalanin semuanya badai yang datang, yang pastinya bareng sama iki. Iki pasti bakal selalu temani hari-hari kamu.. enggak cuman di hari-hari di mana kamu lagi senang atau bahagia, tapi juga di hari-hari kamu dimana lagi capek-capeknya, sedih, atau kamu butuh tempat buat bersandar. Iki bakal selalu terus ada di sisi kamu, dengerin semua cerita kamu tentang apapun itu, dan jalanin semuanya sama-sama sampai tahun-tahun selanjutnya.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="paper-fold is-stacked-folded" data-fold="5" onclick="handleFoldClick(5, event)">
-                            <div class="fold-shadow-veil"></div>
-                            <div class="fold-crease-bar">
-                                <span class="crease-label">Lipatan 05</span>
-                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
-                            </div>
-                            <div class="fold-content">
-                                <p class="paper-text">
-                                    Intinya, iki beneran bangga banget sama kamu, olel. Bangga karena kamu sendiri uda mau berusaha sejauh ini, bangga karena kamu tetap bertahan meskipun kadang rasanya pasti cape dan lelah banget di kamu nya, dan bangga bisa punya pasangan sehebat, sekuat, dan secantik kamu di kondisi apapun.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="paper-fold is-stacked-folded" data-fold="6" onclick="handleFoldClick(6, event)">
-                            <div class="fold-shadow-veil"></div>
-                            <div class="fold-crease-bar">
-                                <span class="crease-label">Lipatan 06</span>
-                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
-                            </div>
-                            <div class="fold-content">
-                                <p class="paper-text">
-                                    Di umur kamu yang uda menyentuh 19 tahun ini, aku selalu doain yang terbaik buat kamu. Semoga apa pun yang kamu mau, semua impian yang diam-diam kamu simpan di dalam hati dan pikiran kamu, dan segala rencana baik yang sedang kamu susun bisa satu per satu tercapai dengan bertahap. Semoga semesta selalu berpihak sama kamu, dan segala hal baik dari orang-orang yang ada di sekitar kamu selalu membawakan hal-hal baik, energi yang positif, dan menyenangkan buat kamu.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="paper-fold is-stacked-folded" data-fold="7" onclick="handleFoldClick(7, event)">
-                            <div class="fold-shadow-veil"></div>
-                            <div class="fold-crease-bar">
-                                <span class="crease-label">Lipatan 07</span>
-                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
-                            </div>
-                            <div class="fold-content">
-                                <p class="paper-text">
-                                    Dan... kalo nanti kamu ketemu sama hari yang rasanya bener-bener buruk atau apes banget, hari di mana semuanya bakal terasa berat banget dan kamu nggak menemukan satu pun hal baik yang ada, jangan pernah kepikiran buat pendam itu sendirian okeyy? Kamu punya tempat pulang yang banyak termasuk aku (harus aku). Walau kamu nggak menemukan hal baiknya, aku bakal kasih kamu seluruh dunia buat peluk kamu se erat-eratnya sampai semua rasa cape dan sedih kamu hilang.. sampai kamu balik merasa aman dan nyaman lagi..
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="paper-fold is-stacked-folded" data-fold="8" onclick="handleFoldClick(8, event)">
-                            <div class="fold-shadow-veil"></div>
-                            <div class="fold-crease-bar">
-                                <span class="crease-label">Lipatan 08</span>
-                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan ↓">Ketuk untuk membuka lipatan ↓</span>
-                            </div>
-                            <div class="fold-content">
-                                <p class="paper-text">
-                                    Selamat ulang tahun yang ke-19 ya andiyashafa ku cinta. Aku bener-bener terima kasih uda lahir di dunia ini, terima kasih uda bertahan sampai hari ini sampai detik ini, juga terima kasih sudah kasih kesempatan buat iki jadi bagian dari perjalanan hidup kamu.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="paper-fold is-stacked-folded final-fold" data-fold="9" onclick="handleFoldClick(9, event)">
-                            <div class="fold-shadow-veil"></div>
-                            <div class="fold-crease-bar">
-                                <span class="crease-label">Lipatan 09 • Penutup</span>
-                                <span class="crease-action" data-open-text="Ketuk untuk melipat ↑" data-closed-text="Ketuk untuk membuka lipatan terakhir ↓">Ketuk untuk membuka lipatan terakhir ↓</span>
-                            </div>
-                            <div class="fold-content">
-                                <div class="closing-handwriting-box">
-                                    <p class="closing-handwriting">
-                                        Once again, happy 19th birthday, lowfy.<br>
-                                        I love you so much, today, tomorrow, and always. ♥
-                                    </p>
-                                    <span class="signature-flourish">— Yours, Iki</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="paper-fold-controls">
-                        <button type="button" id="btn-prev-fold" class="btn-paper-nav" onclick="foldPrev()" disabled>
-                            ↑ Lipat Sebelumnya
-                        </button>
-                        <button type="button" id="btn-next-fold" class="btn-paper-nav primary" onclick="unfoldNext()">
-                            Buka Lipatan 2 ↓
-                        </button>
                     </div>
                 </div>
-            </div>
+
+                <!-- Navigasi & Indikator Halaman di Bawah Scrapbook -->
+                <div class="scrapbook-controls">
+                    <button type="button" id="btn-prev-fold" class="btn-scrapbook-nav" onclick="foldPrev()" disabled>
+                        ← Sebelumnya
+                    </button>
+                    <span id="fold-counter-badge" class="scrapbook-page-badge">Halaman 1 / 9</span>
+                    <button type="button" id="btn-next-fold" class="btn-scrapbook-nav primary" onclick="unfoldNext()">
+                        Berikutnya →
+                    </button>
+                </div>
+            </div>             
+        </div>
 
             <div class="scroll-indicator">
                 <span>scroll down ↓</span>

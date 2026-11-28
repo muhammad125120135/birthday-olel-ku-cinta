@@ -1,163 +1,282 @@
-import { motionPlay, cancelActiveAnimations, prefersReducedMotion, EASE_SILKY, EASE_FOLD_CLOSE, stagger } from "./motion-utils.js";
+import { motionPlay, prefersReducedMotion, EASE_SILKY, stagger } from "./motion-utils.js";
 import { playCurrentTrackDirect } from "./audio-player.js";
 
 let isEnvelopeOpened = false;
-const TOTAL_FOLDS = 9;
-let openFoldCount = 1;
 
-function setFoldStateClasses(foldEl, foldNum, currentOpenCount) {
-    const actionSpan = foldEl.querySelector(".crease-action");
-    foldEl.classList.remove("is-open", "is-next-folded", "is-stacked-folded");
-
-    if (foldNum <= currentOpenCount) {
-        foldEl.classList.add("is-open");
-        if (actionSpan?.dataset.openText) actionSpan.innerText = actionSpan.dataset.openText;
-    } else if (foldNum === currentOpenCount + 1) {
-        foldEl.classList.add("is-next-folded");
-        if (actionSpan?.dataset.closedText) actionSpan.innerText = actionSpan.dataset.closedText;
-    } else {
-        foldEl.classList.add("is-stacked-folded");
-        if (actionSpan?.dataset.closedText) actionSpan.innerText = actionSpan.dataset.closedText;
+// ============================================================================
+// DATA HALAMAN SCRAPBOOK (TEKS 100% UTUH, HANYA DI HALAMAN KIRI)
+// ============================================================================
+const SCRAPBOOK_SPREADS = [
+    {
+        tag: "Bagian 01",
+        greeting: "HAIII SAYANG QU YANG SANGAT SANGAT CANTIK DAN LUCU.",
+        paragraphs: [
+            "HAPPY BIRTHDAY LOWFY! Hari ini, tepatnya di tanggal 12 Desember 2026, kamu uda menyentuh umur 19 tahun looo.. waktu beneran jalan kaya mobil racing aja. Nggak ada rasanya yaa.. sekarang kamu uda nyentuh umur 19, dan itu hampir 20 yaa.. WOW.. beneran uda masuk dalam fase baru di mana kamu uda pelan-pelan mulai menghadapi dunia yang bener-bener jauh lebih luas dari yang kemarin-kemarin."
+        ]
+    },
+    {
+        tag: "Bagian 02 • 1/2",
+        paragraphs: [
+            "Kalo boleh jujur, akhir-akhir ini aku sering banget kepikiran sama kamu. Kaya berat banget nggak sih jalanin hari-hari kamu sekarang? terutama kamu sekarang uda masuk dan mulai adaptasi di kehidupan perkuliahan ini? Aku tau kok kalo dunia kuliah itu nggak semudah yang di bayangin."
+        ]
+    },
+    {
+        tag: "Bagian 02 • 2/2",
+        paragraphs: [
+            "Yang pasti banyak banget hal-hal baru yang mungkin bikin kamu kaget, dari tugas-tugas yang selalu datang tanpa lampu merah, jadwal yang lumayan padat, atau ada beberapa momen di mana kamu kaya ngerasa capek banget mulai dari fisik atau pikiran kamu. Juga kadang mungkin ada hari di mana kamu ngerasa riwueh banget, pengen ngeluh, bahkan kaya kamu mungkin ngerasa meragukan diri kamu sendiri."
+        ]
+    },
+    {
+        tag: "Bagian 03 • 1/2",
+        paragraphs: [
+            "Setiap kali kamu ngerasain hari kamu berat, iki cuma mau kamu ingat satu hal sayang.. kamu nggak sendirian. Iki selalu berharap supaya kamu selalu punya kesabaran dan kesehatan buat jalanin semuanya badai yang datang, yang pastinya bareng sama iki."
+        ]
+    },
+    {
+        tag: "Bagian 03 • 2/2",
+        paragraphs: [
+            "Iki pasti bakal selalu temani hari-hari kamu.. enggak cuman di hari-hari di mana kamu lagi senang atau bahagia, tapi juga di hari-hari kamu dimana lagi capek-capeknya, sedih, atau kamu butuh tempat buat bersandar. Iki bakal selalu terus ada di sisi kamu, dengerin semua cerita kamu tentang apapun itu, dan jalanin semuanya sama-sama sampai tahun-tahun selanjutnya."
+        ]
+    },
+    {
+        tag: "Bagian 04",
+        paragraphs: [
+            "Intinya, iki beneran bangga banget sama kamu, olel. Bangga karena kamu sendiri uda mau berusaha sejauh ini, bangga karena kamu tetap bertahan meskipun kadang rasanya pasti cape dan lelah banget di kamu nya, dan bangga bisa punya pasangan sehebat, sekuat, dan secantik kamu di kondisi apapun."
+        ]
+    },
+    {
+        tag: "Bagian 05",
+        paragraphs: [
+            "Di umur kamu yang uda menyentuh 19 tahun ini, aku selalu doain yang terbaik buat kamu. Semoga apa pun yang kamu mau, semua impian yang diam-diam kamu simpan di dalam hati dan pikiran kamu, dan segala rencana baik yang sedang kamu susun bisa satu per satu tercapai dengan bertahap. Semoga semesta selalu berpihak sama kamu, dan segala hal baik dari orang-orang yang ada di sekitar kamu selalu membawakan hal-hal baik, energi yang positif, dan menyenangkan buat kamu."
+        ]
+    },
+    {
+        tag: "Bagian 06",
+        paragraphs: [
+            "Dan... kalo nanti kamu ketemu sama hari yang rasanya bener-bener buruk atau apes banget, hari di mana semuanya bakal terasa berat banget dan kamu nggak menemukan satu pun hal baik yang ada, jangan pernah kepikiran buat pendam itu sendirian okeyy? Kamu punya tempat pulang yang banyak termasuk aku (harus aku). Walau kamu nggak menemukan hal baiknya, aku bakal kasih kamu seluruh dunia buat peluk kamu se erat-eratnya sampai semua rasa cape dan sedih kamu hilang.. sampai kamu balik merasa aman dan nyaman lagi.."
+        ]
+    },
+    {
+        tag: "Bagian 07 • Penutup",
+        paragraphs: [
+            "Selamat ulang tahun yang ke-19 ya andiyashafa ku cinta. Aku bener-bener terima kasih uda lahir di dunia ini, terima kasih uda bertahan sampai hari ini sampai detik ini, juga terima kasih sudah kasih kesempatan buat iki jadi bagian dari perjalanan hidup kamu."
+        ],
+        closing: {
+            lines: [
+                "Once again, happy 19th birthday, lowfy.",
+                "I love you so much, today, tomorrow, and always. ♥"
+            ],
+            signature: "— Yours, Iki"
+        }
     }
+];
+
+const TOTAL_SPREADS = SCRAPBOOK_SPREADS.length;
+let currentSpread = 0;
+let isFlipping = false;
+
+function buildLeftPageHTML(index) {
+    const data = SCRAPBOOK_SPREADS[index];
+    const greetingHTML = data.greeting
+        ? `<p class="scrapbook-greeting">${data.greeting}</p>`
+        : "";
+    const paragraphsHTML = data.paragraphs
+        .map((p) => `<p class="scrapbook-paragraph">${p}</p>`)
+        .join("");
+    const closingHTML = data.closing
+        ? `<div class="scrapbook-closing-box">
+               <p class="scrapbook-closing-text">${data.closing.lines.join("<br>")}</p>
+               <span class="scrapbook-signature">${data.closing.signature}</span>
+           </div>`
+        : "";
+    const cornerCurl = index > 0 ? '<div class="page-corner-curl"></div>' : "";
+
+    return `
+        <div class="page-lace-border"></div>
+        <div class="scrapbook-left-inner">
+            <div class="scrapbook-left-header">
+                <span>12.12.2026</span>
+                <span class="scrapbook-chapter-pill">${data.tag}</span>
+            </div>
+            <div class="scrapbook-text-body">
+                ${greetingHTML}
+                ${paragraphsHTML}
+                ${closingHTML}
+            </div>
+            <div class="scrapbook-left-footer">
+                <span>For Lowfy ♥</span>
+                <span>${index + 1} / ${TOTAL_SPREADS}</span>
+            </div>
+        </div>
+        ${cornerCurl}
+    `;
 }
 
-function updateFoldControlsUI(currentOpenCount) {
+function buildRightPageHTML(index) {
+    // Halaman kanan sengaja dibiarkan kosong dahulu; slot siap diisi desain per halaman nanti
+    return `
+        <div class="page-lace-border"></div>
+        <div class="scrapbook-right-inner">
+            <div class="scrapbook-right-slot" data-spread="${index + 1}"></div>
+        </div>
+        <div class="page-corner-curl"></div>
+    `;
+}
+
+function updateScrapbookControlsUI() {
     const badge = document.getElementById("fold-counter-badge");
-    if (badge) badge.innerText = `Lipatan ${currentOpenCount} / ${TOTAL_FOLDS}`;
+    if (badge) badge.innerText = `Halaman ${currentSpread + 1} / ${TOTAL_SPREADS}`;
 
     const prevBtn = document.getElementById("btn-prev-fold");
     const nextBtn = document.getElementById("btn-next-fold");
-    if (prevBtn) prevBtn.disabled = currentOpenCount <= 1;
+    if (prevBtn) prevBtn.disabled = currentSpread <= 0;
     if (nextBtn) {
-        nextBtn.innerText = currentOpenCount < TOTAL_FOLDS
-            ? `Buka Lipatan ${currentOpenCount + 1} ↓`
-            : "Lipat Kembali dari Awal ↺";
+        nextBtn.innerText = currentSpread < TOTAL_SPREADS - 1
+            ? "Berikutnya →"
+            : "Awal Buku ↺";
     }
 }
 
-function animateOpenFold(foldEl, delaySec = 0) {
-    const content = foldEl.querySelector(".fold-content");
-    const shadow = foldEl.querySelector(".fold-shadow-veil");
-    if (!content) return;
+function renderStaticSpread(index) {
+    const baseLeft = document.getElementById("scrapbook-base-left");
+    const baseRight = document.getElementById("scrapbook-base-right");
+    if (baseLeft) baseLeft.innerHTML = buildLeftPageHTML(index);
+    if (baseRight) baseRight.innerHTML = buildRightPageHTML(index);
+    updateScrapbookControlsUI();
+}
 
-    cancelActiveAnimations(foldEl);
-    cancelActiveAnimations(content);
-    cancelActiveAnimations(shadow);
+function flipToSpread(targetIndex) {
+    if (isFlipping || targetIndex === currentSpread) return;
+    if (targetIndex < 0 || targetIndex >= TOTAL_SPREADS) return;
 
-    const startHeight = content.getBoundingClientRect().height;
-    content.style.height = "auto";
-    content.style.overflow = "hidden";
-    const targetHeight = content.scrollHeight;
+    const baseLeft = document.getElementById("scrapbook-base-left");
+    const baseRight = document.getElementById("scrapbook-base-right");
+    const flipLeaf = document.getElementById("scrapbook-flip-leaf");
+    const flipFront = document.getElementById("scrapbook-flip-front");
+    const flipBack = document.getElementById("scrapbook-flip-back");
+    const flipShade = document.getElementById("scrapbook-flip-shade");
 
-    if (prefersReducedMotion) {
-        content.style.height = "auto";
-        content.style.overflow = "";
-        content.style.opacity = "";
+    if (!baseLeft || !baseRight || !flipLeaf || !flipFront || !flipBack || prefersReducedMotion) {
+        currentSpread = targetIndex;
+        renderStaticSpread(currentSpread);
         return;
     }
 
-    content.style.height = `${startHeight}px`;
-    content.style.opacity = startHeight > 4 ? "0.7" : "0";
+    isFlipping = true;
+    const isForward = targetIndex > currentSpread;
 
-    const foldAnim = motionPlay(foldEl, { rotateX: [-74, 3, 0], scaleY: [0.94, 1.005, 1] }, { duration: 0.65, delay: delaySec, ease: EASE_SILKY });
-    motionPlay(shadow, { opacity: [0.75, 0.2, 0] }, { duration: 0.65, delay: delaySec, ease: EASE_SILKY });
-    const contentAnim = motionPlay(content, { height: [`${startHeight}px`, `${targetHeight}px`], opacity: [startHeight > 4 ? 0.7 : 0, 1] }, { duration: 0.58, delay: delaySec, ease: EASE_SILKY });
+    if (isForward) {
+        // Halaman kanan terangkat & membalik 180 derajat ke kiri
+        flipLeaf.style.left = "50%";
+        flipLeaf.style.transformOrigin = "left center";
+        flipLeaf.style.transform = "rotateY(0deg)";
 
-    if (contentAnim && contentAnim.finished) {
-        contentAnim.finished.then(() => {
-            if (foldEl.classList.contains("is-open")) {
-                content.style.height = "auto";
-                content.style.overflow = "";
-                content.style.opacity = "";
-                foldEl.style.transform = "";
-            }
-        }).catch(() => {});
-    } else if (!foldAnim) {
-        content.style.height = "auto";
-        content.style.overflow = "";
-    }
-}
+        flipFront.className = "flip-face flip-front is-right-style";
+        flipFront.innerHTML = buildRightPageHTML(currentSpread);
 
-function animateCloseFold(foldEl, foldNum, finalOpenCount, delaySec = 0) {
-    const content = foldEl.querySelector(".fold-content");
-    const shadow = foldEl.querySelector(".fold-shadow-veil");
+        flipBack.className = "flip-face flip-back is-left-style";
+        flipBack.innerHTML = buildLeftPageHTML(targetIndex);
 
-    if (!content || prefersReducedMotion) {
-        setFoldStateClasses(foldEl, foldNum, finalOpenCount);
-        return;
-    }
+        // Siapkan halaman kanan baru di bawah lembar yang sedang terangkat
+        baseRight.innerHTML = buildRightPageHTML(targetIndex);
+        flipLeaf.classList.add("is-flipping");
 
-    cancelActiveAnimations(foldEl);
-    cancelActiveAnimations(content);
-    cancelActiveAnimations(shadow);
-
-    foldEl.classList.remove("is-next-folded", "is-stacked-folded");
-    foldEl.classList.add("is-open");
-
-    const startHeight = content.getBoundingClientRect().height || content.scrollHeight;
-    content.style.height = `${startHeight}px`;
-    content.style.overflow = "hidden";
-    content.style.opacity = "1";
-
-    motionPlay(shadow, { opacity: [0, 0.65, 0] }, { duration: 0.48, delay: delaySec, ease: EASE_FOLD_CLOSE });
-    motionPlay(foldEl, { rotateX: [0, -76], scaleY: [1, 0.94] }, { duration: 0.48, delay: delaySec, ease: EASE_FOLD_CLOSE });
-    const closeAnim = motionPlay(content, { height: [`${startHeight}px`, "0px"], opacity: [1, 0] }, { duration: 0.45, delay: delaySec, ease: EASE_FOLD_CLOSE });
-
-    if (closeAnim && closeAnim.finished) {
-        closeAnim.finished.then(() => {
-            if (foldNum > openFoldCount) {
-                content.style.height = "";
-                content.style.overflow = "";
-                content.style.opacity = "";
-                foldEl.style.transform = "";
-                setFoldStateClasses(foldEl, foldNum, openFoldCount);
-
-                if (foldNum === openFoldCount + 1) {
-                    motionPlay(foldEl, { rotateX: [-26, -15], y: [-3, 0] }, { duration: 0.35, ease: EASE_SILKY });
-                }
-            }
-        }).catch(() => {});
-    } else {
-        setFoldStateClasses(foldEl, foldNum, finalOpenCount);
-    }
-}
-
-function setFoldCount(targetCount, scrollToNewFold = false) {
-    const clampedTarget = Math.max(1, Math.min(TOTAL_FOLDS, targetCount));
-    const prevCount = openFoldCount;
-    openFoldCount = clampedTarget;
-
-    updateFoldControlsUI(openFoldCount);
-
-    document.querySelectorAll(".paper-fold").forEach((foldEl) => {
-        const foldNum = parseInt(foldEl.dataset.fold, 10);
-
-        if (foldNum > prevCount && foldNum <= openFoldCount) {
-            setFoldStateClasses(foldEl, foldNum, openFoldCount);
-            animateOpenFold(foldEl, (foldNum - prevCount - 1) * 0.06);
-        } else if (foldNum <= prevCount && foldNum > openFoldCount) {
-            const reverseIdx = prevCount - foldNum;
-            animateCloseFold(foldEl, foldNum, openFoldCount, reverseIdx * 0.045);
-        } else {
-            setFoldStateClasses(foldEl, foldNum, openFoldCount);
+        if (flipShade) {
+            motionPlay(flipShade, { opacity: [0, 0.55, 0] }, { duration: 0.72, ease: "easeInOut" });
         }
-    });
 
-    if (scrollToNewFold) {
-        const targetFold = document.querySelector(`.paper-fold[data-fold="${openFoldCount}"]`);
-        if (targetFold) {
-            setTimeout(() => {
-                targetFold.scrollIntoView({ behavior: "smooth", block: "nearest" });
-            }, 180);
+        const anim = motionPlay(
+            flipLeaf,
+            { rotateY: ["0deg", "-180deg"] },
+            { duration: 0.72, ease: [0.34, 0.04, 0.24, 1] }
+        );
+
+        const finishForward = () => {
+            currentSpread = targetIndex;
+            baseLeft.innerHTML = buildLeftPageHTML(currentSpread);
+            flipLeaf.classList.remove("is-flipping");
+            flipLeaf.style.transform = "";
+            updateScrapbookControlsUI();
+            isFlipping = false;
+        };
+
+        if (anim && anim.finished) {
+            anim.finished.then(finishForward).catch(finishForward);
+        } else {
+            finishForward();
+        }
+    } else {
+        // Halaman kiri terangkat & membalik 180 derajat kembali ke kanan
+        flipLeaf.style.left = "0%";
+        flipLeaf.style.transformOrigin = "right center";
+        flipLeaf.style.transform = "rotateY(0deg)";
+
+        flipFront.className = "flip-face flip-front is-left-style";
+        flipFront.innerHTML = buildLeftPageHTML(currentSpread);
+
+        flipBack.className = "flip-face flip-back is-right-style";
+        flipBack.innerHTML = buildRightPageHTML(targetIndex);
+
+        // Siapkan halaman kiri sebelumnya di bawah lembar yang sedang terangkat
+        baseLeft.innerHTML = buildLeftPageHTML(targetIndex);
+        flipLeaf.classList.add("is-flipping");
+
+        if (flipShade) {
+            motionPlay(flipShade, { opacity: [0, 0.55, 0] }, { duration: 0.72, ease: "easeInOut" });
+        }
+
+        const anim = motionPlay(
+            flipLeaf,
+            { rotateY: ["0deg", "180deg"] },
+            { duration: 0.72, ease: [0.34, 0.04, 0.24, 1] }
+        );
+
+        const finishBackward = () => {
+            currentSpread = targetIndex;
+            baseRight.innerHTML = buildRightPageHTML(currentSpread);
+            flipLeaf.classList.remove("is-flipping");
+            flipLeaf.style.transform = "";
+            updateScrapbookControlsUI();
+            isFlipping = false;
+        };
+
+        if (anim && anim.finished) {
+            anim.finished.then(finishBackward).catch(finishBackward);
+        } else {
+            finishBackward();
         }
     }
 }
 
 export function initFolds() {
-    document.querySelectorAll(".paper-fold").forEach((foldEl) => {
-        setFoldStateClasses(foldEl, parseInt(foldEl.dataset.fold, 10), openFoldCount);
-    });
-    updateFoldControlsUI(openFoldCount);
+    renderStaticSpread(currentSpread);
+
+    // Dukungan geser (swipe) kiri/kanan pada scrapbook di layar sentuh & mouse
+    const bookEl = document.getElementById("scrapbook-book");
+    if (!bookEl) return;
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    bookEl.addEventListener("touchstart", (e) => {
+        if (!e.touches || e.touches.length === 0) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    bookEl.addEventListener("touchend", (e) => {
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+
+        if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+            if (dx < 0 && currentSpread < TOTAL_SPREADS - 1) {
+                flipToSpread(currentSpread + 1);
+            } else if (dx > 0 && currentSpread > 0) {
+                flipToSpread(currentSpread - 1);
+            }
+        }
+    }, { passive: true });
 }
 
 export const envelopeFoldHandlers = {
@@ -198,14 +317,27 @@ export const envelopeFoldHandlers = {
             motionPlay(".hero-stagger", { opacity: [0, 1], y: [26, 0], scale: [0.97, 1] }, { duration: 0.75, delay: stagger(0.12), ease: EASE_SILKY });
         }, 1050);
     },
-    unfoldNext: () => setFoldCount(openFoldCount < TOTAL_FOLDS ? openFoldCount + 1 : 1, true),
-    foldPrev: () => { if (openFoldCount > 1) setFoldCount(openFoldCount - 1, true); },
-    handleFoldClick: (foldNum, e) => {
-        if (e) e.stopPropagation();
-        if (foldNum > openFoldCount && openFoldCount < TOTAL_FOLDS) {
-            setFoldCount(openFoldCount + 1, true);
-        } else if (foldNum > 1 && foldNum <= openFoldCount && e?.target.closest(".fold-crease-bar")) {
-            setFoldCount(foldNum - 1, true);
+    nextSpread: () => {
+        if (currentSpread < TOTAL_SPREADS - 1) {
+            flipToSpread(currentSpread + 1);
         }
-    }
+    },
+    prevSpread: () => {
+        if (currentSpread > 0) {
+            flipToSpread(currentSpread - 1);
+        }
+    },
+    unfoldNext: () => {
+        if (currentSpread < TOTAL_SPREADS - 1) {
+            flipToSpread(currentSpread + 1);
+        } else {
+            flipToSpread(0);
+        }
+    },
+    foldPrev: () => {
+        if (currentSpread > 0) {
+            flipToSpread(currentSpread - 1);
+        }
+    },
+    handleFoldClick: () => {}
 };

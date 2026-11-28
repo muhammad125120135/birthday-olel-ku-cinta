@@ -1,4 +1,10 @@
 @media (max-width: 820px) {
+    .scrapbook-wrapper { max-width: 680px; }
+    .scrapbook-stage { height: 420px; }
+    .scrapbook-left-inner { padding: 18px 20px 18px 16px; }
+    .scrapbook-greeting { font-size: 0.8rem; }
+    .scrapbook-paragraph { font-size: 0.76rem; line-height: 1.54; }
+
     .jar-stage { gap: 10px; }
     .jar-side-wing { width: 195px; }
     .jar-ascii-wrap { width: 190px; height: 250px; }
@@ -14,17 +20,29 @@
 @media (max-width: 480px) {
     .main-title { font-size: 2rem; }
     .header-cutout-img { width: 176px; height: 176px; }
-    .real-paper-sheet {
-        background-image:
-            linear-gradient(90deg, transparent 24px, rgba(214, 108, 122, 0.32) 24px, rgba(214, 108, 122, 0.32) 25px, transparent 25px),
-            repeating-linear-gradient(180deg, transparent 0px, transparent 31px, rgba(132, 156, 184, 0.24) 32px),
-            radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.65), rgba(235, 219, 192, 0.45));
-        background-position: 0 0, 0 5px, 0 0;
-        padding: 32px 16px 24px 34px;
-    }
-    .paper-text { font-size: 0.91rem; }
-    .closing-handwriting { font-size: 1.48rem; }
-    .paper-fold-controls { flex-direction: column; align-items: stretch; }
+
+    /* Scrapbook 2 Halaman Responsif di HP */
+    .scrapbook-wrapper { width: 100%; max-width: 100%; }
+    .scrapbook-stage { height: 375px; padding: 5px; border-radius: 12px; }
+    .scrapbook-stack-edges { inset: 7px 3px; border-radius: 8px; }
+    .scrapbook-spine-crease { width: 20px; }
+    .page-lace-border { width: 6px; background-size: 6px 10px; }
+    .scrapbook-left-inner { padding: 12px 13px 12px 10px; }
+    .scrapbook-left-header { font-size: 0.56rem; padding-bottom: 5px; margin-bottom: 6px; }
+    .scrapbook-chapter-pill { font-size: 0.54rem; padding: 1px 6px; }
+    .scrapbook-text-body { gap: 6px; }
+    .scrapbook-greeting { font-size: 0.66rem; line-height: 1.38; }
+    .scrapbook-paragraph { font-size: 0.63rem; line-height: 1.44; }
+    .scrapbook-closing-text { font-size: 1.04rem; line-height: 1.24; }
+    .scrapbook-signature { font-size: 0.86rem; }
+    .scrapbook-left-footer { font-size: 0.54rem; padding-top: 4px; }
+    .scrapbook-right-inner { padding: 12px 10px 12px 13px; }
+    .page-corner-curl { width: 24px; height: 24px; }
+    .scrapbook-controls { gap: 8px; margin-top: 12px; }
+    .btn-scrapbook-nav { padding: 7px 12px; font-size: 0.7rem; }
+    .scrapbook-page-badge { font-size: 0.7rem; padding: 5px 11px; }
+
+    /* Jar & ASCII Art di HP */
     .jar-area { padding-left: 10px; padding-right: 10px; }
     .jar-stage { gap: 4px; width: 100%; }
     .jar-side-wing { flex: 1 1 0; min-width: 0; max-width: 132px; }
