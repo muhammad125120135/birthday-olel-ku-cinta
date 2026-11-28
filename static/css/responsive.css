@@ -14,11 +14,9 @@
 }
 
 @media (max-width: 480px) {
-@media (max-width: 480px) {
     /* ...aturan HP lainnya tetap... */
-    .cake-box { width: 265px; height: 255px; }
-    #ascii-cake-canvas { width: 390px; height: 355px; }
-    }
+    .cake-box { width: 290px; height: 280px; }
+    #ascii-cake-canvas { width: 430px; height: 385px; }
     .bouquet-box {width: 280px; height: 268px; }
     .bouquet-3d-wrap {width: 256px; height: 256px; }
     #ascii-bouquet-canvas {width: 500px; height: 435px; }

@@ -183,13 +183,16 @@
 
 /* Kue Tingkat Putih & Cupcake Pita Pink */
 .cake-box {
-    margin: 10px auto 8px;
-    width: 100%;
-    max-width: 300px;
-    cursor: pointer;
+    position: relative;
+    width: 340px;
+    height: 320px;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: visible;
+    user-select: none;
 }
 
 .coquette-cake-svg {
@@ -281,8 +284,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 480px;
-    height: 430px;
+    width: 540px;
+    height: 480px;
     display: block;
     pointer-events: none;
     filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 14px rgba(255, 168, 214, 0.35));

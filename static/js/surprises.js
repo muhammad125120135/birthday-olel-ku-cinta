@@ -586,12 +586,15 @@ function initAsciiCake() {
     }
 
     const ctx = canvas.getContext("2d");
-    canvas.width = 480;
-    canvas.height = 430;
+    canvas.width = 540;
+    canvas.height = 480;
+
+    // Ubah angka ini jika ingin mengatur besar kue (1.32 = 32% lebih besar)
+    const CAKE_SCALE = 1.32;
 
     const { bodyPoints, orbitPoints, wickY } = build3DStarlightCakeModel();
     const cx = canvas.width / 2;
-    const cy = canvas.height / 2 + 12;
+    const cy = canvas.height / 2 + 14;
 
     let flameLit = true;
     let entranceProgress = 0;
@@ -615,7 +618,6 @@ function initAsciiCake() {
         });
     }
 
-    // Proyeksi seragam: putar sumbu Y dulu (poros tengah kue), lalu miringkan kamera (rotX)
     function projectCakePoint(x, y, z, currentRotY, rotX, fov) {
         const x1 = x * Math.cos(currentRotY) + z * Math.sin(currentRotY);
         const z1 = -x * Math.sin(currentRotY) + z * Math.cos(currentRotY);
@@ -689,10 +691,10 @@ function initAsciiCake() {
             }
 
             const easeIn = 1 - Math.pow(1 - entranceProgress, 3);
-            const grow = 0.35 + 0.65 * easeIn;
-            const hoverY = Math.sin(time * 2.1) * 5.5;
+            const grow = (0.35 + 0.65 * easeIn) * CAKE_SCALE;
+            const hoverY = Math.sin(time * 2.1) * 6;
             const rotX = 0.26;
-            const fov = 330;
+            const fov = 350;
 
             const projected = [];
 
@@ -727,10 +729,10 @@ function initAsciiCake() {
                 if (op.orderNorm > easeIn * 1.05) continue;
 
                 const a = op.angle + orbitSpin;
-                const r = (op.baseRadius + pulseExpand) * (0.4 + 0.6 * easeIn);
+                const r = (op.baseRadius + pulseExpand) * (0.4 + 0.6 * easeIn) * CAKE_SCALE;
 
                 const rx0 = Math.cos(a) * r;
-                const ry0 = op.yOffset;
+                const ry0 = op.yOffset * CAKE_SCALE;
                 const rz0 = Math.sin(a) * r;
 
                 const ry1 = ry0 * Math.cos(ringTiltX) - rz0 * Math.sin(ringTiltX);
@@ -753,7 +755,6 @@ function initAsciiCake() {
                 });
             }
 
-            // Posisi puncak sumbu saat ini (mengikuti skala grow & gerakan melayang hoverY)
             const currentWickY = wickY * grow + hoverY;
 
             // 3. Render Api Lilin tepat di atas sumbu
@@ -773,9 +774,9 @@ function initAsciiCake() {
                     const steps = fl.r > 1 ? 6 : 1;
                     for (let s = 0; s < steps; s++) {
                         const sa = (s / steps) * Math.PI * 2 + time * 4;
-                        const fx = Math.cos(sa) * fl.r + flameSway * (idx * 0.26);
-                        const fy = currentWickY + fl.dy * flameFlicker;
-                        const fz = Math.sin(sa) * fl.r;
+                        const fx = (Math.cos(sa) * fl.r + flameSway * (idx * 0.26)) * CAKE_SCALE;
+                        const fy = currentWickY + fl.dy * flameFlicker * CAKE_SCALE;
+                        const fz = Math.sin(sa) * fl.r * CAKE_SCALE;
 
                         const proj = projectCakePoint(fx, fy, fz, rotY, rotX, fov);
                         projected.push({
@@ -800,9 +801,9 @@ function initAsciiCake() {
                     continue;
                 }
                 const st = sp.age / sp.life;
-                const sx = sp.x + Math.sin(time * 4 + sp.phase) * (3 + st * 13) + sp.vx * st;
-                const sy = currentWickY + sp.dy + sp.vy * sp.age;
-                const sz = sp.z + Math.cos(time * 3.5 + sp.phase) * 4;
+                const sx = (sp.x + Math.sin(time * 4 + sp.phase) * (3 + st * 13) + sp.vx * st) * CAKE_SCALE;
+                const sy = currentWickY + (sp.dy + sp.vy * sp.age) * CAKE_SCALE;
+                const sz = (sp.z + Math.cos(time * 3.5 + sp.phase) * 4) * CAKE_SCALE;
 
                 const proj = projectCakePoint(sx, sy, sz, rotY, rotX, fov);
                 projected.push({
@@ -818,7 +819,7 @@ function initAsciiCake() {
             projected.sort((a, b) => b.z - a.z);
 
             for (const p of projected) {
-                const fontSize = Math.max(8, Math.round(10 * p.scale));
+                const fontSize = Math.max(10, Math.round(12 * p.scale));
                 ctx.font = `bold ${fontSize}px "Courier New", monospace`;
                 ctx.globalAlpha = p.alpha;
                 ctx.fillStyle = p.color;
