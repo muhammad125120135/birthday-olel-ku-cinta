@@ -24,7 +24,7 @@
     <!-- Pemutar Audio Latar -->
     <audio id="bg-music" preload="auto"></audio>
 
-    <!-- MINI PLAYER BERGAYA RETRO GLASS -->
+    <!-- MINI PLAYER RAMPING -->
     <div id="mini-player" class="mini-player">
         <div class="player-window-controls" onclick="toggleMinimizePlayer()" title="Kecilkan / Perbesar Player">
             <span class="dot-red"></span>
@@ -47,10 +47,13 @@
 
         <div class="player-actions">
             <button type="button" id="play-pause-btn" class="btn-circle-play" onclick="toggleMusic(event)" title="Play / Pause">
-                <img src="static/tombol play.png" onerror="this.onerror=null;this.src='static/play.png';" alt="Play" class="player-state-img">
-            </button>
-            <button type="button" class="btn-next-track" onclick="nextTrack(event)" title="Ganti Lagu Berikutnya">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="6,4 20,12 6,20"></polygon>
+                </svg>
+            </button>
+
+            <button type="button" id="next-btn" class="btn-next-track" onclick="nextTrack(event)" title="Ganti Lagu Berikutnya">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                     <polygon points="4,5 15,12 4,19"></polygon>
                     <rect x="17" y="5" width="3" height="14" rx="1"></rect>
                 </svg>

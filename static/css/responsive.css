@@ -14,13 +14,6 @@
 }
 
 @media (max-width: 480px) {
-    /* ...aturan HP lainnya tetap... */
-    .cake-box { width: 290px; height: 280px; }
-    #ascii-cake-canvas { width: 430px; height: 385px; }
-    .bouquet-box {width: 280px; height: 268px; }
-    .bouquet-3d-wrap {width: 256px; height: 256px; }
-    #ascii-bouquet-canvas {width: 500px; height: 435px; }
-    }
     .main-title { font-size: 2rem; }
     .header-cutout-img { width: 176px; height: 176px; }
     .real-paper-sheet {
@@ -39,23 +32,43 @@
     .jar-side-photo { width: 134px; height: 186px; }
     .jar { width: 102px; }
     .jar-glass { width: 98px; height: 144px; }
+
+    /* Ukuran Kanvas 3D Bouquet & Cake di HP */
     .bouquet-box { width: 280px; height: 268px; }
     .bouquet-3d-wrap { width: 256px; height: 256px; }
+    #ascii-bouquet-canvas { width: 500px; height: 435px; }
+    .cake-box { width: 290px; height: 280px; }
+    #ascii-cake-canvas { width: 430px; height: 385px; }
+
+    /* Mini Player terkunci rapi di dalam lebar layar HP */
     .mini-player {
-        bottom: 12px;
-        right: 8px;
-        left: 8px;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
         justify-content: space-between;
-        padding: 6px 10px 8px 8px;
-        gap: 5px;
+        padding: 6px 10px 8px;
+        gap: 6px;
     }
-    .mini-player.minimized { left: auto; right: 12px; }
-    .player-cover { width: 34px; height: 34px; font-size: 1rem; }
-    .player-info { min-width: 50px; max-width: 76px; }
-    .volume-slider { width: 34px; }
-    .btn-speed { padding: 3px 5px; font-size: 0.68rem; }
-    .btn-circle-play { width: 60px; height: 60px; }
-    .options-area { padding-bottom: 145px; }
+    .mini-player.minimized {
+        left: auto;
+        right: 12px;
+        width: auto;
+    }
+    .grip-dots,
+    .volume-slider {
+        display: none;
+    }
+    .player-cover { width: 28px; height: 28px; font-size: 0.9rem; }
+    .player-info { min-width: 0; max-width: none; flex: 1; }
+    .player-title { font-size: 0.74rem; }
+    .player-artist { font-size: 0.64rem; }
+    .btn-speed { padding: 2px 5px; font-size: 0.65rem; }
+    .btn-circle-play { width: 30px; height: 30px; }
+    .btn-next-track { width: 24px; height: 24px; }
+    .options-area { padding-bottom: 120px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
     .hero-stagger {

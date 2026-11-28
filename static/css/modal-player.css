@@ -57,18 +57,19 @@
 /* MINI PLAYER RETRO GLASS */
 .mini-player {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 18px;
+    right: 18px;
+    max-width: calc(100vw - 36px);
     background: rgba(20, 13, 30, 0.84);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     color: #ffffff;
-    border-radius: 18px;
-    padding: 8px 16px 10px 12px;
+    border-radius: 16px;
+    padding: 6px 12px 8px 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 126, 179, 0.15);
+    gap: 8px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.52), 0 0 14px rgba(255, 126, 179, 0.14);
     border: 1px solid rgba(255, 158, 203, 0.25);
     z-index: 180;
     overflow: hidden;
@@ -86,35 +87,36 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     cursor: pointer;
-    padding: 2px 4px;
+    padding: 2px 3px;
+    flex-shrink: 0;
 }
 
 .dot-red {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     background-color: #ff5f56;
     border-radius: 50%;
     box-shadow: 0 0 8px rgba(255, 95, 86, 0.6);
 }
 
 .grip-dots {
-    font-size: 11px;
+    font-size: 9px;
     line-height: 1;
     color: #9e8a96;
     letter-spacing: 1px;
 }
 
 .player-cover {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
     border: 1px solid rgba(255, 182, 214, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: 1rem;
     flex-shrink: 0;
 }
 
@@ -122,12 +124,13 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    min-width: 78px;
-    max-width: 118px;
+    min-width: 68px;
+    max-width: 108px;
+    flex: 1 1 auto;
 }
 
 .player-title {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: #ffffff;
     white-space: nowrap;
@@ -136,7 +139,7 @@
 }
 
 .player-artist {
-    font-size: 0.74rem;
+    font-size: 0.68rem;
     color: #d6b6c7;
     white-space: nowrap;
     overflow: hidden;
@@ -147,12 +150,13 @@
     display: flex;
     align-items: center;
     gap: 4px;
+    flex-shrink: 0;
 }
 
 .btn-volume-icon {
     background: none;
     border: none;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     cursor: pointer;
     padding: 2px;
 }
@@ -160,7 +164,7 @@
 .volume-slider {
     -webkit-appearance: none;
     appearance: none;
-    width: 50px;
+    width: 44px;
     height: 4px;
     background: rgba(255, 182, 214, 0.28);
     border-radius: 999px;
@@ -169,8 +173,8 @@
 
 .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
     background: #ff7eb3;
     border: 1.5px solid #ffffff;
@@ -179,8 +183,8 @@
 }
 
 .volume-slider::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
     background: #ff7eb3;
     border: 1.5px solid #ffffff;
@@ -192,9 +196,9 @@
     background: rgba(255, 126, 179, 0.18);
     color: #ffb8d8;
     border: 1px solid rgba(255, 158, 203, 0.35);
-    border-radius: 8px;
-    padding: 4px 7px;
-    font-size: 0.72rem;
+    border-radius: 7px;
+    padding: 3px 6px;
+    font-size: 0.68rem;
     font-weight: 700;
     cursor: pointer;
     flex-shrink: 0;
@@ -203,15 +207,18 @@
 .player-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+    flex-shrink: 0;
 }
 
 .btn-circle-play {
-    width: 74px;
-    height: 74px;
-    background: transparent;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff7eb3, #ff9ec7);
+    color: #160c22;
     border: none;
-    box-shadow: none;
+    box-shadow: 0 3px 10px rgba(255, 126, 179, 0.4);
     padding: 0;
     display: flex;
     align-items: center;
@@ -220,16 +227,13 @@
     flex-shrink: 0;
 }
 
-.player-state-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    pointer-events: none;
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+.btn-circle-play:hover {
+    box-shadow: 0 0 14px rgba(255, 126, 179, 0.65);
 }
 
 .btn-next-track {
+    width: 26px;
+    height: 26px;
     background: none;
     border: none;
     color: #e8cddb;
@@ -237,7 +241,8 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding: 4px;
+    padding: 0;
+    flex-shrink: 0;
 }
 
 .btn-next-track:hover {
@@ -249,7 +254,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 3px;
     background: rgba(255, 255, 255, 0.1);
     cursor: pointer;
 }

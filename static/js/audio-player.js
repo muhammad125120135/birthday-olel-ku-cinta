@@ -8,8 +8,8 @@ const playerCover = document.getElementById("player-cover");
 const volumeSlider = document.getElementById("volume-slider");
 const volumeBtn = document.getElementById("volume-btn");
 
-const PLAY_ICON_HTML = '<img src="static/tombol play.png" onerror="this.onerror=null;this.src=\'static/play.png\';" alt="Play" class="player-state-img">';
-const PAUSE_ICON_HTML = '<img src="static/tombol pouse.png" onerror="this.onerror=null;this.src=\'static/puse.png\';" alt="Pause" class="player-state-img">';
+const PLAY_ICON_HTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"></polygon></svg>';
+const PAUSE_ICON_HTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
 
 const speedRates = [1, 1.25, 1.5, 0.75];
 let currentSpeedIndex = 0;
@@ -17,6 +17,12 @@ let userVolume = 0.7;
 let previousVolume = 0.7;
 let isAutoFadingOut = false;
 let volumeFadeTimer = null;
+
+// Web Audio API Auto Volume Normalizer
+let audioCtx = null;
+let agcGainNode = null;
+let analyserNode = null;
+let rmsBuffer = null;
 
 const playlist = [
     { title: "24/7", artist: "Romaria", filename: "romaria.mp3", cover: "🌸", bg: "rgba(255, 126, 179, 0.25)" },
@@ -26,6 +32,64 @@ const playlist = [
     { title: "RECIPE OF US", artist: "Paul Partohap", filename: "recipe of us.mp3", cover: "🕯️", bg: "rgba(255, 209, 102, 0.25)" }
 ];
 let currentTrackIndex = 0;
+
+function ensureVolumeNormalizer() {
+    if (audioCtx) {
+        if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+        return;
+    }
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass || !bgMusic) return;
+
+    try {
+        audioCtx = new AudioContextClass();
+        const source = audioCtx.createMediaElementSource(bgMusic);
+
+        agcGainNode = audioCtx.createGain();
+        agcGainNode.gain.value = 0.9;
+
+        const compressor = audioCtx.createDynamicsCompressor();
+        compressor.threshold.setValueAtTime(-18, audioCtx.currentTime);
+        compressor.knee.setValueAtTime(14, audioCtx.currentTime);
+        compressor.ratio.setValueAtTime(4, audioCtx.currentTime);
+        compressor.attack.setValueAtTime(0.015, audioCtx.currentTime);
+        compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
+
+        analyserNode = audioCtx.createAnalyser();
+        analyserNode.fftSize = 1024;
+        rmsBuffer = new Float32Array(analyserNode.fftSize);
+
+        source.connect(analyserNode);
+        source.connect(agcGainNode);
+        agcGainNode.connect(compressor);
+        compressor.connect(audioCtx.destination);
+
+        const TARGET_TRACK_RMS = 0.15; // Standar kenyaringan asli file lagu
+        const MIN_GAIN = 0.38;         // Batas pengecilan untuk lagu sangat keras
+        const MAX_GAIN = 2.3;          // Batas penguatan untuk lagu sangat pelan
+
+        setInterval(() => {
+            if (bgMusic.paused || bgMusic.ended || !audioCtx || audioCtx.state !== "running") return;
+            if (bgMusic.volume < 0.05) return; // Abaikan saat sedang fade-in / fade-out
+
+            analyserNode.getFloatTimeDomainData(rmsBuffer);
+            let sumSquares = 0;
+            for (let i = 0; i < rmsBuffer.length; i++) {
+                sumSquares += rmsBuffer[i] * rmsBuffer[i];
+            }
+            const rawRms = Math.sqrt(sumSquares / rmsBuffer.length);
+
+            // Hitung kenyaringan murni lagu tanpa terpengaruh posisi slider volume user
+            const intrinsicTrackRms = rawRms / bgMusic.volume;
+            if (intrinsicTrackRms < 0.014) return; // Lewati bagian hening/intro sepi
+
+            const idealGain = Math.min(MAX_GAIN, Math.max(MIN_GAIN, TARGET_TRACK_RMS / intrinsicTrackRms));
+            agcGainNode.gain.setTargetAtTime(idealGain, audioCtx.currentTime, 0.35);
+        }, 120);
+    } catch (_) {
+        audioCtx = null;
+    }
+}
 
 function stopVolumeFade() {
     if (volumeFadeTimer !== null) {
@@ -78,6 +142,10 @@ function setTrackSource(index) {
     bgMusic.volume = userVolume;
     applyPlaybackRate(speedRates[currentSpeedIndex]);
 
+    if (agcGainNode && audioCtx) {
+        agcGainNode.gain.setValueAtTime(0.9, audioCtx.currentTime);
+    }
+
     playerTitle.innerText = track.title;
     playerArtist.innerText = track.artist;
     playerCover.innerText = track.cover;
@@ -90,6 +158,7 @@ function setTrackSource(index) {
 }
 
 export function playCurrentTrackDirect(withFadeIn = true) {
+    ensureVolumeNormalizer();
     stopVolumeFade();
     applyPlaybackRate(speedRates[currentSpeedIndex]);
     bgMusic.volume = withFadeIn ? 0 : userVolume;
